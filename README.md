@@ -1,4 +1,4 @@
--             |  -
+first            |  second
 :-------------------------:|:-------------------------:
 ![Screenshot_1640536495](https://user-images.githubusercontent.com/65075121/147414581-1cb2ded4-5a68-44c3-889f-6d5de50bfffb.png)  |  ![Screenshot_1640536506](https://user-images.githubusercontent.com/65075121/147414583-fc803bc2-3655-4a65-b821-e14daab9a7f4.png)
 
