@@ -170,34 +170,36 @@ class CoinListPage extends StatelessWidget {
     );
   }
 
-  ListView buildListViewBuilder(
+  Widget buildListViewBuilder(
       List<MyCoin> coinListToShow, String currencyName) {
-    return ListView.builder(
-      physics: const BouncingScrollPhysics(),
-      itemCount: coinListToShow.length,
-      itemBuilder: (context, index) {
-        var result = coinListToShow[index];
+    return Scrollbar(
+      child: ListView.builder(
+        physics: const BouncingScrollPhysics(),
+        itemCount: coinListToShow.length,
+        itemBuilder: (context, index) {
+          var result = coinListToShow[index];
 
-        return GestureDetector(
-          onTap: () {
-            // convertCurrency(context, currencyName, coinListToShow, index);
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => CoinDetailPage(coin: result)));
-          },
-          child: Hero(
-            tag: result.id,
-            child: ListCardItem(
-              coin: result,
-              index: index,
-              voidCallback: () {
-                context.read<CoinListCubit>().updateFromFavorites(result);
-              },
+          return GestureDetector(
+            onTap: () {
+              // convertCurrency(context, currencyName, coinListToShow, index);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CoinDetailPage(coin: result)));
+            },
+            child: Hero(
+              tag: result.id,
+              child: ListCardItem(
+                coin: result,
+                index: index,
+                voidCallback: () {
+                  context.read<CoinListCubit>().updateFromFavorites(result);
+                },
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
