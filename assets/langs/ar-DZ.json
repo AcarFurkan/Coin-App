@@ -1,0 +1,40 @@
+{
+    "appBarTitle": "مرحبا بكم في تطبيقي",
+    "welcomeMessage":"مرحبا بك في أفضل تطبيق تجاري فقط استمتع وكسب المال",
+    "changeLanguagePage":{
+        "appBarTitle":"تغيير اللغة",
+        "englishUS":"الإنجليزية الولايات المتحدة",
+        "englishUK":"الإنجليزية المملكة المتحدة",
+        "turkish":"اللغة التركية",
+        "korean":"الكورية",
+        "arabic":"عربي"
+
+    },
+    "coinListPage":{
+        "appBarTitle":"قائمة العملة"
+    },
+    "SettingsPage":{
+        "appBarTitle":"إعدادات",
+        "changeLanguage":"تغيير اللغة",
+        "appTheme":"الوضع المظلم" 
+    }
+    ,"home":{"tab1":"الصفحة الرئيسية",
+        "tab2":"عملة",
+        "tab3":"كوين التفاصيل",
+        "tab4":"الإعدادات"}
+        ,
+        "CoinDetailPage":{
+            "addToFavoriteClose":"اضافة الى المفضلة",
+            "addedToFavoriteOpen":"إضافة إلى المفضلة",
+            "setAlarmClose":"ضبط المنبه",
+            "setAlarmOpen":"إعدادات الإنذار",
+            "minSwitchTileClose":"ضبط المنبه مع سعر دقيقة ",
+            "minSwitchTileOpen": "إذا كان السعر الفوري للعملة المعدنية أقل من السعر الذي تم إدخاله، فسيصدر المنبه.",
+            "maxSwitchTileClose":"تعيين إنذار مع ماكس السعر",
+            "maxSwitchTileOpen":"إذا كان السعر الفوري للعملة المعدنية أقل من السعر الذي تم إدخاله، فسيصدر المنبه.",
+            "minTextFormField":"أنا",
+            "maxTextFormField":"الأعلى",
+            "buttonText":"ضبط المنبه"}
+    
+}
+

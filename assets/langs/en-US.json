@@ -1,0 +1,42 @@
+{
+    "appBarTitle": "Welcome to My App",
+    "welcomeMessage":"Welcome to the best trading app just enjoy and make money",
+    "changeLanguagePage":{
+        "appBarTitle":"Change Language",
+        "englishUS":"English US",
+        "englishUK":"English UK",
+        "turkish":"Turkish",
+        "korean":"Korean",
+        "arabic":"Arabic"
+    },
+    "coinListPage":{
+        "appBarTitle":"Coin List"
+    },
+    "SettingsPage":{
+        "appBarTitle":"Settings",
+        "changeLanguage":"Change Language",
+        "appTheme":"Dark mode" 
+    },
+    "home":{
+        "tab1":"home",
+        "tab2":"coin",
+        "tab3":"coin detail",
+        "tab4":"settings"}
+        ,
+    "CoinDetailPage":{
+        "addToFavoriteClose":"Add to Favorites",
+        "addedToFavoriteOpen":"Added to Favorites",
+        "setAlarmClose":"Set Alarm",
+        "setAlarmOpen":"Alarm Settings",
+        "minSwitchTileClose":"Set alarm with min price",
+        "minSwitchTileOpen": "If the instant price of the coin falls below the entered price, an alarm will sound.",
+        "maxSwitchTileClose":"Set alarm with max price",
+        "maxSwitchTileOpen":"If the instant price of the coin falls below the entered price, an alarm will sound.",
+        "minTextFormField":"min",
+        "maxTextFormField":"max",
+        "buttonText":"Set Alarm"}
+        
+        
+    
+}
+

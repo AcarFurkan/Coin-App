@@ -1,0 +1,36 @@
+{
+    "appBarTitle": "내 앱에 오신 것을 환영합니다",
+    "welcomeMessage":"최고의 무역 앱에 오신 것을 환영합니다." ,
+    "changeLanguagePage":{
+        "appBarTitle":"언어 변경"
+        ,"englishUS":"영어;",
+        "englishUK":"영어 영국",
+        "turkish":"터키어",
+        "korean":"한국인",
+        "arabic":"아라비아 말"
+    },
+    "coinListPage":{
+        "appBarTitle":"동전 목록"
+    },
+    "SettingsPage":{
+        "appBarTitle":"설정",
+        "changeLanguage":"언어 변경",
+        "appTheme":"어두운 모드"  
+    },"home":{"tab1":"집",
+        "tab2":"동전",
+        "tab3":"동전 세부 사항",
+        "tab4":"설정"}
+        ,
+        "CoinDetailPage":{
+            "addToFavoriteClose":"즐겨 찾기에 추가",
+            "addedToFavoriteOpen":"즐겨 찾기에 추가되었습니다",
+            "setAlarmClose":"알람을 설정하다",
+            "setAlarmOpen":"알람 설정",
+            "minSwitchTileClose":"최소 가격으로 알람을 설정하십시오",
+            "minSwitchTileOpen": "동전의 인스턴트 가격이 입력 된 가격 이하로 떨어지면 알람이 울립니다.",
+            "maxSwitchTileClose":"최대 가격으로 알람을 설정하십시오",
+            "maxSwitchTileOpen":"동전의 인스턴트 가격이 입력 된 가격 이하로 떨어지면 알람이 울립니다.",
+            "minTextFormField":"나",
+            "maxTextFormField":"최대",
+            "buttonText":"알람을 설정하다"}
+}

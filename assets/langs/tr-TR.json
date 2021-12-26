@@ -1,0 +1,36 @@
+{
+    "appBarTitle": "Uygulamama Hoşgeldiniz",
+    "welcomeMessage":"En iyi ticaret uygulamasına hoş geldiniz sadece zevk ve para kazanın",
+    "changeLanguagePage":{
+        "appBarTitle":"Dili değiştir",
+        "englishUS":"Amerikan ingilizcesi",
+        "englishUK":"İngiltere İngilizcesi",
+        "turkish":"Türkçe",
+        "korean":"Korece",
+        "arabic":"Arapça"
+    },
+    "coinListPage":{
+        "appBarTitle":"Coin Listesi"
+    },
+    "SettingsPage":{
+        "appBarTitle":"Ayarlar",
+        "changeLanguage":"Dili değiştir",
+        "appTheme":"Karanlık mod" 
+    },"home":{"tab1":"Ana Sayfa",
+        "tab2":"coin",
+        "tab3":"coin liste",
+        "tab4":"ayarlar"}
+        ,
+        "CoinDetailPage":{
+            "addToFavoriteClose":"Favorilere ekle",
+            "addedToFavoriteOpen":"Sık Kullanılanlara Eklendi",
+            "setAlarmClose":"Alarm kurmak",
+            "setAlarmOpen":"Alarm Ayarları",
+            "minSwitchTileClose":"Bilgi ile alarm ayarla Price",
+            "minSwitchTileOpen": "Madalyonun anında fiyatı girilen fiyatın altına düşerse, bir alarm sesi çıkarır.",
+            "maxSwitchTileClose":"Maksimum fiyat ile alarm ayarla",
+            "maxSwitchTileOpen":"Madalyonun anında fiyatı girilen fiyatın altına düşerse, bir alarm sesi çıkarır.",
+            "minTextFormField":"minimum",
+            "maxTextFormField":"maksimum",
+            "buttonText":"Alarm kur"}
+}
