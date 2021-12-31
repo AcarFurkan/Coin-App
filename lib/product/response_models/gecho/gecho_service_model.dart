@@ -60,7 +60,6 @@ class Gecho extends BaseModel {
 
   @override
   fromJson(Map<String, dynamic> json) {
-    print("object");
     return _$GechoFromJson(json);
   }
 }

@@ -14,7 +14,6 @@ class CoreDio with DioMixin implements Dio, ICoreDio {
   final BaseOptions options;
 
   CoreDio(this.options) {
-    print("object");
     options = options;
     interceptors.add(InterceptorsWrapper());
     httpClientAdapter = DefaultHttpClientAdapter();

@@ -5,7 +5,7 @@ part 'my_coin_model.g.dart';
 
 // para birimi ve alarm
 @HiveType(typeId: 1)
-class MyCoin {
+class MainCurrencyModel {
   @HiveField(0)
   String name;
   @HiveField(1)
@@ -44,8 +44,10 @@ class MyCoin {
   bool? isMinLoop;
   @HiveField(18)
   bool? isMaxLoop;
+  @HiveField(19)
+  String? lastUpdate;
 
-  MyCoin({
+  MainCurrencyModel({
     required this.name,
     required this.lastPrice,
     required this.id,
@@ -58,6 +60,7 @@ class MyCoin {
     this.percentageControl = "CONSTANT",
     this.isMinLoop = false,
     this.isMaxLoop = false,
+    this.lastUpdate,
     this.minAlarmAudio,
     this.maxAlarmAudio,
     this.highOf24h,

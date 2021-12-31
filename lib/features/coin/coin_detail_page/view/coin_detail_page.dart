@@ -13,7 +13,7 @@ import '../viewmodel/cubit/cubit/coin_detail_cubit.dart';
 part './subView/coin_detail_page_extensions.dart';
 
 class CoinDetailPage extends StatefulWidget {
-  final MyCoin coin;
+  final MainCurrencyModel coin;
   const CoinDetailPage({Key? key, required this.coin}) : super(key: key);
 
   @override

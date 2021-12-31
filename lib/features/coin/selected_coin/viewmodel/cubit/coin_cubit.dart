@@ -2,10 +2,12 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
+import 'package:coin_with_architecture/product/repository/service/bitexen/bitexen_service_controller.dart';
+import 'package:coin_with_architecture/product/repository/service/gecho/gecho_service_controller.dart';
+import 'package:coin_with_architecture/product/repository/service/truncgil/truncgil_service_controller.dart';
 import '../../../../settings/audio_settings/model/audio_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:just_audio/just_audio.dart';
-import '../../../../../product/viewmodel/service_viewmodel.dart';
 import 'package:flutter/material.dart';
 import '../../../../../product/model/my_coin_model.dart';
 import '../../../../../product/repository/cache/coin_cache_manager.dart';
@@ -20,7 +22,6 @@ class CoinCubit extends Cubit<CoinState> {
   CoinCubit({required this.context}) : super(CoinInitial()) {}
   BuildContext context;
   final CoinCacheManager _cacheManager = locator<CoinCacheManager>();
-  final ServiceViewModel _serviceViewModel = locator<ServiceViewModel>();
   List<String>? _itemsToBeDelete;
   List<String>? get itemsToBeDelete => _itemsToBeDelete;
   AudioPlayer? player;
@@ -37,10 +38,11 @@ class CoinCubit extends Cubit<CoinState> {
     });
   }
 
-  Future<List<MyCoin>> compareCoins() async {
-    List<MyCoin> coinListFromService = fetchAllCoinsFromService();
+  Future<List<MainCurrencyModel>> compareCoins() async {
+    List<MainCurrencyModel> coinListFromService = fetchAllCoinsFromService();
 
-    List<MyCoin>? coinListFromDataBase = _fetchAllAddedCoinsFromDatabase();
+    List<MainCurrencyModel>? coinListFromDataBase =
+        _fetchAllAddedCoinsFromDatabase();
 
     if (coinListFromDataBase == null) {
       return [];
@@ -58,8 +60,7 @@ class CoinCubit extends Cubit<CoinState> {
           itemFromDataBase.priceControl = coinListFromService[i].priceControl;
           itemFromDataBase.lastPrice = coinListFromService[i].lastPrice ??
               "0"; ////Bunları değiştiriyosun da data base hiçbiri gitmiyo galiba tam anlamadım gitmemesi lazım ama okadar değişikliği nasıl algılıyo
-          itemFromDataBase.changeOf24H =
-              coinListFromService[i].changeOf24H ?? "0";
+          itemFromDataBase.changeOf24H = changeOf24H.toString();
           itemFromDataBase.highOf24h = coinListFromService[i].highOf24h ?? "0";
           itemFromDataBase.lowOf24h = coinListFromService[i].lowOf24h ?? "0";
 
@@ -102,7 +103,7 @@ class CoinCubit extends Cubit<CoinState> {
     return coinListFromDataBase;
   }
 
-  showAlertDialog(MyCoin coin, String message) {
+  showAlertDialog(MainCurrencyModel coin, String message) {
     showDialog(
         context: context,
         builder: (context) {
@@ -121,7 +122,7 @@ class CoinCubit extends Cubit<CoinState> {
         });
   }
 
-  saveDeleteFromFavorites(MyCoin coin) {
+  saveDeleteFromFavorites(MainCurrencyModel coin) {
     _cacheManager.getItem(coin.id);
     if (coin.isFavorite) {
       _cacheManager.putItem(coin.id, coin);
@@ -134,7 +135,7 @@ class CoinCubit extends Cubit<CoinState> {
     }
   }
 
-  Future<void> addToDb(MyCoin incomingCoin) async {
+  Future<void> addToDb(MainCurrencyModel incomingCoin) async {
     await _cacheManager.putItem(incomingCoin.id, incomingCoin);
   }
 
@@ -203,7 +204,7 @@ class CoinCubit extends Cubit<CoinState> {
   deleteItemsFromDb() {
     if (_itemsToBeDelete != null) {
       //_cacheManager.clearAll();  send a value like if  isselectedAll true and run it
-      List<MyCoin>? list = _fetchAllAddedCoinsFromDatabase();
+      List<MainCurrencyModel>? list = _fetchAllAddedCoinsFromDatabase();
 
       if (list!.length == _itemsToBeDelete!.length) {
         _cacheManager.clearAll();
@@ -223,21 +224,48 @@ class CoinCubit extends Cubit<CoinState> {
     }
   }
 
-  List<MyCoin>? _fetchAllAddedCoinsFromDatabase() {
+  List<MainCurrencyModel>? _fetchAllAddedCoinsFromDatabase() {
     return _cacheManager.getValues();
   }
 
-  List<MyCoin> fetchAllCoinsFromService() {
-    List<MyCoin> aa = [];
-    aa.addAll(fetchTryCoinsFromService());
-    aa.addAll(fetchUsdtCoinsFromService());
-    aa.addAll(fetchBtcCoinsFromService());
-    aa.addAll(fetchEthCoinsFromService());
-    aa.addAll(fetchGechoCoinsFromService());
+  List<MainCurrencyModel> fetchAllCoinsFromService() {
+    List<MainCurrencyModel> aa = [];
+    aa.clear();
+    aa.addAll(fetchTryCoinsFromGechoService());
+    aa.addAll(fetchUsdtCoinsFromGechoService());
+    aa.addAll(fetchBtcCoinsFromGechoService());
+    aa.addAll(fetchEthCoinsFromGechoService());
+    aa.addAll(fetchAllCoinsFromBitexen());
+    aa.addAll(fetchTruncgilService());
     return aa;
   }
 
-  List<MyCoin> fetchTryCoinsFromService() {
+  List<MainCurrencyModel> fetchTruncgilService() {
+    return TruncgilServiceController.instance.getTruncgilList;
+  }
+
+  List<MainCurrencyModel> fetchTryCoinsFromGechoService() {
+    return GechoServiceController.instance.getGechoTryCoinList;
+  }
+
+  List<MainCurrencyModel> fetchUsdtCoinsFromGechoService() {
+    return GechoServiceController.instance.getGechoUsdCoinList;
+  }
+
+  List<MainCurrencyModel> fetchBtcCoinsFromGechoService() {
+    return GechoServiceController.instance.getGechoBtcCoinList;
+  }
+
+  List<MainCurrencyModel> fetchEthCoinsFromGechoService() {
+    return GechoServiceController.instance.getGechoEthCoinList;
+  }
+
+  List<MainCurrencyModel> fetchAllCoinsFromBitexen() {
+    return BitexenServiceController.instance.getBitexenCoins;
+  }
+
+/*
+  List<MainCurrencyModel> fetchTryCoinsFromService() {
     try {
       return _serviceViewModel.getTryCoinList;
     } catch (e) {
@@ -246,7 +274,7 @@ class CoinCubit extends Cubit<CoinState> {
     }
   }
 
-  List<MyCoin> fetchUsdtCoinsFromService() {
+  List<MainCurrencyModel> fetchUsdtCoinsFromService() {
     try {
       return _serviceViewModel.getUsdtCoinList;
     } catch (e) {
@@ -255,7 +283,7 @@ class CoinCubit extends Cubit<CoinState> {
     }
   }
 
-  List<MyCoin> fetchBtcCoinsFromService() {
+  List<MainCurrencyModel> fetchBtcCoinsFromService() {
     try {
       return _serviceViewModel.getBtcCoinList;
     } catch (e) {
@@ -264,7 +292,7 @@ class CoinCubit extends Cubit<CoinState> {
     }
   }
 
-  List<MyCoin> fetchEthCoinsFromService() {
+  List<MainCurrencyModel> fetchEthCoinsFromService() {
     try {
       return _serviceViewModel.getEthCoinList;
     } catch (e) {
@@ -273,7 +301,7 @@ class CoinCubit extends Cubit<CoinState> {
     }
   }
 
-  List<MyCoin> fetchGechoCoinsFromService() {
+  List<MainCurrencyModel> fetchGechoCoinsFromService() {
     try {
       return _serviceViewModel.getGechoUsdtCoinList;
     } catch (e) {
@@ -281,7 +309,7 @@ class CoinCubit extends Cubit<CoinState> {
       throw ("FETCH ALL COINS ERRORR");
     }
   }
-
+*/
   stopMusic() async {
     await player!.pause();
     await player!.seek(Duration.zero);

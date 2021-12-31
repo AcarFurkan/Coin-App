@@ -6,17 +6,17 @@ part of 'my_coin_model.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class MyCoinAdapter extends TypeAdapter<MyCoin> {
+class MainCurrencyModelAdapter extends TypeAdapter<MainCurrencyModel> {
   @override
   final int typeId = 1;
 
   @override
-  MyCoin read(BinaryReader reader) {
+  MainCurrencyModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return MyCoin(
+    return MainCurrencyModel(
       name: fields[0] as String,
       lastPrice: fields[1] as String?,
       id: fields[7] as String,
@@ -29,6 +29,7 @@ class MyCoinAdapter extends TypeAdapter<MyCoin> {
       percentageControl: fields[12] as String?,
       isMinLoop: fields[17] as bool?,
       isMaxLoop: fields[18] as bool?,
+      lastUpdate: fields[19] as String?,
       minAlarmAudio: fields[15] as AudioModel?,
       maxAlarmAudio: fields[16] as AudioModel?,
       highOf24h: fields[14] as String?,
@@ -40,9 +41,9 @@ class MyCoinAdapter extends TypeAdapter<MyCoin> {
   }
 
   @override
-  void write(BinaryWriter writer, MyCoin obj) {
+  void write(BinaryWriter writer, MainCurrencyModel obj) {
     writer
-      ..writeByte(19)
+      ..writeByte(20)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
@@ -80,7 +81,9 @@ class MyCoinAdapter extends TypeAdapter<MyCoin> {
       ..writeByte(17)
       ..write(obj.isMinLoop)
       ..writeByte(18)
-      ..write(obj.isMaxLoop);
+      ..write(obj.isMaxLoop)
+      ..writeByte(19)
+      ..write(obj.lastUpdate);
   }
 
   @override
@@ -89,7 +92,7 @@ class MyCoinAdapter extends TypeAdapter<MyCoin> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is MyCoinAdapter &&
+      other is MainCurrencyModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

@@ -1,27 +1,17 @@
-import 'dart:convert';
-import 'dart:io';
-
-import '../../../core/enums/dotenv_enums.dart';
-import '../../../core/enums/price_control.dart';
-import '../../model/gecho/gecho_service_model.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart' as http;
-
-import '../../../../product/model/my_coin_model.dart';
-import '../../../features/coin/list_all_coin_page/model/coin_list_model.dart';
-
+ 
+ /*
 abstract class BaseRepository {
-  Future<List<MyCoin>> getAllCoins();
-  Future<MyCoin> getCoinByNameFromGecho(String name);
-  Future<List<MyCoin>> getCoinAllCoinListFromCoinGecko();
+  Future<List<MainCurrencyModel>> getAllCoinsBitexen();
+  Future<MainCurrencyModel> getCoinByNameFromGecho(String name);
+  Future<List<MainCurrencyModel>> getCoinAllCoinListFromCoinGecko();
 }
 
 class CoinListRepository implements BaseRepository {
   @override
-  Future<List<MyCoin>> getAllCoins() async {
+  Future<List<MainCurrencyModel>> getAllCoinsBitexen() async {
     String baseUrl = dotenv.get(DotEnvEnums.BASE_URL_BITEXEN.name);
 
-    List<MyCoin> _myCoinsList = [];
+    List<MainCurrencyModel> _myCoinsList = [];
     Uri baseUri = Uri.parse(baseUrl);
     final response = await http.get(baseUri);
     switch (response.statusCode) {
@@ -37,7 +27,7 @@ class CoinListRepository implements BaseRepository {
 
         if (_myCoinsList.isEmpty) {
           for (var i = 0; i < keys.length; i++) {
-            _myCoinsList.add(MyCoin(
+            _myCoinsList.add(MainCurrencyModel(
                 counterCurrencyCode: values[i].market!.counterCurrencyCode!,
                 name: values[i].market!.baseCurrencyCode!,
                 lastPrice: values[i].lastPrice!,
@@ -62,12 +52,12 @@ class CoinListRepository implements BaseRepository {
   }
 
   @override
-  Future<List<MyCoin>> getCoinAllCoinListFromCoinGecko() async {
+  Future<List<MainCurrencyModel>> getCoinAllCoinListFromCoinGecko() async {
     String baseUrl = dotenv.get(DotEnvEnums.BASE_URL_COIN_GECHO.name);
     baseUrl = baseUrl +
         "coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=false";
 
-    List<MyCoin> _myCoinsList = [];
+    List<MainCurrencyModel> _myCoinsList = [];
     Uri baseUri = Uri.parse(baseUrl);
     final response = await http.get(baseUri);
     switch (response.statusCode) {
@@ -101,11 +91,11 @@ class CoinListRepository implements BaseRepository {
   }
 
   @override
-  Future<List<MyCoin>> getAllMarketShare() async {
+  Future<List<MainCurrencyModel>> getAllMarketShare() async {
     String baseUrl = dotenv.get(DotEnvEnums.BASE_URL_SHARE_MARKET.name);
     baseUrl = baseUrl + "hisse/list";
 
-    List<MyCoin> _myCoinsList = [];
+    List<MainCurrencyModel> _myCoinsList = [];
     Uri baseUri = Uri.parse(baseUrl);
     final response = await http.get(baseUri);
     switch (response.statusCode) {
@@ -139,11 +129,11 @@ class CoinListRepository implements BaseRepository {
     }
   }
 
-  MyCoin coinGenerator(Gecho coin) {
+  MainCurrencyModel coinGenerator(Gecho coin) {
     String changeOf24Hour =
         percentageCotnrol((coin.priceChangePercentage24H ?? 0).toString());
-    return MyCoin(
-        counterCurrencyCode: "USDT",
+    return MainCurrencyModel(
+        counterCurrencyCode: "USD",
         name: coin.symbol ?? "",
         lastPrice: (coin.currentPrice ?? 0).toString(),
         id: (coin.id != null ? coin.id! + "USDT" : ""),
@@ -167,8 +157,9 @@ class CoinListRepository implements BaseRepository {
   }
 
   @override
-  Future<MyCoin> getCoinByNameFromGecho(String name) async {
-    MyCoin _myCoin = MyCoin(name: "name", lastPrice: "0", id: "id");
+  Future<MainCurrencyModel> getCoinByNameFromGecho(String name) async {
+    MainCurrencyModel _myCoin =
+        MainCurrencyModel(name: "name", lastPrice: "0", id: "id");
     // var baseUrl ="https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=$number&page=$page&sparkline=false";
     var baseUrl =
         "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=$name&order=market_cap_desc&per_page=100&page=1&sparkline=false";
@@ -181,8 +172,8 @@ class CoinListRepository implements BaseRepository {
 
           Gecho _gechoCoinModel = Gecho.fromJson(jsonBody[0]);
 
-          _myCoin = MyCoin(
-              counterCurrencyCode: "USDT",
+          _myCoin = MainCurrencyModel(
+              counterCurrencyCode: "USD",
               name: _gechoCoinModel.id ?? name,
               lastPrice: (_gechoCoinModel.currentPrice ?? 0).toString(),
               id: _gechoCoinModel.id ?? "" "USDT",
@@ -208,3 +199,4 @@ class NetworkError implements Exception {
 
   NetworkError(this.statusCode, this.message);
 }
+*/

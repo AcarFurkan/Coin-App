@@ -8,7 +8,7 @@ class CoinInitial extends CoinState {}
 class CoinLoading extends CoinState {}
 
 class CoinCompleted extends CoinState {
-  final List<MyCoin>? myCoinList;
+  final List<MainCurrencyModel>? myCoinList;
 
   CoinCompleted(this.myCoinList);
 
@@ -25,7 +25,7 @@ class CoinCompleted extends CoinState {
 
 class UpdateSelectedCoinPage extends CoinState {
   bool isSelectedAll;
-  final List<MyCoin>? myCoinList;
+  final List<MainCurrencyModel>? myCoinList;
   UpdateSelectedCoinPage(this.isSelectedAll, this.myCoinList);
 }
 

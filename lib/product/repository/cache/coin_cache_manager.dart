@@ -5,7 +5,7 @@ import '../../model/my_coin_model.dart';
 
 class CoinCacheManager {
   final String key;
-  Box<MyCoin>? _box;
+  Box<MainCurrencyModel>? _box;
 
   CoinCacheManager(this.key);
 
@@ -19,19 +19,19 @@ class CoinCacheManager {
     }*/
   }
 
-  Future<void> addItems(List<MyCoin> items) async {
+  Future<void> addItems(List<MainCurrencyModel> items) async {
     await _box?.addAll(items);
   }
 
-  Future<void> putItems(List<MyCoin> items) async {
+  Future<void> putItems(List<MainCurrencyModel> items) async {
     await _box?.putAll(Map.fromEntries(items.map((e) => MapEntry(e.name, e))));
   }
 
-  MyCoin? getItem(String key) {
+  MainCurrencyModel? getItem(String key) {
     return _box?.get(key);
   }
 
-  Future<void> putItem(String key, MyCoin item) async {
+  Future<void> putItem(String key, MainCurrencyModel item) async {
     await _box?.put(key, item);
   }
 
@@ -39,7 +39,7 @@ class CoinCacheManager {
     await _box?.delete(key);
   }
 
-  List<MyCoin>? getValues() {
+  List<MainCurrencyModel>? getValues() {
     return _box?.values.toList();
   }
 
@@ -53,7 +53,7 @@ class CoinCacheManager {
 
   void registerAdapters() {
     if (!Hive.isAdapterRegistered(1)) {
-      Hive.registerAdapter(MyCoinAdapter());
+      Hive.registerAdapter(MainCurrencyModelAdapter());
       Hive.registerAdapter(AudioModelAdapter());
     }
   }

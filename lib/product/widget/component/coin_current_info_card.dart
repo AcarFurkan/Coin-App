@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:coin_with_architecture/core/enums/currency_enum.dart';
 import 'package:coin_with_architecture/core/enums/price_control.dart';
@@ -13,7 +15,7 @@ class ListCardItem extends StatefulWidget {
     required this.voidCallback,
   }) : super(key: key);
 
-  final MyCoin coin;
+  final MainCurrencyModel coin;
   final int? index;
   final VoidCallback voidCallback;
 
@@ -53,7 +55,7 @@ class _ListCardItemState extends State<ListCardItem> {
   }
 
   String get currencyIcon {
-    return widget.coin.counterCurrencyCode == CoinCurrency.USDT.name
+    return widget.coin.counterCurrencyCode == CoinCurrency.USD.name
         ? "\$"
         : widget.coin.counterCurrencyCode == CoinCurrency.TRY.name
             ? "₺"
@@ -109,30 +111,49 @@ class _ListCardItemState extends State<ListCardItem> {
               ));
   }
 
-  Row buildCurrencyName() {
-    return Row(
+  Widget buildCurrencyName() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Text((widget.index ?? "").toString()),
-        Text(
-          widget.coin.name.toUpperCase(),
-          style: Theme.of(context).textTheme.headline6!.copyWith(fontSize: 16),
+        Row(
+          children: [
+            // Text((widget.index ?? "").toString()),
+
+            Text(
+              widget.coin.name.toUpperCase(),
+              style:
+                  Theme.of(context).textTheme.headline6!.copyWith(fontSize: 16),
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width / 150,
+            ),
+            widget.coin.isAlarmActive == true
+                ? Icon(
+                    Icons.alarm,
+                    size: MediaQuery.of(context).size.width / 25,
+                  )
+                : Text(
+                    "",
+                    style: TextStyle(fontSize: 0),
+                  ),
+          ],
         ),
-        SizedBox(
-          width: MediaQuery.of(context).size.width / 150,
-        ),
-        widget.coin.isAlarmActive == true
-            ? Icon(
-                Icons.alarm,
-                size: MediaQuery.of(context).size.width / 25,
+        widget.coin.lastUpdate != null
+            ? Text(
+                widget.coin.lastUpdate!,
+                style: TextStyle(fontSize: 10),
               )
-            : Text(""),
+            : Text(
+                "",
+                style: TextStyle(fontSize: 0),
+              ),
       ],
     );
   }
 
   AutoSizeText buildCurrencyPrice() {
     String price =
-        double.parse((widget.coin.lastPrice ?? "0")).toStringAsFixed(4);
+        double.parse((widget.coin.lastPrice ?? "0")).toStringAsFixed(2);
     return AutoSizeText(
       "${price.addComma} $currencyIcon",
       textAlign: TextAlign.center,

@@ -36,3 +36,24 @@
 -- right hand left and usage
 -- make a core component animation textForm field 
 -- write network manager with dio 
+
+NEW
+-- coinleri db ye geldiği yerin idsiyle ekle o şekilde kontroll edersen sayfalardada baya rahatlık yaşacaksın+++++++++++++
+viewmodellerde errorler emit edersen bloc için de zaten listen ettiğin için mesaj gösterebilirsin ddirek sayfa ayarlarıda yapabilirsni.
+Selected coinPage verileri yeni service sınıflarından çek +++++++
+--convertBitexenListCoinToMyCoinList isimlendirmeyi düzelt
+--  silme kart tasarımlarını düzelt
+-- add stock market and add to maincard last update date  but  for this you should add last update to model
+
+
+ MaterialPageRoute({--maintainstate e bak dene
+    required this.builder,
+    RouteSettings? settings,
+    this.maintainState = true,
+    bool fullscreenDialog = false,
+  }) : assert(builder != null),
+       assert(maintainState != null),
+       assert(fullscreenDialog != null),
+       super(settings: settings, fullscreenDialog: fullscreenDialog) {
+    assert(opaque);
+  }

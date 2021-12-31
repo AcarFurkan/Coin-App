@@ -1,43 +1,17 @@
 import 'dart:convert';
-
+import 'package:coin_with_architecture/core/model/base_model/base_model.dart';
 import 'package:json_annotation/json_annotation.dart';
-part 'coin.g.dart';
+part 'bitexen_response_model.g.dart';
 
-Coin coinFromJson(String str) => Coin.fromJson(json.decode(str));
+Map<String, Bitexen> bitexenFromJson(dynamic str) => Map.from(str)
+    .map((k, v) => MapEntry<String, Bitexen>(k, Bitexen.fromJson(v)));
 
-String coinToJson(Coin data) => json.encode(data.toJson());
-
-@JsonSerializable()
-class Coin {
-  Coin({
-    this.status,
-    this.data,
-  });
-
-  String? status;
-  Data? data;
-
-  factory Coin.fromJson(Map<String, dynamic> json) => _$CoinFromJson(json);
-
-  Map<String, dynamic> toJson() => _$CoinToJson(this);
-}
-
-@JsonSerializable()
-class Data {
-  Data({
-    this.ticker,
-  });
-
-  Ticker? ticker;
-
-  factory Data.fromJson(Map<String, dynamic> json) => _$DataFromJson(json);
-
-  Map<String, dynamic> toJson() => _$DataToJson(this);
-}
+String bitexenToJson(Map<String, dynamic> data) =>
+    json.encode(Map.from(data).map((k, v) => MapEntry<String, dynamic>(k, v)));
 
 @JsonSerializable(fieldRename: FieldRename.snake)
-class Ticker {
-  Ticker({
+class Bitexen extends BaseModel {
+  Bitexen({
     this.market,
     this.bid,
     this.ask,
@@ -68,9 +42,16 @@ class Ticker {
   String? avg24H;
   String? timestamp;
 
-  factory Ticker.fromJson(Map<String, dynamic> json) => _$TickerFromJson(json);
+  factory Bitexen.fromJson(Map<String, dynamic> json) {
+    return _$BitexenFromJson(json);
+  }
 
-  Map<String, dynamic> toJson() => _$TickerToJson(this);
+  Map<String, dynamic> toJson() => _$BitexenToJson(this);
+
+  @override
+  fromJson(Map<String, dynamic> json) {
+    return _$BitexenFromJson(json);
+  }
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake)

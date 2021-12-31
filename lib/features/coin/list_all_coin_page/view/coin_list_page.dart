@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:coin_with_architecture/features/settings/view/settings_page.dart';
 import 'package:coin_with_architecture/product/widget/component/coin_current_info_card.dart';
 import '../../../../core/enums/currency_enum.dart';
-import '../../../../core/enums/price_control.dart';
 
 import '../viewmodel/page_viewmodel/cubit/list_page_general_cubit.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,14 +13,13 @@ import '../../../../product/language/locale_keys.g.dart';
 import '../../../../product/model/my_coin_model.dart';
 import '../../coin_detail_page/view/coin_detail_page.dart';
 import '../viewmodel/cubit/coin_list_cubit.dart';
-import 'package:persian_tools/persian_tools.dart';
 
 class CoinListPage extends StatelessWidget {
   CoinListPage({Key? key}) : super(key: key);
 
   TextEditingController _searchTextEditingController = TextEditingController();
   GlobalKey<FormState> _searchFormKey = GlobalKey<FormState>();
-  List<MyCoin> searchresult = [];
+  List<MainCurrencyModel> searchresult = [];
 
   @override
   Widget build(BuildContext context) {
@@ -32,12 +31,29 @@ class CoinListPage extends StatelessWidget {
         //extendBody: true,
         appBar: _appBar(context),
         body: TabBarView(children: tabBarViewGenerator(context)),
+        drawer: Drawer(
+          child: SettingsPage(),
+        ),
       ),
     );
   }
 
   AppBar _appBar(BuildContext context) {
     return AppBar(
+      //leading: IconButton(
+      //    onPressed: () {
+      //      Navigator.of(context).push(MaterialPageRoute(
+      //        builder: (context) => SettingsPage(),
+      //      ));
+      //      /*Navigator.push(
+      //        context,
+      //        MaterialPageRoute(
+      //          builder: (context) => SettingsPage(),
+      //        ),
+      //      );*/
+      //    },
+      //    icon: const Icon(Icons.settings)),
+      titleSpacing: 0,
       actions: [
         buildAppBarActions(context),
       ],
@@ -123,7 +139,7 @@ class CoinListPage extends StatelessWidget {
       const Center(child: CupertinoActivityIndicator());
   Widget completedStateBody(
       CoinListCompleted state, String currencyName, BuildContext context) {
-    List<MyCoin> coinListToShow = state.usdtCoinsList;
+    List<MainCurrencyModel> coinListToShow = state.usdtCoinsList;
 
     coinListToShow = coinListToShowTransactions(
         currencyName, coinListToShow, state, context);
@@ -171,7 +187,7 @@ class CoinListPage extends StatelessWidget {
   }
 
   Widget buildListViewBuilder(
-      List<MyCoin> coinListToShow, String currencyName) {
+      List<MainCurrencyModel> coinListToShow, String currencyName) {
     return Scrollbar(
       child: ListView.builder(
         physics: const BouncingScrollPhysics(),
@@ -203,9 +219,9 @@ class CoinListPage extends StatelessWidget {
     );
   }
 
-  List<MyCoin> coinListToShowTransactions(
+  List<MainCurrencyModel> coinListToShowTransactions(
       String currencyName,
-      List<MyCoin> coinListToShow,
+      List<MainCurrencyModel> coinListToShow,
       CoinListCompleted state,
       BuildContext context) {
     if (currencyName == CoinCurrency.TRY.name) {
@@ -214,8 +230,6 @@ class CoinListPage extends StatelessWidget {
       coinListToShow = state.btcCoinsList;
     } else if (currencyName == CoinCurrency.ETH.name) {
       coinListToShow = state.ethCoinsList;
-    } else if (currencyName == CoinCurrency.USDT2.name) {
-      coinListToShow = state.gechoCoinsList;
     } else {
       coinListToShow = state.usdtCoinsList;
     }
@@ -224,8 +238,8 @@ class CoinListPage extends StatelessWidget {
     return coinListToShow;
   }
 
-  List<MyCoin> searchTransaction(
-      BuildContext context, List<MyCoin> coinListToShow) {
+  List<MainCurrencyModel> searchTransaction(
+      BuildContext context, List<MainCurrencyModel> coinListToShow) {
     if (context.read<ListPageGeneralCubit>().isSearhOpen &&
         _searchTextEditingController.text != "") {
       coinListToShow = searchResult(coinListToShow);
@@ -233,7 +247,7 @@ class CoinListPage extends StatelessWidget {
     return coinListToShow;
   }
 
-  List<MyCoin> searchResult(List<MyCoin> coinList) {
+  List<MainCurrencyModel> searchResult(List<MainCurrencyModel> coinList) {
     searchresult.clear();
 
     for (int i = 0; i < coinList.length; i++) {
@@ -247,141 +261,3 @@ class CoinListPage extends StatelessWidget {
     return searchresult;
   }
 }
-
-class _ListCardItem extends StatefulWidget {
-  const _ListCardItem({
-    Key? key,
-    required this.result,
-    required this.currencyName,
-    required this.index,
-  }) : super(key: key);
-
-  final MyCoin result;
-  final String currencyName;
-  final int index;
-
-  @override
-  State<_ListCardItem> createState() => _ListCardItemState();
-}
-
-class _ListCardItemState extends State<_ListCardItem> {
-  Color getColorForPercentage() {
-    if (widget.result.percentageControl == PriceLevelControl.INCREASING.name) {
-      return Colors.green;
-    } else if (widget.result.percentageControl ==
-        PriceLevelControl.DESCREASING.name) {
-      return Colors.red;
-    } else {
-      return Colors.black;
-    }
-  }
-
-  Color getColorForPrice() {
-    if (widget.result.priceControl == PriceLevelControl.INCREASING.name) {
-      return Colors.green;
-    } else if (widget.result.priceControl ==
-        PriceLevelControl.DESCREASING.name) {
-      return Colors.red;
-    } else {
-      return Colors.black;
-    }
-  }
-
-  String get currencyIcon {
-    return widget.currencyName == CoinCurrency.USDT.name
-        ? "\$"
-        : widget.currencyName == CoinCurrency.TRY.name
-            ? "₺"
-            : widget.currencyName == CoinCurrency.ETH.name
-                ? "♦"
-                : widget.currencyName == CoinCurrency.BTC.name
-                    ? "₿"
-                    : "\$";
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    widget.result.lastPrice?.length;
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 2.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(flex: 6, child: buildCurrencyName()),
-            Expanded(flex: 8, child: buildCurrencyPrice()),
-            Expanded(flex: 4, child: buildCurrenctPercentage()),
-            buildFavoriteButton(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  IconButton buildFavoriteButton() {
-    return IconButton(
-        onPressed: () {
-          widget.result.isFavorite = !widget.result.isFavorite;
-          context.read<CoinListCubit>().updateFromFavorites(widget.result);
-          setState(() {});
-        },
-        icon: widget.result.isFavorite
-            ? Icon(
-                Icons.star_rounded,
-                color: Colors.yellow[600],
-                size: MediaQuery.of(context).size.height / 25,
-              )
-            : Icon(
-                Icons.star_border_rounded,
-                color: Colors.yellow[600],
-                size: MediaQuery.of(context).size.height / 25,
-              ));
-  }
-
-  Row buildCurrencyName() {
-    return Row(
-      children: [
-        Text(widget.index.toString()),
-        Text(
-          widget.result.name.toUpperCase(),
-          style: Theme.of(context).textTheme.headline6!.copyWith(fontSize: 16),
-        ),
-        SizedBox(
-          width: MediaQuery.of(context).size.width / 150,
-        ),
-        widget.result.isAlarmActive == true
-            ? Icon(
-                Icons.alarm,
-                size: MediaQuery.of(context).size.width / 25,
-              )
-            : Text(""),
-      ],
-    );
-  }
-
-  AutoSizeText buildCurrencyPrice() {
-    String price =
-        double.parse((widget.result.lastPrice ?? "0")).toStringAsFixed(4);
-    return AutoSizeText(
-      "${price.addComma} $currencyIcon",
-      style: TextStyle(color: getColorForPrice()),
-    );
-  }
-
-  Text buildCurrenctPercentage() {
-    String price =
-        double.parse((widget.result.changeOf24H ?? "0")).toStringAsFixed(2);
-    return Text(
-      price + " %",
-      style: TextStyle(color: getColorForPercentage()),
-    );
-  }
-}
-/**
-  PlaneIndicator(
-              onRefresh: () {
-                context.read<CoinListCubit>().refreshAllCoins();
-                return Future.delayed(const Duration(seconds: 1));
-              },
-              child: _blocConsumer(e),
-            ), */

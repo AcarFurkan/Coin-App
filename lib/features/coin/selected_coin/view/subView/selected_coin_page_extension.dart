@@ -18,7 +18,7 @@ extension SelectedCoinBlocConsumerView on SelectedCoinPage {
         } else if (state is CoinLoading) {
           return Center(child: CupertinoActivityIndicator());
         } else if (state is CoinCompleted) {
-          List<MyCoin> coinListToShow = (state.myCoinList ?? []);
+          List<MainCurrencyModel> coinListToShow = (state.myCoinList ?? []);
           if (coinListToShow.isEmpty) {
             return Center(
               child: Text("OMG YOU DONT HAVE ANY FAVORITE COIN"),
@@ -36,7 +36,7 @@ extension SelectedCoinBlocConsumerView on SelectedCoinPage {
                     physics: const BouncingScrollPhysics(),
                     itemCount: coinListToShow.length,
                     itemBuilder: (context, index) {
-                      MyCoin result = coinListToShow[index];
+                      MainCurrencyModel result = coinListToShow[index];
                       return GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -68,7 +68,7 @@ extension SelectedCoinBlocConsumerView on SelectedCoinPage {
             ],
           );
         } else if (state is UpdateSelectedCoinPage) {
-          List<MyCoin> coinListToShow = state.myCoinList ?? [];
+          List<MainCurrencyModel> coinListToShow = state.myCoinList ?? [];
           if (context.read<SelectedPageGeneralCubit>().isSearhOpen &&
               _searchTextEditingController.text != "") {
             coinListToShow = searchResult(coinListToShow);
@@ -175,7 +175,7 @@ extension SelectedCoinBlocConsumerView on SelectedCoinPage {
                   shrinkWrap: true,
                   itemCount: coinListToShow.length,
                   itemBuilder: (context, index) {
-                    MyCoin result = coinListToShow[index];
+                    MainCurrencyModel result = coinListToShow[index];
                     return RemovableCardItem(
                       result: result,
                       context: context,
@@ -224,7 +224,7 @@ extension SelectedCoinBlocConsumerView on SelectedCoinPage {
     );
   }
 
-  List<MyCoin> searchResult(List<MyCoin> coinList) {
+  List<MainCurrencyModel> searchResult(List<MainCurrencyModel> coinList) {
     searchresult.clear();
 
     for (int i = 0; i < coinList.length; i++) {
@@ -246,7 +246,7 @@ class RemovableCardItem extends StatefulWidget {
       required this.context,
       required this.isSelectedAll})
       : super(key: key);
-  final MyCoin result;
+  final MainCurrencyModel result;
   final BuildContext context;
   bool isSelectedAll;
 

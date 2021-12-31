@@ -2,13 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:coin_with_architecture/core/enums/dotenv_enums.dart';
-import 'package:coin_with_architecture/core/enums/http_request_enum.dart';
 import 'package:coin_with_architecture/core/init/network/core_dio.dart';
-import 'package:coin_with_architecture/core/init/network/network_manager.dart';
-import 'package:coin_with_architecture/product/model/gecho/gecho_service_model.dart';
-import 'package:coin_with_architecture/product/repository/service/coin_repository.dart';
+import 'package:coin_with_architecture/features/settings/view/settings_page.dart';
+import 'package:coin_with_architecture/product/response_models/genelpara/genelpara_service_model.dart';
+
 import 'package:coin_with_architecture/product/widget/component/coin_current_info_card.dart';
 import 'package:dio/dio.dart';
+
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../viewmodel/general/cubit/selected_page_general_cubit.dart';
@@ -29,7 +29,7 @@ part './subView/selected_coin_page_extension.dart';
 class SelectedCoinPage extends StatelessWidget {
   final TextEditingController _searchTextEditingController =
       TextEditingController();
-  List<MyCoin> searchresult = [];
+  List<MainCurrencyModel> searchresult = [];
 
   SelectedCoinPage({Key? key}) : super(key: key);
 
@@ -48,7 +48,14 @@ class SelectedCoinPage extends StatelessWidget {
 
   AppBar appBar(BuildContext context) {
     return AppBar(
+      leading: IconButton(
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => SettingsPage()));
+          },
+          icon: const Icon(Icons.settings)),
       title: LocaleText(text: LocaleKeys.appBarTitle),
+      titleSpacing: 0,
       actions: [
         IconButton(
             onPressed: () {
@@ -74,74 +81,70 @@ class SelectedCoinPage extends StatelessWidget {
     return IconButton(
       icon: const Icon(Icons.search),
       onPressed: () async {
-        //getAllMarketShare();
-        /*final response = await NetworkManager.instance.coreDio!.fetchData<
-                List<Gecho>, Gecho>(
-            "coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=false",
-            types: HttpTypes.GET,
-            parseModel: Gecho());*/
-        final baseOptions = BaseOptions();
-        final response = await CoreDio(baseOptions).fetchData<List<Gecho>,
-                Gecho>(
-            dotenv.get(DotEnvEnums.BASE_URL_COIN_GECHO.name) +
-                "coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=false",
-            types: HttpTypes.GET,
-            parseModel: Gecho());
-        print(response);
-
-        // context.read<SelectedPageGeneralCubit>().changeIsSearch();
-
-        // if (context.read<SelectedPageGeneralCubit>().isSearhOpen == false) {
-        //   _searchTextEditingController.clear();
-        // }
+        await getAllMarketSharedio2();
+        // GechoServiceController controller = GechoServiceController.instance;
+        // await controller.fetchCoinListEveryTwoSecond();
+        // //  await Future.delayed(Duration(milliseconds: 2000));
+//
+        // print(controller.getGechoUsdCoinList[0].id + "1");
+//
+        // print(controller.getGechoEthCoinList[0].id + "2");
+//
+        // print(controller.getGechoTryCoinList[0].id + "3");
+//
+        // print(controller.getGechoBtcCoinList[0].id + "4");
+        // print(controller.getGechoUsdCoinList[0].counterCurrencyCode! + "1");
+//
+        // print(controller.getGechoEthCoinList[0].percentageControl! +
+        //     controller.getGechoEthCoinList[0].changeOf24H!);
+        // print(controller.getGechoEthCoinList[1].percentageControl! +
+        //     controller.getGechoEthCoinList[1].changeOf24H!);
+        // print(controller.getGechoEthCoinList[2].percentageControl! +
+        //     controller.getGechoEthCoinList[2].changeOf24H!);
+        // print(controller.getGechoEthCoinList[3].percentageControl! +
+        //     controller.getGechoEthCoinList[3].changeOf24H!);
+        // print(controller.getGechoEthCoinList[3].priceControl!);
+//
+        // print(controller.getGechoTryCoinList[0].counterCurrencyCode! + "3");
+//
+        // print(controller.getGechoBtcCoinList[0].counterCurrencyCode! + "4");
       },
     );
   }
 
-  Future<List<MyCoin>> getAllMarketShare() async {
-    String baseUrl = dotenv.get(DotEnvEnums.BASE_URL_SHARE_MARKET.name);
-    baseUrl = baseUrl + "hisse/list";
+  Future<List<MainCurrencyModel>> getAllMarketSharedio2() async {
+    List<MainCurrencyModel> _myCoinsList = [];
+    CoreDio coreDio = CoreDio(BaseOptions());
 
-    List<MyCoin> _myCoinsList = [];
-    Uri baseUri = Uri.parse(baseUrl);
-    final response = await http.get(baseUri);
+    final response =
+        await coreDio.get("https://api.genelpara.com/embed/borsa.json");
+    print(response.statusCode);
     switch (response.statusCode) {
       case HttpStatus.ok:
-        final jsonBody = jsonDecode(response.body);
-        print(jsonBody);
-
-        print(jsonBody["data"][0]["id"]);
-        for (var i = 0; i < jsonBody["data"].length; i++) {
-          print(jsonBody["data"][i]["kod"]);
+        response.data = jsonDecode(response.data);
+        List keys = [];
+        List<GenelPara> genelParaList = [];
+        if (response.data is Map) {
+          keys = (response.data as Map).keys.toList();
+          genelParaList = (response.data as Map)
+              .values
+              .map((e) => GenelPara.fromJson(e))
+              .toList();
         }
-        /*print(jsonBody.map((e) {
-          print(e);
-        }));*/
-        /* final jsonBody = jsonDecode(response.body);
-        if (_myCoinsList.isEmpty) {
-          _myCoinsList.clear();
-          for (var i = 0; i < jsonBody.length; i++) {
-            var incomingCoin = Gecho.fromJson(jsonBody[i]);
-            String changeOf24Hour = percentageCotnrol(
-                (incomingCoin.priceChangePercentage24H ?? 0).toString());
-            _myCoinsList.add(
-              coinGenerator(incomingCoin),
-            );
-          }
-        } else {
-          _myCoinsList.clear();
-          for (var i = 0; i < jsonBody.length; i++) {
-            var incomingCoin = Gecho.fromJson(jsonBody[i]);
-            String changeOf24Hour = percentageCotnrol(
-                (incomingCoin.priceChangePercentage24H ?? 0).toString());
-            _myCoinsList.add(
-              coinGenerator(incomingCoin),
-            );
-          }
-        }*/
+        keys.forEach((element) {
+          print(element);
+        });
+        genelParaList.forEach((e) {
+          print(e.alis);
+          print(e.satis);
+          print(e.degisim);
+        });
+
+        print(keys.length);
+
         return _myCoinsList;
       default:
-        throw NetworkError(response.statusCode.toString(), response.body);
+        throw "NetworkError(response.statusCode.toString(), response.body)";
     }
   }
 

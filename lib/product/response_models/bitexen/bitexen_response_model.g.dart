@@ -1,34 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'coin.dart';
+part of 'bitexen_response_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Coin _$CoinFromJson(Map<String, dynamic> json) => Coin(
-      status: json['status'] as String?,
-      data: json['data'] == null
-          ? null
-          : Data.fromJson(json['data'] as Map<String, dynamic>),
-    );
-
-Map<String, dynamic> _$CoinToJson(Coin instance) => <String, dynamic>{
-      'status': instance.status,
-      'data': instance.data,
-    };
-
-Data _$DataFromJson(Map<String, dynamic> json) => Data(
-      ticker: json['ticker'] == null
-          ? null
-          : Ticker.fromJson(json['ticker'] as Map<String, dynamic>),
-    );
-
-Map<String, dynamic> _$DataToJson(Data instance) => <String, dynamic>{
-      'ticker': instance.ticker,
-    };
-
-Ticker _$TickerFromJson(Map<String, dynamic> json) => Ticker(
+Bitexen _$BitexenFromJson(Map<String, dynamic> json) => Bitexen(
       market: json['market'] == null
           ? null
           : Market.fromJson(json['market'] as Map<String, dynamic>),
@@ -44,7 +22,7 @@ Ticker _$TickerFromJson(Map<String, dynamic> json) => Ticker(
       timestamp: json['timestamp'] as String?,
     );
 
-Map<String, dynamic> _$TickerToJson(Ticker instance) => <String, dynamic>{
+Map<String, dynamic> _$BitexenToJson(Bitexen instance) => <String, dynamic>{
       'market': instance.market,
       'bid': instance.bid,
       'ask': instance.ask,

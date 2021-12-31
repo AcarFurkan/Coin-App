@@ -29,10 +29,10 @@ class CoinDetailCubit extends Cubit<CoinDetailState> {
   late bool isAlarm;
   late bool isMinAlarmActive;
   late bool isMaxAlarmActive;
-  late MyCoin inComingCoin;
+  late MainCurrencyModel inComingCoin;
 
   final CoinCacheManager _cacheManager = locator<CoinCacheManager>();
-  MyCoin? myCoin;
+  MainCurrencyModel? myCoin;
   initilizeCacheManger() async {
     await _cacheManager.init();
   }
@@ -42,7 +42,7 @@ class CoinDetailCubit extends Cubit<CoinDetailState> {
     isFavorite = !isFavorite;
   }
 
-  coinFavoriteActionUI(MyCoin coin) {
+  coinFavoriteActionUI(MainCurrencyModel coin) {
     changeIsFavorite();
     saveDeleteForFavorite(coin);
   }
@@ -91,12 +91,12 @@ class CoinDetailCubit extends Cubit<CoinDetailState> {
     isAlarm = !isAlarm;
   }
 
-  coinAlarmActionUI(MyCoin coin) {
+  coinAlarmActionUI(MainCurrencyModel coin) {
     changeIsAlarm();
     saveDeleteForAlarm(coin);
   }
 
-  setInComingCoin(MyCoin coin) {
+  setInComingCoin(MainCurrencyModel coin) {
     inComingCoin = coin;
   }
 
@@ -123,7 +123,7 @@ class CoinDetailCubit extends Cubit<CoinDetailState> {
     }
   }
 
-  Future<void> saveDeleteForAlarm(MyCoin incomingCoin) async {
+  Future<void> saveDeleteForAlarm(MainCurrencyModel incomingCoin) async {
     AudioModel? audioModel;
     if ((isAlarm == true && (isMinAlarmActive || isMaxAlarmActive)) &&
         (isFavorite == false || isFavorite == true)) {
@@ -162,7 +162,7 @@ class CoinDetailCubit extends Cubit<CoinDetailState> {
     }
   }
 
-  Future<void> saveDeleteForFavorite(MyCoin incomingCoin) async {
+  Future<void> saveDeleteForFavorite(MainCurrencyModel incomingCoin) async {
     incomingCoin.isFavorite = isFavorite;
     if (isFavorite == true) {
       await addToDb(incomingCoin);
@@ -171,14 +171,14 @@ class CoinDetailCubit extends Cubit<CoinDetailState> {
     }
   }
 
-  Future<void> removeFromDb(MyCoin incomingCoin) async {
+  Future<void> removeFromDb(MainCurrencyModel incomingCoin) async {
     _cacheManager.removeItem(incomingCoin.id);
   }
 
-  Future<void> addToDb(MyCoin incomingCoin) async {
+  Future<void> addToDb(MainCurrencyModel incomingCoin) async {
     await _cacheManager.putItem(
         incomingCoin.id,
-        MyCoin(
+        MainCurrencyModel(
           id: incomingCoin.id,
           name: incomingCoin.name,
           lastPrice: incomingCoin.lastPrice,
@@ -196,8 +196,8 @@ class CoinDetailCubit extends Cubit<CoinDetailState> {
         ));
   }
 
-  MyCoin? getFromDb(String key) {
-    MyCoin? coin = _cacheManager.getItem(key);
+  MainCurrencyModel? getFromDb(String key) {
+    MainCurrencyModel? coin = _cacheManager.getItem(key);
 
     return coin;
   }

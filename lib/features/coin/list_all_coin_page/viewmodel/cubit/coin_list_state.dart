@@ -8,17 +8,15 @@ class CoinListInitial extends CoinListState {}
 class CoinListLoading extends CoinListState {}
 
 class CoinListCompleted extends CoinListState {
-  final List<MyCoin> tryCoinsList;
-  final List<MyCoin> usdtCoinsList;
-  final List<MyCoin> btcCoinsList;
-  final List<MyCoin> ethCoinsList;
-  final List<MyCoin> gechoCoinsList;
+  final List<MainCurrencyModel> tryCoinsList;
+  final List<MainCurrencyModel> usdtCoinsList;
+  final List<MainCurrencyModel> btcCoinsList;
+  final List<MainCurrencyModel> ethCoinsList;
   CoinListCompleted({
     required this.usdtCoinsList,
     required this.btcCoinsList,
     required this.ethCoinsList,
     required this.tryCoinsList,
-    required this.gechoCoinsList,
   });
 }
 

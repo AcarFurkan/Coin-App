@@ -1,14 +1,20 @@
+import 'package:coin_with_architecture/features/coin/bitexen/view/bitexen_page.dart';
+import 'package:coin_with_architecture/features/coin/bitexen/viewmodel/page_viewmodel/cubit/bitexen_page_general_cubit.dart';
+import 'package:coin_with_architecture/features/coin/hurriyet/view/Hurriyet_page.dart';
+import 'package:coin_with_architecture/features/coin/hurriyet/viewmodel/page_viewmodel/cubit/hurriyet_page_general_state_dart_cubit.dart';
 import 'package:coin_with_architecture/features/coin/list_all_coin_page/viewmodel/page_viewmodel/cubit/list_page_general_cubit.dart';
 import 'package:coin_with_architecture/features/coin/selected_coin/viewmodel/general/cubit/selected_page_general_cubit.dart';
+import 'package:coin_with_architecture/features/coin/truncgil/view/truncgil_page.dart';
+import 'package:coin_with_architecture/features/coin/truncgil/viewmodel/page_viewmodel.dart/cubit/truncgil_page_general_cubit.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 import 'package:provider/src/provider.dart';
 
 import '../coin/list_all_coin_page/view/coin_list_page.dart';
 import '../coin/selected_coin/view/selected_coin_page.dart';
-import '../settings/view/settings_page.dart';
 import "dart:math" show pi;
 
 class HomeView extends StatefulWidget {
@@ -26,7 +32,9 @@ class _HomeViewState extends State<HomeView>
   List listPage = [
     SelectedCoinPage(),
     CoinListPage(),
-    SettingsPage(),
+    BitexenPage(),
+    TruncgilPage(),
+    HurriyetPage(),
   ];
   @override
   void initState() {
@@ -56,6 +64,21 @@ class _HomeViewState extends State<HomeView>
     if (context.read<SelectedPageGeneralCubit>().textEditingController !=
         null) {
       context.read<SelectedPageGeneralCubit>().closeKeyBoardAndUnFocus();
+    }
+    if (context.read<BitexenPageGeneralCubit>().textEditingController != null) {
+      context.read<BitexenPageGeneralCubit>().closeKeyBoardAndUnFocus();
+    }
+    if (context
+            .read<HurriyetPageGeneralStateDartCubit>()
+            .textEditingController !=
+        null) {
+      context
+          .read<HurriyetPageGeneralStateDartCubit>()
+          .closeKeyBoardAndUnFocus();
+    }
+    if (context.read<TruncgilPageGeneralCubit>().textEditingController !=
+        null) {
+      context.read<TruncgilPageGeneralCubit>().closeKeyBoardAndUnFocus();
     }
     setState(() {
       print("aaaaaaaaaa");
@@ -129,13 +152,31 @@ class _HomeViewState extends State<HomeView>
                 Icons.home,
                 color: tabbarLabelColorGenerator(0),
               ),
-              Icon(
-                Icons.search,
-                color: tabbarLabelColorGenerator(1),
+              SizedBox(
+                height: 35,
+                child: Image.asset(
+                  "assets/icon/btcIcon.png",
+                  color: tabbarLabelColorGenerator(1),
+                ),
+              ),
+              Center(
+                child: Icon(
+                  Icons.sports_football,
+                  color: tabbarLabelColorGenerator(2),
+                ),
               ),
               Icon(
-                Icons.settings,
-                color: tabbarLabelColorGenerator(2),
+                Icons.attach_money,
+                color: tabbarLabelColorGenerator(3),
+              ),
+              //Icon(
+              //  Icons.search,
+              //  color: tabbarLabelColorGenerator(3),
+              //),
+
+              Icon(
+                Icons.money,
+                color: tabbarLabelColorGenerator(4),
               ),
             ]),
       ),

@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 
 part 'list_page_general_state.dart';
 
@@ -24,7 +23,7 @@ class ListPageGeneralCubit extends Cubit<ListPageGeneralState> {
     _textEditingController = controller;
   }
 
-  closeKeyBoardAndUnFocus() {
+  void closeKeyBoardAndUnFocus() {
     if (isSearhOpen) {
       isSearhOpen = !isSearhOpen;
       if (_textEditingController != null) {
@@ -34,7 +33,7 @@ class ListPageGeneralCubit extends Cubit<ListPageGeneralState> {
     }
   }
 
-  changeIsSearch() {
+  void changeIsSearch() {
     isSearhOpen = !isSearhOpen;
     if (isSearhOpen) {
       FocusScope.of(context).requestFocus(myFocusNode);
@@ -46,7 +45,7 @@ class ListPageGeneralCubit extends Cubit<ListPageGeneralState> {
     emit(ListPageGeneralInitial());
   }
 
-  textFormFieldChanged() {
+  void textFormFieldChanged() {
     emit(ListPageGeneralInitial());
   }
 }
