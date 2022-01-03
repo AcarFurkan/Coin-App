@@ -1,6 +1,6 @@
-import 'package:coin_with_architecture/core/enums/dotenv_enums.dart';
-import 'package:coin_with_architecture/core/init/network/ICore_dio.dart';
-import 'package:coin_with_architecture/core/init/network/core_dio.dart';
+import '../../enums/dotenv_enums.dart';
+import 'ICore_dio.dart';
+import 'core_dio.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 

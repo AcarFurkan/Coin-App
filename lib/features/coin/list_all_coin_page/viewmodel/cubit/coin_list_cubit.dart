@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:coin_with_architecture/product/repository/service/gecho/gecho_service_controller.dart';
+import '../../../../../product/repository/service/gecho/gecho_service_controller.dart';
 import '../../../../../product/repository/cache/coin_cache_manager.dart';
 import '../../../../../locator.dart';
 import 'package:flutter/material.dart';

@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:coin_with_architecture/features/settings/view/settings_page.dart';
-import 'package:coin_with_architecture/product/widget/component/coin_current_info_card.dart';
+import '../../../settings/view/settings_page.dart';
+import '../../../../product/widget/component/coin_current_info_card.dart';
 import '../../../../core/enums/currency_enum.dart';
 
 import '../viewmodel/page_viewmodel/cubit/list_page_general_cubit.dart';

@@ -1,9 +1,9 @@
+import '../../../../../core/extension/string_extension.dart';
+import '../../../model/language_model.dart';
+import '../../../../../product/language/locale_keys.g.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../core/extension/string_extension.dart';
-import '../../../../product/language/locale_keys.g.dart';
-import '../../model/language_model.dart';
 import '../viewmodel/language_page_viewmodel.dart';
 
 class LanguagePage extends StatelessWidget {

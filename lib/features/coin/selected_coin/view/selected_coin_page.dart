@@ -1,15 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:coin_with_architecture/core/enums/dotenv_enums.dart';
-import 'package:coin_with_architecture/core/init/network/core_dio.dart';
-import 'package:coin_with_architecture/features/settings/view/settings_page.dart';
-import 'package:coin_with_architecture/product/response_models/genelpara/genelpara_service_model.dart';
+import '../../../../core/init/network/core_dio.dart';
+import '../../../settings/view/settings_page.dart';
+import '../../../../product/response_models/genelpara/genelpara_service_model.dart';
 
-import 'package:coin_with_architecture/product/widget/component/coin_current_info_card.dart';
+import '../../../../product/widget/component/coin_current_info_card.dart';
 import 'package:dio/dio.dart';
-
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../viewmodel/general/cubit/selected_page_general_cubit.dart';
 import 'package:flutter/cupertino.dart';
@@ -22,7 +19,6 @@ import '../../../../product/model/my_coin_model.dart';
 
 import '../../coin_detail_page/view/coin_detail_page.dart';
 import '../viewmodel/cubit/coin_cubit.dart';
-import 'package:http/http.dart' as http;
 
 part './subView/selected_coin_page_extension.dart';
 
@@ -118,7 +114,6 @@ class SelectedCoinPage extends StatelessWidget {
 
     final response =
         await coreDio.get("https://api.genelpara.com/embed/borsa.json");
-    print(response.statusCode);
     switch (response.statusCode) {
       case HttpStatus.ok:
         response.data = jsonDecode(response.data);
@@ -131,16 +126,6 @@ class SelectedCoinPage extends StatelessWidget {
               .map((e) => GenelPara.fromJson(e))
               .toList();
         }
-        keys.forEach((element) {
-          print(element);
-        });
-        genelParaList.forEach((e) {
-          print(e.alis);
-          print(e.satis);
-          print(e.degisim);
-        });
-
-        print(keys.length);
 
         return _myCoinsList;
       default:

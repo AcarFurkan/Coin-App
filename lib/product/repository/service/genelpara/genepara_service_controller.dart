@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'package:coin_with_architecture/core/enums/price_control.dart';
-import 'package:coin_with_architecture/core/model/response_model/response_model.dart';
-import 'package:coin_with_architecture/product/model/my_coin_model.dart';
-import 'package:coin_with_architecture/product/repository/service/helper/convert_incoming_currency.dart';
+import '../../../../core/enums/price_control.dart';
+import '../../../../core/model/response_model/response_model.dart';
+import '../../../model/my_coin_model.dart';
+import '../helper/convert_incoming_currency.dart';
 
 class GenelParaServiceController {
   final int timerSecond = 200;

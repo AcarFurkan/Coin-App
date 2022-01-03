@@ -1,13 +1,11 @@
 import 'dart:async';
-
 import 'package:bloc/bloc.dart';
-import 'package:coin_with_architecture/product/model/my_coin_model.dart';
-import 'package:coin_with_architecture/product/repository/cache/coin_cache_manager.dart';
-import 'package:coin_with_architecture/product/repository/service/genelpara/genelpara_service.dart';
-import 'package:coin_with_architecture/product/repository/service/genelpara/genepara_service_controller.dart';
-import 'package:coin_with_architecture/product/repository/service/hurriyet/hurriyet_service_controller.dart';
+import '../../../../../product/model/my_coin_model.dart';
+import '../../../../../product/repository/cache/coin_cache_manager.dart';
+import '../../../../../product/repository/service/genelpara/genelpara_service.dart';
+import '../../../../../product/repository/service/genelpara/genepara_service_controller.dart';
+import '../../../../../product/repository/service/hurriyet/hurriyet_service_controller.dart';
 import 'package:meta/meta.dart';
-
 import '../../../../../locator.dart';
 
 part 'hurriyet_state.dart';
@@ -49,7 +47,7 @@ class HurriyetCubit extends Cubit<HurriyetState> {
   }
 
   List<MainCurrencyModel> fetchHurriyetStockListFromService() {
-    return HurriyetServiceController.instance.getHurriyetStocks;
+    return GenelParaServiceController.instance.getGenelParaStocks;
   }
 
   void favoriteFeatureAndAlarmTransaction(

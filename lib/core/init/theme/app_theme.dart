@@ -25,9 +25,13 @@ abstract class ThemeManager {
       //buttonTheme: ButtonThemeData(buttonColor: Colors.amber),
       outlinedButtonTheme: OutlinedButtonThemeData(
           style: ButtonStyle(
-              foregroundColor: MaterialStateProperty.all(Colors.white),
+              shape: MaterialStateProperty.all<OutlinedBorder?>(
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20))),
+              foregroundColor:
+                  MaterialStateProperty.all(theme.colors.colors.white),
               backgroundColor:
-                  MaterialStateProperty.all(theme.colors.tabbarNormalColor))),
+                  MaterialStateProperty.all(theme.colors.colors.purplish))),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
           foregroundColor: theme.colors.colors.white,
           backgroundColor: theme.colors.colors.mediumGreyBold),
@@ -36,12 +40,19 @@ abstract class ThemeManager {
       ),
       inputDecorationTheme: InputDecorationTheme(
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16.0),
+          borderRadius: BorderRadius.circular(25.0),
+          borderSide: BorderSide(
+            color: theme.colors.colorScheme!.primary,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(25.0),
           borderSide: BorderSide(
             color: theme.colors.colorScheme!.primary,
           ),
         ),
         border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(25.0),
           borderSide: BorderSide(color: Colors.black),
         ),
         contentPadding: EdgeInsets.symmetric(

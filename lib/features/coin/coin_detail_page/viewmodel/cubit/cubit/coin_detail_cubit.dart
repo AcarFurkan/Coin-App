@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import '../../../../../settings/audio_settings/model/audio_model.dart';
+import '../../../../../settings/subpage/audio_settings/model/audio_model.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 

@@ -1,9 +1,9 @@
 import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:coin_with_architecture/core/enums/currency_enum.dart';
-import 'package:coin_with_architecture/core/enums/price_control.dart';
-import 'package:coin_with_architecture/product/model/my_coin_model.dart';
+import '../../../core/enums/currency_enum.dart';
+import '../../../core/enums/price_control.dart';
+import '../../model/my_coin_model.dart';
 import 'package:flutter/material.dart';
 import 'package:persian_tools/src/core/commas/commas.dart';
 
@@ -153,7 +153,7 @@ class _ListCardItemState extends State<ListCardItem> {
 
   AutoSizeText buildCurrencyPrice() {
     String price =
-        double.parse((widget.coin.lastPrice ?? "0")).toStringAsFixed(2);
+        double.parse((widget.coin.lastPrice ?? "0")).toStringAsFixed(5);
     return AutoSizeText(
       "${price.addComma} $currencyIcon",
       textAlign: TextAlign.center,

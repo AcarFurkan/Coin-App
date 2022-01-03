@@ -40,7 +40,7 @@ class LightColors implements IColors {
       secondaryVariant: colors.lightGrey,
       background: colors.white,
       error: colors.red,
-      onSurface: colors.mediumGreyBold,
+      onSurface: colors.mediumGreyBold, onBackground: colors.purplish,
       //onBackground: ,
       // onError: ,
 

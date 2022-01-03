@@ -1,7 +1,5 @@
-import 'package:coin_with_architecture/core/extension/string_extension.dart';
-import 'package:coin_with_architecture/features/settings/language_page/view/language_page.dart';
-import 'package:coin_with_architecture/features/settings/language_page/viewmodel/language_page_viewmodel.dart';
-import 'package:coin_with_architecture/product/language/locale_keys.g.dart';
+import '../../../core/extension/string_extension.dart';
+import '../../language/locale_keys.g.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

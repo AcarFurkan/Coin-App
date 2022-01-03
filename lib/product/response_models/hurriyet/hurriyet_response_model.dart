@@ -2,9 +2,8 @@
 //
 //     final hurriyet = hurriyetFromJson(jsonString);
 
-import 'dart:convert';
-
 import 'package:json_annotation/json_annotation.dart';
+
 part 'hurriyet_response_model.g.dart';
 
 @JsonSerializable(createToJson: false)

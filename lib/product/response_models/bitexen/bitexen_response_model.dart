@@ -1,6 +1,9 @@
 import 'dart:convert';
-import 'package:coin_with_architecture/core/model/base_model/base_model.dart';
+
 import 'package:json_annotation/json_annotation.dart';
+
+import '../../../core/model/base_model/base_model.dart';
+
 part 'bitexen_response_model.g.dart';
 
 Map<String, Bitexen> bitexenFromJson(dynamic str) => Map.from(str)

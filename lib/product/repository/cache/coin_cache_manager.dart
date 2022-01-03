@@ -1,4 +1,4 @@
-import '../../../features/settings/audio_settings/model/audio_model.dart';
+import '../../../features/settings/subpage/audio_settings/model/audio_model.dart';
 import 'package:hive/hive.dart';
 
 import '../../model/my_coin_model.dart';

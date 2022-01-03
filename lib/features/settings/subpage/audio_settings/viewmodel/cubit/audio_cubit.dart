@@ -2,10 +2,11 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
-import '../../model/audio_model.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:meta/meta.dart';
 import 'package:path_provider/path_provider.dart';
+
+import '../../model/audio_model.dart';
 
 part 'audio_state.dart';
 

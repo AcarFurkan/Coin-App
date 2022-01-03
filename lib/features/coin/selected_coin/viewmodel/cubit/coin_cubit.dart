@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
-import 'package:coin_with_architecture/product/repository/service/bitexen/bitexen_service_controller.dart';
-import 'package:coin_with_architecture/product/repository/service/gecho/gecho_service_controller.dart';
-import 'package:coin_with_architecture/product/repository/service/truncgil/truncgil_service_controller.dart';
-import '../../../../settings/audio_settings/model/audio_model.dart';
+import '../../../../settings/subpage/audio_settings/model/audio_model.dart';
+import '../../../../../product/repository/service/bitexen/bitexen_service_controller.dart';
+import '../../../../../product/repository/service/gecho/gecho_service_controller.dart';
+import '../../../../../product/repository/service/truncgil/truncgil_service_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:flutter/material.dart';

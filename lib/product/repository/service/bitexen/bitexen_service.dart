@@ -1,11 +1,11 @@
 import 'dart:io';
-import 'package:coin_with_architecture/core/enums/dotenv_enums.dart';
-import 'package:coin_with_architecture/core/init/network/core_dio.dart';
-import 'package:coin_with_architecture/core/model/error_model/base_error_model.dart';
-import 'package:coin_with_architecture/core/model/response_model/IResponse_model.dart';
-import 'package:coin_with_architecture/core/model/response_model/response_model.dart';
-import 'package:coin_with_architecture/product/repository/service/base_service.dart';
-import 'package:coin_with_architecture/product/response_models/bitexen/bitexen_response_model.dart';
+import '../../../../core/enums/dotenv_enums.dart';
+import '../../../../core/init/network/core_dio.dart';
+import '../../../../core/model/error_model/base_error_model.dart';
+import '../../../../core/model/response_model/IResponse_model.dart';
+import '../../../../core/model/response_model/response_model.dart';
+import '../base_service.dart';
+import '../../../response_models/bitexen/bitexen_response_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 

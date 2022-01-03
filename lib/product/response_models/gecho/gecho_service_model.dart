@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:coin_with_architecture/core/model/base_model/base_model.dart';
+import '../../../core/model/base_model/base_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'gecho_service_model.g.dart';
 

@@ -1,18 +1,19 @@
-import 'package:coin_with_architecture/core/enums/price_control.dart';
-import 'package:coin_with_architecture/core/model/response_model/response_model.dart';
-import 'package:coin_with_architecture/product/model/my_coin_model.dart';
-import 'package:coin_with_architecture/product/repository/service/bitexen/bitexen_service.dart';
-import 'package:coin_with_architecture/product/repository/service/genelpara/genelpara_service.dart';
-import 'package:coin_with_architecture/product/repository/service/hurriyet/hurriyet_service.dart';
-import 'package:coin_with_architecture/product/repository/service/truncgil/truncgil_service.dart';
-import 'package:coin_with_architecture/product/response_models/bitexen/bitexen_response_model.dart';
-import 'package:coin_with_architecture/product/response_models/gecho/gecho_service_model.dart';
-import 'package:coin_with_architecture/product/response_models/genelpara/genelpara_service_model.dart';
-import 'package:coin_with_architecture/product/response_models/hurriyet/hurriyet_response_model.dart';
-import 'package:coin_with_architecture/product/response_models/truncgil/truncgil_response_model.dart';
+import '../../../../core/enums/price_control.dart';
+import '../../../../core/model/response_model/response_model.dart';
+import '../../../model/my_coin_model.dart';
+import '../bitexen/bitexen_service.dart';
+import '../genelpara/genelpara_service.dart';
+import '../hurriyet/hurriyet_service.dart';
+import '../truncgil/truncgil_service.dart';
+import '../../../response_models/bitexen/bitexen_response_model.dart';
+import '../../../response_models/gecho/gecho_service_model.dart';
+import '../../../response_models/genelpara/genelpara_service_model.dart';
+import '../../../response_models/hurriyet/hurriyet_response_model.dart';
+import '../../../response_models/truncgil/truncgil_response_model.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import '../bitexen/bitexen_service.dart';
+
 import '../gecho/gecho_service.dart';
 
 class CurrencyConverter {
@@ -162,15 +163,15 @@ class CurrencyConverter {
         counterCurrencyCode: coin.market?.counterCurrencyCode,
         lowOf24h: coin.low24H,
         highOf24h: coin.high24H,
-        lastUpdate:
-            DateFormat.jms().format(date)); //DateFormat.jms().format(date)
+        lastUpdate: date
+            .toString()); //DateFormat.jms().format(date)/// DateFormat.jms().format(date)
   }
 
   MainCurrencyModel mainCurrencyGeneratorFromGechoModel(
       Gecho coin, String currecny) {
     String changeOf24Hour =
         percentageCotnrol((coin.priceChangePercentage24H ?? 0).toString());
-    var duration = DateTime.now().timeZoneOffset;
+    // var duration = DateTime.now().timeZoneOffset;
     return MainCurrencyModel(
         counterCurrencyCode: currecny,
         name: coin.symbol ?? "",
@@ -179,8 +180,8 @@ class CurrencyConverter {
         changeOf24H: (coin.priceChangePercentage24H ?? 0).toString(),
         lowOf24h: (coin.low24H ?? 0).toString(),
         highOf24h: (coin.high24H ?? 0).toString(),
-        lastUpdate: DateFormat.jms().format(
-            coin.lastUpdated!.add(Duration(minutes: duration.inMinutes))));
+        lastUpdate: coin.lastUpdated!
+            .toString()); //DateFormat.jms().format(coin.lastUpdated!)
   }
 
   MainCurrencyModel mainCurrencyGeneratorFromTrungilModel(Truncgil e) {

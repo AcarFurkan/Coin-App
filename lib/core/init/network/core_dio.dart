@@ -1,10 +1,10 @@
-import 'package:coin_with_architecture/core/enums/http_request_enum.dart';
-import 'package:coin_with_architecture/core/extension/network_type_extension.dart';
-import 'package:coin_with_architecture/core/init/network/ICore_dio.dart';
-import 'package:coin_with_architecture/core/model/base_model/base_model.dart';
-import 'package:coin_with_architecture/core/model/error_model/base_error_model.dart';
-import 'package:coin_with_architecture/core/model/response_model/IResponse_model.dart';
-import 'package:coin_with_architecture/core/model/response_model/response_model.dart';
+import '../../enums/http_request_enum.dart';
+import '../../extension/network_type_extension.dart';
+import 'ICore_dio.dart';
+import '../../model/base_model/base_model.dart';
+import '../../model/error_model/base_error_model.dart';
+import '../../model/response_model/IResponse_model.dart';
+import '../../model/response_model/response_model.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get_connect/http/src/status/http_status.dart';

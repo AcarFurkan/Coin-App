@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import '../../../settings/audio_settings/model/audio_model.dart';
-import '../../../settings/audio_settings/view/audio2.dart';
+import '../../../settings/subpage/audio_settings/model/audio_model.dart';
+import '../../../settings/subpage/audio_settings/view/audio2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persian_tools/persian_tools.dart';

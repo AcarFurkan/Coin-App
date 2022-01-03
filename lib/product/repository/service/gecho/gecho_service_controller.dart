@@ -1,13 +1,13 @@
 import 'dart:async';
 
-import 'package:coin_with_architecture/core/enums/currency_enum.dart';
-import 'package:coin_with_architecture/core/enums/price_control.dart';
-import 'package:coin_with_architecture/core/model/response_model/response_model.dart';
-import 'package:coin_with_architecture/product/model/my_coin_model.dart';
-import 'package:coin_with_architecture/product/repository/service/helper/convert_incoming_currency.dart';
+import '../../../../core/enums/currency_enum.dart';
+import '../../../../core/enums/price_control.dart';
+import '../../../../core/model/response_model/response_model.dart';
+import '../../../model/my_coin_model.dart';
+import '../helper/convert_incoming_currency.dart';
 
 class GechoServiceController {
-  final int timerSecond = 5;
+  final int timerSecond = 10;
   static CurrencyConverter? _currencyConverter;
 
   static GechoServiceController? _instance;
