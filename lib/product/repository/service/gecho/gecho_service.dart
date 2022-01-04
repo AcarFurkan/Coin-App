@@ -33,13 +33,27 @@ class GechoService implements BaseRepository<Gecho> {
         parseModel: Gecho());
   }
 
-  Future<IResponseModel<List<Gecho>>> getAllCoinsByCurrency(
-      String currency) async {
+  Future<IResponseModel<List<Gecho>>> getAllCoinsByCurrency(String currency,
+      {List<String>? idList}) async {
+    String idUrl = "";
+    if (idList != null) {
+      idUrl = "&ids=";
+      for (var i = 0; i < idList.length; i++) {
+        idUrl += idList[i];
+        if (idList.last != idList[i]) {
+          idUrl += "%2C";
+        }
+      }
+      print(idUrl);
+    }
     return await coreDio!.fetchData<List<Gecho>, Gecho>(
-        "coins/markets?vs_currency=$currency&order=market_cap_desc&per_page=250&page=1&sparkline=false",
+        "coins/markets?vs_currency=$currency$idUrl&order=market_cap_desc&per_page=250&page=1&sparkline=false",
         types: HttpTypes.GET,
         parseModel: Gecho());
   }
+  //coins/markets?vs_currency=usd&ids=ninja-squad%2Ctalecraft&order=market_cap_desc&per_page=100&page=1&sparkline=false
+  //coins/markets?vs_currency=usd&ids=ninja-squad%2Ctalecraft%2Cbitcoin&order=market_cap_desc&per_page=100&page=1&sparkline=false
+//  /////////////////////////////&ids=ninja-squad%2talecraft%2bitcoin
 
   @override
   Future<IResponseModel<Gecho>> getCoinByName(String name) {

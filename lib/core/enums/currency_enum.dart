@@ -1,1 +1,1 @@
-enum CoinCurrency { USD, TRY, ETH, BTC }
+enum CoinCurrency { USD, TRY, ETH, BTC, NEW }

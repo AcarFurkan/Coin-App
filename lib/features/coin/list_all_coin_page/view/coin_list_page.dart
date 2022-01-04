@@ -230,6 +230,8 @@ class CoinListPage extends StatelessWidget {
       coinListToShow = state.btcCoinsList;
     } else if (currencyName == CoinCurrency.ETH.name) {
       coinListToShow = state.ethCoinsList;
+    } else if (currencyName == CoinCurrency.NEW.name) {
+      coinListToShow = state.newUsdCoinsList;
     } else {
       coinListToShow = state.usdtCoinsList;
     }

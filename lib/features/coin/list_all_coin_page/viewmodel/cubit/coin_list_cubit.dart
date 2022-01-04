@@ -21,6 +21,8 @@ class CoinListCubit extends Cubit<CoinListState> {
   List<MainCurrencyModel> btcCoins = [];
   List<MainCurrencyModel> ethCoins = [];
   List<MainCurrencyModel> usdtCoins = [];
+  List<MainCurrencyModel> newCoins = [];
+
   List<MainCurrencyModel> coinListFromDb = [];
 
   Future<void> fetchAllCoins() async {
@@ -30,6 +32,7 @@ class CoinListCubit extends Cubit<CoinListState> {
     btcCoins.clear();
     ethCoins.clear();
     usdtCoins.clear();
+    newCoins.clear();
 
     for (var item in fetchTryCoinsFromGechoService()) {
       tryCoins.add(item);
@@ -47,18 +50,23 @@ class CoinListCubit extends Cubit<CoinListState> {
       btcCoins.add(item);
       favoriteFeatureAndAlarmTransaction(coinListFromDb, btcCoins);
     }
+    for (var item in fetchUsdNewCoinsFromGechoService()) {
+      newCoins.add(item);
+      favoriteFeatureAndAlarmTransaction(coinListFromDb, btcCoins);
+    }
 
     emit(CoinListCompleted(
-      tryCoinsList: tryCoins,
-      btcCoinsList: btcCoins,
-      ethCoinsList: ethCoins,
-      usdtCoinsList: usdtCoins,
-    ));
+        tryCoinsList: tryCoins,
+        btcCoinsList: btcCoins,
+        ethCoinsList: ethCoins,
+        usdtCoinsList: usdtCoins,
+        newUsdCoinsList: newCoins));
     timer = Timer.periodic(const Duration(milliseconds: 2000), (Timer t) async {
       tryCoins.clear();
       btcCoins.clear();
       ethCoins.clear();
       usdtCoins.clear();
+      newCoins.clear();
 
       coinListFromDb = getAllListFromDB() ?? [];
       for (var item in fetchTryCoinsFromGechoService()) {
@@ -77,13 +85,17 @@ class CoinListCubit extends Cubit<CoinListState> {
         btcCoins.add(item);
         favoriteFeatureAndAlarmTransaction(coinListFromDb, btcCoins);
       }
+      for (var item in fetchUsdNewCoinsFromGechoService()) {
+        newCoins.add(item);
+        favoriteFeatureAndAlarmTransaction(coinListFromDb, btcCoins);
+      }
 
       emit(CoinListCompleted(
-        tryCoinsList: tryCoins,
-        btcCoinsList: btcCoins,
-        ethCoinsList: ethCoins,
-        usdtCoinsList: usdtCoins,
-      ));
+          tryCoinsList: tryCoins,
+          btcCoinsList: btcCoins,
+          ethCoinsList: ethCoins,
+          usdtCoinsList: usdtCoins,
+          newUsdCoinsList: newCoins));
     });
   }
 
@@ -101,6 +113,10 @@ class CoinListCubit extends Cubit<CoinListState> {
 
   List<MainCurrencyModel> fetchEthCoinsFromGechoService() {
     return GechoServiceController.instance.getGechoEthCoinList;
+  }
+
+  List<MainCurrencyModel> fetchUsdNewCoinsFromGechoService() {
+    return GechoServiceController.instance.getNewGechoUsdCoinList;
   }
 
   void favoriteFeatureAndAlarmTransaction(

@@ -251,45 +251,45 @@ class _HomeViewState extends State<HomeView>
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
-        floatingActionButton: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            FloatingActionButton(
-              heroTag: "a",
-              onPressed: () async {
-                try {
-                  await auth.createUserWithEmailAndPassword(
-                      email: "facar@gmail.com", password: "123123");
-                  await signInWithGoogle();
-                  adduser2();
-                } catch (e) {
-                  print(e);
-                }
-              },
-              child: Icon(Icons.add),
-            ),
-            FloatingActionButton(
-              heroTag: "b",
-              onPressed: () async {
-                await auth.signInWithEmailAndPassword(
-                    email: "facar@gmail.com", password: "123123");
-                //await readaa();
-              },
-              child: Icon(Icons.multiline_chart),
-            ),
-            FloatingActionButton(
-              heroTag: "c",
-              onPressed: () {
-                AppCacheManager _cacheManager = locator<AppCacheManager>();
+        //floatingActionButton: Column(
+        //  mainAxisAlignment: MainAxisAlignment.end,
+        //  children: [
+        //    FloatingActionButton(
+        //      heroTag: "a",
+        //      onPressed: () async {
+        //        try {
+        //          await auth.createUserWithEmailAndPassword(
+        //              email: "facar@gmail.com", password: "123123");
+        //          await signInWithGoogle();
+        //          adduser2();
+        //        } catch (e) {
+        //          print(e);
+        //        }
+        //      },
+        //      child: Icon(Icons.add),
+        //    ),
+        //    FloatingActionButton(
+        //      heroTag: "b",
+        //      onPressed: () async {
+        //        await auth.signInWithEmailAndPassword(
+        //            email: "facar@gmail.com", password: "123123");
+        //        //await readaa();
+        //      },
+        //      child: Icon(Icons.multiline_chart),
+        //    ),
+        //    FloatingActionButton(
+        //      heroTag: "c",
+        //      onPressed: () {
+        //        AppCacheManager _cacheManager = locator<AppCacheManager>();
 
-                _cacheManager.putBoolItem(
-                    PreferencesKeys.IS_FIRST_APP.name, false);
-                // auth.signOut();
-              },
-              child: Icon(Icons.remove),
-            )
-          ],
-        ),
+        //        _cacheManager.putBoolItem(
+        //            PreferencesKeys.IS_FIRST_APP.name, false);
+        //        // auth.signOut();
+        //      },
+        //      child: Icon(Icons.remove),
+        //    )
+        //  ],
+        //),
         extendBody: true,
         body: listPage[_selectedIndex],
         bottomNavigationBar: CurvedNavigationBar(

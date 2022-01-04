@@ -237,6 +237,7 @@ class CoinCubit extends Cubit<CoinState> {
     aa.addAll(fetchEthCoinsFromGechoService());
     aa.addAll(fetchAllCoinsFromBitexen());
     aa.addAll(fetchTruncgilService());
+    aa.addAll(fetchUsdNewCoinsFromGechoService());
     return aa;
   }
 
@@ -262,6 +263,10 @@ class CoinCubit extends Cubit<CoinState> {
 
   List<MainCurrencyModel> fetchAllCoinsFromBitexen() {
     return BitexenServiceController.instance.getBitexenCoins;
+  }
+
+  List<MainCurrencyModel> fetchUsdNewCoinsFromGechoService() {
+    return GechoServiceController.instance.getNewGechoUsdCoinList;
   }
 
 /*

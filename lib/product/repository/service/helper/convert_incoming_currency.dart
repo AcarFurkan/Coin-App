@@ -136,8 +136,10 @@ class CurrencyConverter {
   }
 
   Future<ResponseModel<List<MainCurrencyModel>>>
-      convertGechoCoinListByCurrencyToMyCoinList(String name) async {
-    var response = await GechoService.instance.getAllCoinsByCurrency(name);
+      convertGechoCoinListByCurrencyToMyCoinList(String name,
+          {List<String>? idList}) async {
+    var response =
+        await GechoService.instance.getAllCoinsByCurrency(name, idList: idList);
     List<Gecho>? gechoCoinList = response.data;
     List<MainCurrencyModel>? myCoin;
     if (gechoCoinList != null) {
@@ -180,8 +182,8 @@ class CurrencyConverter {
         changeOf24H: (coin.priceChangePercentage24H ?? 0).toString(),
         lowOf24h: (coin.low24H ?? 0).toString(),
         highOf24h: (coin.high24H ?? 0).toString(),
-        lastUpdate: coin.lastUpdated!
-            .toString()); //DateFormat.jms().format(coin.lastUpdated!)
+        lastUpdate: DateFormat.jms().format(
+            coin.lastUpdated!)); //DateFormat.jms().format(coin.lastUpdated!)
   }
 
   MainCurrencyModel mainCurrencyGeneratorFromTrungilModel(Truncgil e) {

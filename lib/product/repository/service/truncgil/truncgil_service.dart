@@ -68,6 +68,7 @@ class TruncgilService {
         return ResponseModel<List<Truncgil>>(data: response.data);
 
       default:
+        print("status code ${response.statusCode}   ${response.statusMessage}");
         return ResponseModel<List<Truncgil>>(error: BaseError('message'));
     }
   }

@@ -12,11 +12,13 @@ class CoinListCompleted extends CoinListState {
   final List<MainCurrencyModel> usdtCoinsList;
   final List<MainCurrencyModel> btcCoinsList;
   final List<MainCurrencyModel> ethCoinsList;
+  final List<MainCurrencyModel> newUsdCoinsList;
   CoinListCompleted({
     required this.usdtCoinsList,
     required this.btcCoinsList,
     required this.ethCoinsList,
     required this.tryCoinsList,
+    required this.newUsdCoinsList,
   });
 }
 
