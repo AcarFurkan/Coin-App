@@ -36,7 +36,10 @@ class AppCacheManager {
     await _box?.put(key, item.toString());
   }
 
-  getBoolValue(String key) => (_box?.get(key) ?? false).toString();
+  getBoolValue(String key) {
+    print(_box == null ? "box null" : "box full");
+    return (_box?.get(key) ?? false).toString();
+  }
 
   Future<void> removeItem(String key) async {
     await _box?.delete(key);

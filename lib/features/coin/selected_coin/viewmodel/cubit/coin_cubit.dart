@@ -2,17 +2,17 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
-import '../../../../settings/subpage/audio_settings/model/audio_model.dart';
-import '../../../../../product/repository/service/bitexen/bitexen_service_controller.dart';
-import '../../../../../product/repository/service/gecho/gecho_service_controller.dart';
-import '../../../../../product/repository/service/truncgil/truncgil_service_controller.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:flutter/material.dart';
-import '../../../../../product/model/my_coin_model.dart';
-import '../../../../../product/repository/cache/coin_cache_manager.dart';
+import 'package:just_audio/just_audio.dart';
 
 import '../../../../../locator.dart';
+import '../../../../../product/model/my_coin_model.dart';
+import '../../../../../product/repository/cache/coin_cache_manager.dart';
+import '../../../../../product/repository/service/market/bitexen/bitexen_service_controller.dart';
+import '../../../../../product/repository/service/market/gecho/gecho_service_controller.dart';
+import '../../../../../product/repository/service/market/truncgil/truncgil_service_controller.dart';
+import '../../../../settings/subpage/audio_settings/model/audio_model.dart';
 
 part 'coin_state.dart';
 

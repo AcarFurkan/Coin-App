@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import '../../../../../product/repository/service/market/bitexen/bitexen_service_controller.dart';
 import '../../../../../product/model/my_coin_model.dart';
 import '../../../../../product/repository/cache/coin_cache_manager.dart';
-import '../../../../../product/repository/service/bitexen/bitexen_service_controller.dart';
 import 'package:meta/meta.dart';
 
 import '../../../../../locator.dart';

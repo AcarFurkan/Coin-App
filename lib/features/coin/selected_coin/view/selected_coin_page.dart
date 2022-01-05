@@ -1,24 +1,21 @@
 import 'dart:convert';
 import 'dart:io';
 
-import '../../../../core/init/network/core_dio.dart';
-import '../../../settings/view/settings_page.dart';
-import '../../../../product/response_models/genelpara/genelpara_service_model.dart';
-
-import '../../../../product/widget/component/coin_current_info_card.dart';
 import 'package:dio/dio.dart';
-
-import '../viewmodel/general/cubit/selected_page_general_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/init/network/core_dio.dart';
 import '../../../../core/widget/text/locale_text.dart';
 import '../../../../product/language/locale_keys.g.dart';
 import '../../../../product/model/my_coin_model.dart';
-
+import '../../../../product/response_models/genelpara/genelpara_service_model.dart';
+import '../../../../product/widget/component/coin_current_info_card.dart';
+import '../../../settings/view/settings_page.dart';
 import '../../coin_detail_page/view/coin_detail_page.dart';
 import '../viewmodel/cubit/coin_cubit.dart';
+import '../viewmodel/general/cubit/selected_page_general_cubit.dart';
 
 part './subView/selected_coin_page_extension.dart';
 
@@ -46,8 +43,7 @@ class SelectedCoinPage extends StatelessWidget {
     return AppBar(
       leading: IconButton(
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => SettingsPage()));
+            Navigator.pushNamed(context, "/settingsGeneral");
           },
           icon: const Icon(Icons.settings)),
       title: LocaleText(text: LocaleKeys.appBarTitle),

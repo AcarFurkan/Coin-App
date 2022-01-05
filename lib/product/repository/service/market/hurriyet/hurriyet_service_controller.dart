@@ -1,52 +1,54 @@
 import 'dart:async';
-import '../../../../core/enums/price_control.dart';
-import '../../../../core/model/response_model/response_model.dart';
-import '../../../model/my_coin_model.dart';
+
+import '../../../../../core/enums/price_control.dart';
+import '../../../../../core/model/response_model/response_model.dart';
+import '../../../../model/my_coin_model.dart';
+
 import '../helper/convert_incoming_currency.dart';
 
-class GenelParaServiceController {
+class HurriyetServiceController {
   final int timerSecond = 200;
 
   static CurrencyConverter? _currencyConverter;
 
-  static GenelParaServiceController? _instance;
-  static GenelParaServiceController get instance {
-    _instance ??= GenelParaServiceController._init();
+  static HurriyetServiceController? _instance;
+  static HurriyetServiceController get instance {
+    _instance ??= HurriyetServiceController._init();
     return _instance!;
   }
 
-  GenelParaServiceController._init() {
+  HurriyetServiceController._init() {
     _currencyConverter = CurrencyConverter.instance;
   }
 
   late Timer timer;
 
-  List<MainCurrencyModel> _previousGenelParaStocks = [];
-  List<MainCurrencyModel> _lastGenelParaStocks = [];
-  List<MainCurrencyModel> get getGenelParaStocks => _lastGenelParaStocks;
+  List<MainCurrencyModel> _previousHurriyetStocks = [];
+  List<MainCurrencyModel> _lastHurriyetStocks = [];
+  List<MainCurrencyModel> get getHurriyetStocks => _lastHurriyetStocks;
 
-  Future<void> fetchGenelParaStocksEveryTwoSecond() async {
+  Future<void> fetchHurriyetStocksEveryTwoSecond() async {
     ResponseModel<List<MainCurrencyModel>> response = await CurrencyConverter
         .instance
-        .convertGenelParaStockListToMyMainCurrencyList();
+        .convertHurriyetStockListToMyMainCurrencyList();
 
     if (response.data != null) {
-      _lastGenelParaStocks = response.data!;
-      percentageControl(_lastGenelParaStocks);
+      _lastHurriyetStocks = response.data!;
+      percentageControl(_lastHurriyetStocks);
     }
 
     timer = Timer.periodic(Duration(seconds: timerSecond), (timer) async {
       response = await CurrencyConverter.instance
-          .convertGenelParaStockListToMyMainCurrencyList();
+          .convertHurriyetStockListToMyMainCurrencyList();
       if (response.data != null) {
-        _lastGenelParaStocks = response.data!;
-        percentageControl(_lastGenelParaStocks);
+        _lastHurriyetStocks = response.data!;
+        percentageControl(_lastHurriyetStocks);
       }
-      if (_previousGenelParaStocks.isEmpty != true) {
-        lastPriceControl(_previousGenelParaStocks, _lastGenelParaStocks);
+      if (_previousHurriyetStocks.isEmpty != true) {
+        lastPriceControl(_previousHurriyetStocks, _lastHurriyetStocks);
       }
       transferLastListToPreviousList(
-          _previousGenelParaStocks, _lastGenelParaStocks);
+          _previousHurriyetStocks, _lastHurriyetStocks);
     });
   }
 

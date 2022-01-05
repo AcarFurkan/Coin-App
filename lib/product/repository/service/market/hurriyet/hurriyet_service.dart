@@ -1,10 +1,11 @@
 import 'dart:io';
-import '../../../../core/enums/dotenv_enums.dart';
-import '../../../../core/init/network/core_dio.dart';
-import '../../../../core/model/error_model/base_error_model.dart';
-import '../../../../core/model/response_model/IResponse_model.dart';
-import '../../../../core/model/response_model/response_model.dart';
-import '../../../response_models/hurriyet/hurriyet_response_model.dart';
+import '../../../../../core/enums/dotenv_enums.dart';
+import '../../../../../core/init/network/core_dio.dart';
+import '../../../../../core/model/error_model/base_error_model.dart';
+import '../../../../../core/model/response_model/IResponse_model.dart';
+import '../../../../../core/model/response_model/response_model.dart';
+import '../../../../response_models/hurriyet/hurriyet_response_model.dart';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 

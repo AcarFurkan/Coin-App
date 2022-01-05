@@ -1,19 +1,16 @@
-import '../../../core/extension/string_extension.dart';
-import '../../language/locale_keys.g.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class SettingsCardItem extends StatelessWidget {
   const SettingsCardItem({
     Key? key,
     required this.prefix,
     required this.text,
-    required this.suffix,
+    this.suffix,
     required this.ontap,
   }) : super(key: key);
   final Widget prefix;
   final String text;
-  final Widget suffix;
+  final Widget? suffix;
   final VoidCallback ontap;
 
   @override
@@ -52,22 +49,23 @@ class SettingsCardItem extends StatelessWidget {
                 flex: 2,
               ),
               Expanded(
-                flex: 15,
+                flex: 25,
                 child: Text(
                   text,
                   style: Theme.of(context).textTheme.bodyText1,
                 ),
               ),
-              Spacer(
-                flex: 3,
-              ),
-              Expanded(
-                flex: 2,
-                child: suffix,
-              ),
-              Spacer(
-                flex: 1,
-              )
+              suffix != null
+                  ? Expanded(
+                      flex: 2,
+                      child: suffix!,
+                    )
+                  : Container(),
+              suffix != null
+                  ? Spacer(
+                      flex: 2,
+                    )
+                  : Container()
             ],
           ),
         ),

@@ -2,7 +2,6 @@ import '../../../../core/widget/text/locale_text.dart';
 import '../../coin_detail_page/view/coin_detail_page.dart';
 import '../viewmodel/cubit/truncgil_cubit.dart';
 import '../viewmodel/page_viewmodel.dart/cubit/truncgil_page_general_cubit.dart';
-import '../../../settings/view/settings_page.dart';
 import '../../../../product/language/locale_keys.g.dart';
 import '../../../../product/model/my_coin_model.dart';
 import '../../../../product/widget/component/coin_current_info_card.dart';
@@ -29,8 +28,7 @@ class TruncgilPage extends StatelessWidget {
     return AppBar(
       leading: IconButton(
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => SettingsPage()));
+            Navigator.pushNamed(context, "/settingsGeneral");
           },
           icon: const Icon(Icons.settings)),
       titleSpacing: 0,
@@ -141,10 +139,7 @@ class TruncgilPage extends StatelessWidget {
           return GestureDetector(
             onTap: () {
               // convertCurrency(context, currencyName, coinListToShow, index);
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CoinDetailPage(coin: result)));
+              Navigator.pushNamed(context, "/detailPage", arguments: result);
             },
             child: Hero(
               tag: result.id,

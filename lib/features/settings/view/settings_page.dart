@@ -1,10 +1,5 @@
-import '../subpage/audio_settings/view/audio2.dart';
-import '../subpage/help_page/view/help_page.dart';
-import '../subpage/language_page/view/language_page.dart';
-import '../subpage/language_page/viewmodel/language_page_viewmodel.dart';
-import '../subpage/user_settings/view/user_settings_page.dart';
-import '../../../product/widget/component/settings_page_card_item.dart';
-
+import 'package:coin_with_architecture/features/authentication/login/view/login_page.dart';
+import 'package:coin_with_architecture/features/authentication/viewmodel/cubit/user_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +7,12 @@ import 'package:provider/provider.dart';
 import '../../../core/extension/string_extension.dart';
 import '../../../product/language/locale_keys.g.dart';
 import '../../../product/theme/theme_provider.dart';
+import '../../../product/widget/component/settings_page_card_item.dart';
+import '../subpage/audio_settings/view/audio2.dart';
+import '../subpage/help_page/view/help_page.dart';
+import '../subpage/language_page/view/language_page.dart';
+import '../subpage/language_page/viewmodel/language_page_viewmodel.dart';
+import '../subpage/user_settings/view/user_settings_page.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -36,6 +37,32 @@ class _SettingsPageState extends State<SettingsPage> {
         padding: const EdgeInsets.symmetric(horizontal: 25),
         child: ListView(
           children: [
+            SettingsCardItem(
+              prefix: Icon(
+                Icons.person,
+                size: MediaQuery.of(context).size.height / 33,
+              ),
+              text: context.watch<UserCubit>().user == null
+                  ? "User Settings"
+                  : context.read<UserCubit>().user?.email ?? "",
+              suffix: Icon(
+                Icons.arrow_forward_ios,
+                size: MediaQuery.of(context).size.height / 40,
+              ),
+              ontap: () {
+                if (context.read<UserCubit>().user == null) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const UserSettings()));
+                } else {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LoginPage()));
+                }
+              },
+            ),
             SettingsCardItem(
               prefix: Icon(
                 Icons.language,
@@ -102,23 +129,6 @@ class _SettingsPageState extends State<SettingsPage> {
               ontap: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => HelpPage()));
-              },
-            ),
-            SettingsCardItem(
-              prefix: Icon(
-                Icons.person,
-                size: MediaQuery.of(context).size.height / 33,
-              ),
-              text: "User Settings",
-              suffix: Icon(
-                Icons.arrow_forward_ios,
-                size: MediaQuery.of(context).size.height / 40,
-              ),
-              ontap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const UserSettings()));
               },
             ),
           ],

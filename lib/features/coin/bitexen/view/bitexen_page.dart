@@ -1,14 +1,15 @@
-import '../../../../core/widget/text/locale_text.dart';
-import '../viewmodel/cubit/bitexen_cubit.dart';
-import '../viewmodel/page_viewmodel/cubit/bitexen_page_general_cubit.dart';
-import '../../coin_detail_page/view/coin_detail_page.dart';
-import '../../../settings/view/settings_page.dart';
-import '../../../../product/language/locale_keys.g.dart';
-import '../../../../product/model/my_coin_model.dart';
-import '../../../../product/widget/component/coin_current_info_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../core/widget/text/locale_text.dart';
+import '../../../../product/language/locale_keys.g.dart';
+import '../../../../product/model/my_coin_model.dart';
+import '../../../../product/widget/component/coin_current_info_card.dart';
+import '../../../settings/view/settings_page.dart';
+import '../../coin_detail_page/view/coin_detail_page.dart';
+import '../viewmodel/cubit/bitexen_cubit.dart';
+import '../viewmodel/page_viewmodel/cubit/bitexen_page_general_cubit.dart';
 
 class BitexenPage extends StatelessWidget {
   BitexenPage({Key? key}) : super(key: key);
@@ -32,8 +33,7 @@ class BitexenPage extends StatelessWidget {
     return AppBar(
       leading: IconButton(
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => SettingsPage()));
+            Navigator.pushNamed(context, "settingsGeneral");
           },
           icon: const Icon(Icons.settings)),
       titleSpacing: 0,
@@ -142,10 +142,7 @@ class BitexenPage extends StatelessWidget {
           return GestureDetector(
             onTap: () {
               // convertCurrency(context, currencyName, coinListToShow, index);
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CoinDetailPage(coin: result)));
+              Navigator.pushNamed(context, "/detailPage", arguments: result);
             },
             child: Hero(
               tag: result.id,

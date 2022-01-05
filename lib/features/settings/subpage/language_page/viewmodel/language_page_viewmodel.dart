@@ -1,10 +1,11 @@
-import '../../../../../core/extension/string_extension.dart';
-import '../../../model/language_model.dart';
-import '../../../../../product/language/language_manager.dart';
-import '../../../../../product/language/locale_keys.g.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flag/flag.dart';
 import 'package:flutter/cupertino.dart';
+
+import '../../../../../core/extension/string_extension.dart';
+import '../../../../../product/language/language_manager.dart';
+import '../../../../../product/language/locale_keys.g.dart';
+import '../../../model/language_model.dart';
 
 class LanguageViewModel extends ChangeNotifier {
   late List<LanguageModel> langModel;

@@ -1,20 +1,18 @@
-import '../../../../core/enums/price_control.dart';
-import '../../../../core/model/response_model/response_model.dart';
-import '../../../model/my_coin_model.dart';
+import 'package:easy_localization/easy_localization.dart';
+
+import '../../../../../core/enums/price_control.dart';
+import '../../../../../core/model/response_model/response_model.dart';
+import '../../../../model/my_coin_model.dart';
+import '../../../../response_models/bitexen/bitexen_response_model.dart';
+import '../../../../response_models/gecho/gecho_service_model.dart';
+import '../../../../response_models/genelpara/genelpara_service_model.dart';
+import '../../../../response_models/hurriyet/hurriyet_response_model.dart';
+import '../../../../response_models/truncgil/truncgil_response_model.dart';
 import '../bitexen/bitexen_service.dart';
+import '../gecho/gecho_service.dart';
 import '../genelpara/genelpara_service.dart';
 import '../hurriyet/hurriyet_service.dart';
 import '../truncgil/truncgil_service.dart';
-import '../../../response_models/bitexen/bitexen_response_model.dart';
-import '../../../response_models/gecho/gecho_service_model.dart';
-import '../../../response_models/genelpara/genelpara_service_model.dart';
-import '../../../response_models/hurriyet/hurriyet_response_model.dart';
-import '../../../response_models/truncgil/truncgil_response_model.dart';
-import 'package:easy_localization/easy_localization.dart';
-
-import '../bitexen/bitexen_service.dart';
-
-import '../gecho/gecho_service.dart';
 
 class CurrencyConverter {
   static CurrencyConverter? _instance;

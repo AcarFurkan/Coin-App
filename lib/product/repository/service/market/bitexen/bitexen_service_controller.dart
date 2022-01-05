@@ -1,52 +1,52 @@
 import 'dart:async';
 
-import '../../../../core/enums/price_control.dart';
-import '../../../../core/model/response_model/response_model.dart';
-import '../../../model/my_coin_model.dart';
+import '../../../../../core/enums/price_control.dart';
+import '../../../../../core/model/response_model/response_model.dart';
+import '../../../../model/my_coin_model.dart';
+
 import '../helper/convert_incoming_currency.dart';
 
-class TruncgilServiceController {
-  final int timerSecond = 5;
+class BitexenServiceController {
+  final int timerSecond = 2;
 
   static CurrencyConverter? _currencyConverter;
 
-  static TruncgilServiceController? _instance;
-  static TruncgilServiceController get instance {
-    _instance ??= TruncgilServiceController._init();
+  static BitexenServiceController? _instance;
+  static BitexenServiceController get instance {
+    _instance ??= BitexenServiceController._init();
     return _instance!;
   }
 
-  TruncgilServiceController._init() {
+  BitexenServiceController._init() {
     _currencyConverter = CurrencyConverter.instance;
   }
 
   late Timer timer;
 
-  List<MainCurrencyModel> _previousTruncgilList = [];
-  List<MainCurrencyModel> _lastTruncgilList = [];
-  List<MainCurrencyModel> get getTruncgilList => _lastTruncgilList;
+  List<MainCurrencyModel> _previousbitexenCoins = [];
+  List<MainCurrencyModel> _lastbitexenCoins = [];
+  List<MainCurrencyModel> get getBitexenCoins => _lastbitexenCoins;
 
-  Future<void> fetchTruncgilListEveryTwoSecond() async {
-    ResponseModel<List<MainCurrencyModel>> response = await CurrencyConverter
-        .instance
-        .convertTruncgilListToMyMainCurrencyList();
+  Future<void> fetchBitexenCoinListEveryTwoSecond() async {
+    ResponseModel<List<MainCurrencyModel>> response =
+        await CurrencyConverter.instance.convertBitexenListCoinToMyCoinList();
 
     if (response.data != null) {
-      _lastTruncgilList = response.data!;
-      percentageControl(_lastTruncgilList);
+      _lastbitexenCoins = response.data!;
+      percentageControl(_lastbitexenCoins);
     }
 
     timer = Timer.periodic(Duration(seconds: timerSecond), (timer) async {
-      response = await CurrencyConverter.instance
-          .convertTruncgilListToMyMainCurrencyList();
+      response =
+          await CurrencyConverter.instance.convertBitexenListCoinToMyCoinList();
       if (response.data != null) {
-        _lastTruncgilList = response.data!;
-        percentageControl(_lastTruncgilList);
+        _lastbitexenCoins = response.data!;
+        percentageControl(_lastbitexenCoins);
       }
-      if (_previousTruncgilList.isEmpty != true) {
-        lastPriceControl(_previousTruncgilList, _lastTruncgilList);
+      if (_previousbitexenCoins.isEmpty != true) {
+        lastPriceControl(_previousbitexenCoins, _lastbitexenCoins);
       }
-      transferLastListToPreviousList(_previousTruncgilList, _lastTruncgilList);
+      transferLastListToPreviousList(_previousbitexenCoins, _lastbitexenCoins);
     });
   }
 

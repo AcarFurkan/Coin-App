@@ -39,11 +39,8 @@ extension SelectedCoinBlocConsumerView on SelectedCoinPage {
                       MainCurrencyModel result = coinListToShow[index];
                       return GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (builder) =>
-                                      CoinDetailPage(coin: result)));
+                          Navigator.pushNamed(context, "/detailPage",
+                              arguments: result);
                         },
                         onLongPress: () {
                           context

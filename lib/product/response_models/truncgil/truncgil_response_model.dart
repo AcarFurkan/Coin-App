@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+
 part 'truncgil_response_model.g.dart';
 
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)

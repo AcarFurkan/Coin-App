@@ -1,9 +1,10 @@
-import '../../../../core/enums/dotenv_enums.dart';
-import '../../../../core/enums/http_request_enum.dart';
-import '../../../../core/init/network/core_dio.dart';
-import '../../../../core/model/response_model/IResponse_model.dart';
+import '../../../../../core/enums/dotenv_enums.dart';
+import '../../../../../core/enums/http_request_enum.dart';
+import '../../../../../core/init/network/core_dio.dart';
+import '../../../../../core/model/response_model/IResponse_model.dart';
+import '../../../../response_models/gecho/gecho_service_model.dart';
+
 import '../base_service.dart';
-import '../../../response_models/gecho/gecho_service_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 

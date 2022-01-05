@@ -1,51 +1,53 @@
 import 'dart:async';
 
-import '../../../../core/enums/price_control.dart';
-import '../../../../core/model/response_model/response_model.dart';
-import '../../../model/my_coin_model.dart';
+import '../../../../../core/enums/price_control.dart';
+import '../../../../../core/model/response_model/response_model.dart';
+import '../../../../model/my_coin_model.dart';
 import '../helper/convert_incoming_currency.dart';
 
-class BitexenServiceController {
-  final int timerSecond = 2;
+class GenelParaServiceController {
+  final int timerSecond = 200;
 
   static CurrencyConverter? _currencyConverter;
 
-  static BitexenServiceController? _instance;
-  static BitexenServiceController get instance {
-    _instance ??= BitexenServiceController._init();
+  static GenelParaServiceController? _instance;
+  static GenelParaServiceController get instance {
+    _instance ??= GenelParaServiceController._init();
     return _instance!;
   }
 
-  BitexenServiceController._init() {
+  GenelParaServiceController._init() {
     _currencyConverter = CurrencyConverter.instance;
   }
 
   late Timer timer;
 
-  List<MainCurrencyModel> _previousbitexenCoins = [];
-  List<MainCurrencyModel> _lastbitexenCoins = [];
-  List<MainCurrencyModel> get getBitexenCoins => _lastbitexenCoins;
+  List<MainCurrencyModel> _previousGenelParaStocks = [];
+  List<MainCurrencyModel> _lastGenelParaStocks = [];
+  List<MainCurrencyModel> get getGenelParaStocks => _lastGenelParaStocks;
 
-  Future<void> fetchBitexenCoinListEveryTwoSecond() async {
-    ResponseModel<List<MainCurrencyModel>> response =
-        await CurrencyConverter.instance.convertBitexenListCoinToMyCoinList();
+  Future<void> fetchGenelParaStocksEveryTwoSecond() async {
+    ResponseModel<List<MainCurrencyModel>> response = await CurrencyConverter
+        .instance
+        .convertGenelParaStockListToMyMainCurrencyList();
 
     if (response.data != null) {
-      _lastbitexenCoins = response.data!;
-      percentageControl(_lastbitexenCoins);
+      _lastGenelParaStocks = response.data!;
+      percentageControl(_lastGenelParaStocks);
     }
 
     timer = Timer.periodic(Duration(seconds: timerSecond), (timer) async {
-      response =
-          await CurrencyConverter.instance.convertBitexenListCoinToMyCoinList();
+      response = await CurrencyConverter.instance
+          .convertGenelParaStockListToMyMainCurrencyList();
       if (response.data != null) {
-        _lastbitexenCoins = response.data!;
-        percentageControl(_lastbitexenCoins);
+        _lastGenelParaStocks = response.data!;
+        percentageControl(_lastGenelParaStocks);
       }
-      if (_previousbitexenCoins.isEmpty != true) {
-        lastPriceControl(_previousbitexenCoins, _lastbitexenCoins);
+      if (_previousGenelParaStocks.isEmpty != true) {
+        lastPriceControl(_previousGenelParaStocks, _lastGenelParaStocks);
       }
-      transferLastListToPreviousList(_previousbitexenCoins, _lastbitexenCoins);
+      transferLastListToPreviousList(
+          _previousGenelParaStocks, _lastGenelParaStocks);
     });
   }
 

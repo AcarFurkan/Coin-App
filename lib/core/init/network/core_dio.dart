@@ -1,13 +1,14 @@
+import 'package:dio/adapter.dart';
+import 'package:dio/dio.dart';
+import 'package:get/get_connect/http/src/status/http_status.dart';
+
 import '../../enums/http_request_enum.dart';
 import '../../extension/network_type_extension.dart';
-import 'ICore_dio.dart';
 import '../../model/base_model/base_model.dart';
 import '../../model/error_model/base_error_model.dart';
 import '../../model/response_model/IResponse_model.dart';
 import '../../model/response_model/response_model.dart';
-import 'package:dio/adapter.dart';
-import 'package:dio/dio.dart';
-import 'package:get/get_connect/http/src/status/http_status.dart';
+import 'ICore_dio.dart';
 
 class CoreDio with DioMixin implements Dio, ICoreDio {
   @override
@@ -26,17 +27,23 @@ class CoreDio with DioMixin implements Dio, ICoreDio {
       dynamic data,
       Map<String, Object>? queryParameters,
       void Function(int, int)? onReciveProgress}) async {
-    final response = await request(path,
-        data: data, options: Options(method: types.rawValue));
-    switch (response.statusCode) {
-      case HttpStatus.ok:
-      case HttpStatus.accepted:
-        final model = _responseParser<R, T>(parseModel, response.data);
+    try {
+      final response = await request(path,
+          data: data, options: Options(method: types.rawValue));
+      switch (response.statusCode) {
+        case HttpStatus.ok:
+        case HttpStatus.accepted:
+          final model = _responseParser<R, T>(parseModel, response.data);
 
-        return ResponseModel<R>(data: model);
+          return ResponseModel<R>(data: model);
 
-      default:
-        return ResponseModel<R>(error: BaseError('message'));
+        default:
+          return ResponseModel<R>(error: BaseError('message'));
+      }
+    } catch (e) {
+      print(e);
+
+      return ResponseModel<R>(error: BaseError('message'));
     }
   }
 

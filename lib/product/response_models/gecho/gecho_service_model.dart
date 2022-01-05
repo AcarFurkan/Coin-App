@@ -1,7 +1,9 @@
 import 'dart:convert';
 
-import '../../../core/model/base_model/base_model.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import '../../../core/model/base_model/base_model.dart';
+
 part 'gecho_service_model.g.dart';
 
 List<Gecho> gechoFromJson(String str) =>

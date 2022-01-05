@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+
 part 'audio_model.g.dart';
 
 @HiveType(typeId: 2)

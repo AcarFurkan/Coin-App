@@ -1,5 +1,14 @@
 import 'dart:io';
 
+import 'package:coin_with_architecture/features/authentication/viewmodel/cubit/user_cubit.dart';
+import 'package:coin_with_architecture/product/untility/navigation/route_generator.dart';
+
+import 'features/home/home_view.dart';
+import 'product/repository/service/market/bitexen/bitexen_service_controller.dart';
+import 'product/repository/service/market/gecho/gecho_service_controller.dart';
+import 'product/repository/service/market/genelpara/genepara_service_controller.dart';
+import 'product/repository/service/market/truncgil/truncgil_service_controller.dart';
+
 import 'core/enums/locale_keys_enum.dart';
 import 'features/authentication/onboard/view/onboard_page.dart';
 import 'features/coin/bitexen/viewmodel/cubit/bitexen_cubit.dart';
@@ -9,9 +18,7 @@ import 'features/coin/hurriyet/viewmodel/page_viewmodel/cubit/hurriyet_page_gene
 import 'features/coin/truncgil/viewmodel/cubit/truncgil_cubit.dart';
 import 'features/coin/truncgil/viewmodel/page_viewmodel.dart/cubit/truncgil_page_general_cubit.dart';
 import 'product/repository/cache/app_cache_manager.dart';
-import 'product/repository/service/bitexen/bitexen_service_controller.dart';
-import 'product/repository/service/genelpara/genepara_service_controller.dart';
-import 'product/repository/service/truncgil/truncgil_service_controller.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -20,7 +27,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'features/settings/subpage/audio_settings/viewmodel/cubit/audio_cubit.dart';
 import 'firebase_options.dart';
-import 'product/repository/service/gecho/gecho_service_controller.dart';
 
 import 'features/coin/coin_detail_page/viewmodel/cubit/cubit/coin_detail_cubit.dart';
 
@@ -102,6 +108,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<CoinCubit>(
           create: (BuildContext context) => CoinCubit(context: context),
+        ),
+        BlocProvider<UserCubit>(
+          create: (BuildContext context) => UserCubit(),
         )
       ],
       child: const FutureBuilderForSplash(),
@@ -129,7 +138,8 @@ class FutureBuilderForSplash extends StatelessWidget {
             locale: context.locale,
             theme: context.watch<ThemeProvider>().theme,
             title: 'Material App',
-            home: TrialSomething(),
+            onGenerateRoute: RouteGenerator.routeGenerator,
+            home: TrialSomething(), //BUNU NİYE YAZMAMIZ LAZIM ONU ANLAMADIM
           );
         }
       },
@@ -169,7 +179,6 @@ class Init {
     print("1111111111111111111111111111111111111");
     if (!isFirst) {
       print("333333333333333333333");
-
       return;
     }
     isFirst = false;
@@ -213,6 +222,8 @@ class Init {
     context.read<BitexenCubit>().fetchAllCoins();
     context.read<TruncgilCubit>().fetchAllCoins();
     context.read<HurriyetCubit>().fetchAllCoins();
+    await _appCacheManager.init();
+
     await Future.delayed(const Duration(seconds: 3));
   }
 }
@@ -232,27 +243,49 @@ class TrialSomething extends StatelessWidget {
           .init(), // SOMETİMES BOX RETURN NULL L USED AWAİT BUT NOTHİNG CHANGED SO NOW L AM USİNG FUTURE BUİLDER FOR THİS İT'S WORKİNG.
       builder: (context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const OnboardPage();
+          return const Splash(); // BU BÖYLE OLMAZ DÜZELT BUNU 2 FUTURE BUİLDER SAÇMALIK DÜZELT
         } else {
-          print(_cacheManager.getBoolValue(PreferencesKeys.IS_FIRST_APP.name));
-          print(1);
-          print("object");
           if (_cacheManager.getBoolValue(PreferencesKeys.IS_FIRST_APP.name) ==
               "false") {
-            print(1);
             open();
-
             return const OnboardPage();
           } else {
             print(
                 _cacheManager.getBoolValue(PreferencesKeys.IS_FIRST_APP.name));
             print(4);
-            return const OnboardPage();
+            //return const OnboardPage();
 
-            //return const HomeView();
+            return const HomeView();
           }
         }
       },
     );
   }
 }
+
+
+/**
+ * return FutureBuilder(
+      future: _cacheManager
+          .init(), // SOMETİMES BOX RETURN NULL L USED AWAİT BUT NOTHİNG CHANGED SO NOW L AM USİNG FUTURE BUİLDER FOR THİS İT'S WORKİNG.
+      builder: (context, AsyncSnapshot snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Scaffold();
+        } else {
+          if (_cacheManager.getBoolValue(PreferencesKeys.IS_FIRST_APP.name) ==
+              "false") {
+            open();
+            return const OnboardPage();
+          } else {
+            print(
+                _cacheManager.getBoolValue(PreferencesKeys.IS_FIRST_APP.name));
+            print(4);
+            //return const OnboardPage();
+
+            return const HomeView();
+          }
+        }
+      },
+    );
+ * 
+ */

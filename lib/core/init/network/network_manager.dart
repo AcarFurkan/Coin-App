@@ -1,8 +1,7 @@
-import '../../enums/dotenv_enums.dart';
+import 'package:dio/dio.dart';
+
 import 'ICore_dio.dart';
 import 'core_dio.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class NetworkManager {
   static NetworkManager? _instace;

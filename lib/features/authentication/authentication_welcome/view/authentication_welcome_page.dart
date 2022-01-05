@@ -1,7 +1,8 @@
-import '../../login/view/login_page.dart';
-import '../../register/view/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../login/view/login_page.dart';
+import '../../register/view/register_page.dart';
 
 class AuthWelcomePage extends StatelessWidget {
   const AuthWelcomePage({Key? key}) : super(key: key);
@@ -15,8 +16,7 @@ class AuthWelcomePage extends StatelessWidget {
             child: SvgPicture.asset("assets/svg/login2.svg")),
         OutlinedButton(
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const LoginPage()));
+            Navigator.pushNamed(context, "/login");
           },
           child: Text(
             "LOGIN",
@@ -25,8 +25,7 @@ class AuthWelcomePage extends StatelessWidget {
         ),
         OutlinedButton(
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const RegisterPage()));
+            Navigator.pushNamed(context, "/register");
           },
           child: Text(
             "REGISTER",

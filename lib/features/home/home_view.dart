@@ -1,26 +1,24 @@
+import "dart:math" show pi;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../core/enums/locale_keys_enum.dart';
-import '../coin/bitexen/view/bitexen_page.dart';
-import '../coin/bitexen/viewmodel/page_viewmodel/cubit/bitexen_page_general_cubit.dart';
-import '../coin/hurriyet/view/hurriyet_page.dart';
-import '../coin/hurriyet/viewmodel/page_viewmodel/cubit/hurriyet_page_general_state_dart_cubit.dart';
-import '../coin/list_all_coin_page/viewmodel/page_viewmodel/cubit/list_page_general_cubit.dart';
-import '../coin/selected_coin/viewmodel/general/cubit/selected_page_general_cubit.dart';
-import '../coin/truncgil/view/truncgil_page.dart';
-import '../coin/truncgil/viewmodel/page_viewmodel.dart/cubit/truncgil_page_general_cubit.dart';
-import '../../product/repository/cache/app_cache_manager.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:provider/src/provider.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/src/provider.dart';
 
-import '../../locator.dart';
+import '../coin/bitexen/view/bitexen_page.dart';
+import '../coin/bitexen/viewmodel/page_viewmodel/cubit/bitexen_page_general_cubit.dart';
+import '../coin/hurriyet/view/hurriyet_page.dart';
+import '../coin/hurriyet/viewmodel/page_viewmodel/cubit/hurriyet_page_general_state_dart_cubit.dart';
 import '../coin/list_all_coin_page/view/coin_list_page.dart';
+import '../coin/list_all_coin_page/viewmodel/page_viewmodel/cubit/list_page_general_cubit.dart';
 import '../coin/selected_coin/view/selected_coin_page.dart';
-import "dart:math" show pi;
+import '../coin/selected_coin/viewmodel/general/cubit/selected_page_general_cubit.dart';
+import '../coin/truncgil/view/truncgil_page.dart';
+import '../coin/truncgil/viewmodel/page_viewmodel.dart/cubit/truncgil_page_general_cubit.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);

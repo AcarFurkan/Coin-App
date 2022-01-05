@@ -1,13 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
-import '../../../../core/enums/dotenv_enums.dart';
-import '../../../../core/init/network/core_dio.dart';
-import '../../../../core/model/error_model/base_error_model.dart';
-import '../../../../core/model/response_model/IResponse_model.dart';
-import '../../../../core/model/response_model/response_model.dart';
-import '../../../response_models/genelpara/genelpara_service_model.dart';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+import '../../../../../core/enums/dotenv_enums.dart';
+import '../../../../../core/init/network/core_dio.dart';
+import '../../../../../core/model/error_model/base_error_model.dart';
+import '../../../../../core/model/response_model/IResponse_model.dart';
+import '../../../../../core/model/response_model/response_model.dart';
+import '../../../../response_models/genelpara/genelpara_service_model.dart';
 
 class GenelParaService {
   static GenelParaService? _instance;
