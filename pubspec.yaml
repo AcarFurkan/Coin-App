@@ -49,6 +49,7 @@ dependencies:
   persian_tools: ^1.0.1
   flutter_svg: any
   intl: ^0.17.0
+  kartal: ^2.3.0
 
  
   #core utility

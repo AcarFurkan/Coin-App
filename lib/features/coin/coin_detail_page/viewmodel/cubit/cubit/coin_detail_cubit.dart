@@ -1,11 +1,11 @@
 import 'package:bloc/bloc.dart';
-import '../../../../../settings/subpage/audio_settings/model/audio_model.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
 import '../../../../../../locator.dart';
 import '../../../../../../product/model/my_coin_model.dart';
 import '../../../../../../product/repository/cache/coin_cache_manager.dart';
+import '../../../../../settings/subpage/audio_settings/model/audio_model.dart';
 
 part 'coin_detail_state.dart';
 

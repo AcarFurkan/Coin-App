@@ -2,8 +2,9 @@
     package="com.example.coin_with_architecture">
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/> 
    <application
+        android:usesCleartextTraffic="true"
         android:requestLegacyExternalStorage="true"
         android:label="Coin List"
         android:icon="@mipmap/launcher_icon">

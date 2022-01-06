@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:coin_with_architecture/features/authentication/viewmodel/cubit/user_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,7 +10,6 @@ import '../../../../product/language/locale_keys.g.dart';
 import '../../../../product/model/my_coin_model.dart';
 import '../../../../product/widget/component/coin_current_info_card.dart';
 import '../../../settings/view/settings_page.dart';
-import '../../coin_detail_page/view/coin_detail_page.dart';
 import '../viewmodel/cubit/coin_list_cubit.dart';
 import '../viewmodel/page_viewmodel/cubit/list_page_general_cubit.dart';
 
@@ -25,7 +25,9 @@ class CoinListPage extends StatelessWidget {
     context.read<ListPageGeneralCubit>().textEditingController =
         _searchTextEditingController;
     return DefaultTabController(
-      length: CoinCurrency.values.length,
+      length: context.read<UserCubit>().user?.level == 2
+          ? CoinCurrencyLevel2.values.length
+          : CoinCurrency.values.length,
       child: Scaffold(
         //extendBody: true,
         appBar: _appBar(context),
@@ -78,26 +80,45 @@ class CoinListPage extends StatelessWidget {
             border: Border(
                 bottom: BorderSide(
                     color: Theme.of(context).colorScheme.onPrimary, width: 3))),
-        tabs: _tabGenerator());
+        tabs: _tabGenerator(context));
   }
 
   List<Widget> tabBarViewGenerator(BuildContext context) {
-    return CoinCurrency.values
-        .map(
-          (e) => Center(child: _blocConsumer(e.name)),
-        )
-        .toList();
+    if (context.read<UserCubit>().user?.level == 2) {
+      return CoinCurrencyLevel2.values
+          .map(
+            (e) => Center(child: _blocConsumer(e.name)),
+          )
+          .toList();
+    } else {
+      return CoinCurrency.values
+          .map(
+            (e) => Center(child: _blocConsumer(e.name)),
+          )
+          .toList();
+    }
   }
 
-  List<Tab> _tabGenerator() {
-    return CoinCurrency.values
-        .map((e) => Tab(
-              child: AutoSizeText(
-                e.name,
-                maxLines: 1,
-              ),
-            ))
-        .toList();
+  List<Tab> _tabGenerator(BuildContext context) {
+    if (context.read<UserCubit>().user?.level == 2) {
+      return CoinCurrencyLevel2.values
+          .map((e) => Tab(
+                child: AutoSizeText(
+                  e.name,
+                  maxLines: 1,
+                ),
+              ))
+          .toList();
+    } else {
+      return CoinCurrency.values
+          .map((e) => Tab(
+                child: AutoSizeText(
+                  e.name,
+                  maxLines: 1,
+                ),
+              ))
+          .toList();
+    }
   }
 
   BlocConsumer<CoinListCubit, CoinListState> _blocConsumer(

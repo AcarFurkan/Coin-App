@@ -1,19 +1,28 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'my_user_model.g.dart';
+
+@JsonSerializable()
 class MyUser {
   String? email;
   String? name;
-  MyUser({
-    this.email,
-    this.name,
-  });
+  bool? isBackUpActive;
+  String? backUpType;
+  @JsonKey(ignore: true)
+  DateTime? updatedAt;
+  int? level;
 
-  Map<String, dynamic> toMap() {
-    return {'email': email, 'userName': name};
-  }
+  MyUser(
+      {this.email,
+      this.name,
+      this.isBackUpActive = false,
+      this.backUpType = "never",
+      this.updatedAt,
+      this.level});
 
-  factory MyUser.fromJson(Map<String, dynamic> json) => MyUser(
-        email: json["email"] == null ? null : json["email"],
-        name: json["name"] == null ? null : json["name"],
-      );
+  Map<String, dynamic> toMap() => _$MyUserToJson(this);
+
+  factory MyUser.fromJson(Map<String, dynamic> json) => _$MyUserFromJson(json);
   //NEDEN BU ŞEKİLDE OLUYOR BAK
   /*  MyUser.fromMap(Map<String, dynamic> map)
       : userID = map['userID'],

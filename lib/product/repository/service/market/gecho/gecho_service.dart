@@ -1,12 +1,12 @@
+import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 import '../../../../../core/enums/dotenv_enums.dart';
 import '../../../../../core/enums/http_request_enum.dart';
 import '../../../../../core/init/network/core_dio.dart';
 import '../../../../../core/model/response_model/IResponse_model.dart';
 import '../../../../response_models/gecho/gecho_service_model.dart';
-
 import '../base_service.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 enum Currencies { USD, BTC, ETH, TRY }
 
@@ -45,7 +45,6 @@ class GechoService implements BaseRepository<Gecho> {
           idUrl += "%2C";
         }
       }
-      print(idUrl);
     }
     return await coreDio!.fetchData<List<Gecho>, Gecho>(
         "coins/markets?vs_currency=$currency$idUrl&order=market_cap_desc&per_page=250&page=1&sparkline=false",

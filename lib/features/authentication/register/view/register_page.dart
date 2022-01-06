@@ -1,10 +1,10 @@
-import 'package:coin_with_architecture/features/authentication/viewmodel/cubit/user_cubit.dart';
-import 'package:coin_with_architecture/product/model/user/my_user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../../../../product/model/user/my_user_model.dart';
 import '../../../../product/widget/component/rounded_text_form_field.dart';
+import '../../viewmodel/cubit/user_cubit.dart';
 
 class RegisterPage extends StatelessWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -37,7 +37,11 @@ class RegisterPage extends StatelessWidget {
                     SizedBox(
                       width: MediaQuery.of(context).size.width,
                     ),
-                    Text(user.name ?? "" + (user.email ?? "")),
+                    Text(user.name ?? ""),
+                    Text((user.email ?? "")),
+                    Text((user.isBackUpActive.toString())),
+                    Text((user.backUpType ?? "")),
+                    Text((user.isBackUpActive.toString())),
                     OutlinedButton(
                         onPressed: () {
                           context.read<UserCubit>().signOut();
@@ -67,7 +71,7 @@ class RegisterPage extends StatelessWidget {
                             await context
                                 .read<UserCubit>()
                                 .createUserWithEmailandPassword(
-                                    "furkan@acar.com", "123123");
+                                    "furkan9@acar.com", "123123", "furkan");
                           },
                           child: const Text("Register")),
                     ]),

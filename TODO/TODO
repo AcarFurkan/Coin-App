@@ -69,6 +69,9 @@ FIREBASE
   
 TARİHLERDE intl paketi ile çözülebilecek bir hata var (öyle anladıma ma bak tarihleri bir düzene sok)
 
+CLOUD TRANSACTİONS
+-- register ve login olurken eski datalar silinmeden üstüne yazılmalı ama normal kayıt anında datalar update olmalı
+
 MaterialPageRoute({--maintainstate e bak dene
     required this.builder,
     RouteSettings? settings,

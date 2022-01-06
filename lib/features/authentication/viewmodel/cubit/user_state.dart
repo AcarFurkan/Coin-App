@@ -11,6 +11,8 @@ class UserLoading extends UserState {}
 
 class UserError extends UserState {}
 
+class UserUpdate extends UserState {}
+
 class UserFull extends UserState {
   MyUser user;
   UserFull({

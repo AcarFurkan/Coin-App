@@ -1,8 +1,8 @@
-import 'package:coin_with_architecture/product/repository/service/firebase/auth/base/auth_base.dart';
-
-import '../../../../model/user/my_user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+
+import '../../../../model/user/my_user_model.dart';
+import 'base/auth_base.dart';
 
 class FirebaseAuthService implements AuthBase {
   static FirebaseAuthService? _instace;
@@ -18,7 +18,7 @@ class FirebaseAuthService implements AuthBase {
   late final FirebaseAuth _auth;
   @override
   Future<MyUser?> createUserWithEmailandPassword(
-      String email, String password) async {
+      String email, String password, String name) async {
     try {
       UserCredential userCredential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
@@ -51,6 +51,7 @@ class FirebaseAuthService implements AuthBase {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
+      if (userCredential.user != null) {}
       return _userFromFirebase(userCredential.user);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {

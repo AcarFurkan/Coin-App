@@ -1,5 +1,3 @@
-import 'package:coin_with_architecture/features/authentication/login/view/login_page.dart';
-import 'package:coin_with_architecture/features/authentication/viewmodel/cubit/user_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +6,8 @@ import '../../../core/extension/string_extension.dart';
 import '../../../product/language/locale_keys.g.dart';
 import '../../../product/theme/theme_provider.dart';
 import '../../../product/widget/component/settings_page_card_item.dart';
+import '../../authentication/login/view/login_page.dart';
+import '../../authentication/viewmodel/cubit/user_cubit.dart';
 import '../subpage/audio_settings/view/audio2.dart';
 import '../subpage/help_page/view/help_page.dart';
 import '../subpage/language_page/view/language_page.dart';
@@ -56,10 +56,8 @@ class _SettingsPageState extends State<SettingsPage> {
                       MaterialPageRoute(
                           builder: (context) => const UserSettings()));
                 } else {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const LoginPage()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => LoginPage()));
                 }
               },
             ),

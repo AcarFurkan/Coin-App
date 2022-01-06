@@ -5,6 +5,7 @@
 import 'dart:convert';
 
 import 'package:json_annotation/json_annotation.dart';
+
 part 'genelpara_service_model.g.dart';
 
 GenelPara genelParaFromJson(String str) => GenelPara.fromJson(json.decode(str));

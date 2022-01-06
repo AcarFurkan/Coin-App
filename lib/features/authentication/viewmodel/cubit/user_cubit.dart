@@ -1,15 +1,20 @@
 import 'package:bloc/bloc.dart';
-import 'package:coin_with_architecture/product/repository/service/firebase/auth/base/auth_base.dart';
+import 'package:coin_with_architecture/core/enums/back_up_enum.dart';
+import '../../../../product/repository/cache/coin_cache_manager.dart';
+import '../../../../locator.dart';
+import '../../../../product/model/my_coin_model.dart';
+import '../../../../product/repository/service/firebase/auth/base/auth_base.dart';
 import 'package:meta/meta.dart';
 
-import 'package:coin_with_architecture/product/model/user/my_user_model.dart';
-import 'package:coin_with_architecture/product/repository/service/user_service_controller/user_service_controller.dart';
+import '../../../../product/model/user/my_user_model.dart';
+import '../../../../product/repository/service/user_service_controller/user_service_controller.dart';
 
 part 'user_state.dart';
 
 class UserCubit extends Cubit<UserState> implements AuthBase {
   UserCubit() : super(UserInitial()) {
     getCurrentUser();
+    groupValue = BackUpTypes.never.name;
   }
 
   final UserServiceController _userServiceController =
@@ -19,25 +24,60 @@ class UserCubit extends Cubit<UserState> implements AuthBase {
   String? password;
   String? emailErrorMessage;
   String? passwordErrorMessage;
-  //MyUser? get user => _user;
-//
-  //set user(MyUser? value) => _user = value;
+  bool? isBackUpActiveForUpdate;
+  String? backUpTypeForUpdate;
+  List<MainCurrencyModel> differentCurrensies = [];
+  List<MainCurrencyModel>? coinListFromDataBase;
+
+  final CoinCacheManager _cacheManager = locator<CoinCacheManager>();
+  late String groupValue;
+  changeGroupValue(String path) {
+    groupValue = path;
+    emit(UserFull(user: user!));
+  }
+
+  Future<MyUser?> updateUser() async {
+    print(groupValue == BackUpTypes.tapped.name);
+    if (BackUpTypes.never.name != groupValue) {
+      user?.isBackUpActive = true;
+    } else {
+      user?.isBackUpActive = false;
+    }
+
+    user?.backUpType = groupValue;
+    emit(UserFull(user: user!));
+
+    if (user != null) {
+      //user = await _userServiceController.updateUser(user!);
+      try {
+        print(user?.updatedAt);
+        user = await _userServiceController.updateUser(user!);
+      } catch (e) {
+        print("viewmodel creat updateUser" + e.toString());
+      }
+    }
+  }
+
+  List<MainCurrencyModel>? _fetchAllAddedCoinsFromDatabase() {
+    return _cacheManager.getValues();
+  }
 
   @override
   Future<MyUser?> createUserWithEmailandPassword(
-      String email, String password) async {
+      String email, String password, String name) async {
     if (true) {
       // email password control
       try {
         emit(UserLoading());
         user = await _userServiceController.createUserWithEmailandPassword(
-            email, password);
+            email, password, name);
         if (user != null) {
           emit(UserFull(user: user!));
         }
       } catch (e) {
-        emit(UserError());
         print("viewmodel creat user error" + e.toString());
+
+        emit(UserError());
       }
     }
   }
@@ -45,17 +85,22 @@ class UserCubit extends Cubit<UserState> implements AuthBase {
   @override
   Future<MyUser?> getCurrentUser() async {
     try {
-      emit(UserLoading());
+      if (user == null) {
+        emit(UserLoading());
+      }
+
       user = await _userServiceController.getCurrentUser();
       if (user != null) {
         emit(UserFull(user: user!));
+
         return user; // YOU ARE YOU SUİNG BLOC YOU DONT NEED NEED RETURN STATEMENT ANYMORE.
       } else {
         emit(UserNull());
       }
     } catch (e) {
-      emit(UserError());
       print("Viewmodel current user error" + e.toString());
+
+      emit(UserError());
     }
   }
 
@@ -68,15 +113,63 @@ class UserCubit extends Cubit<UserState> implements AuthBase {
         emit(UserLoading());
         user = await _userServiceController.signInWithEmailandPassword(
             email, password);
+        print("666666666666666666666666666");
+        print(user?.updatedAt);
+
         if (user != null) {
+          fetchCurrenciesByEmail(user!);
           emit(UserFull(user: user!));
         } else {
           emit(UserNull());
         }
       }
     } catch (e) {
-      emit(UserError());
       print("viewmodel sign in with email error" + e.toString());
+
+      emit(UserError());
+    }
+  }
+
+  void overwriteDataToDb() {
+    //  _cacheManager.addItems(differentCurrensies);bunuda bir dene***************************************
+
+    differentCurrensies.forEach((element) {
+      _cacheManager.putItem(element.id, element);
+    });
+  }
+
+  @override
+  Future<List<MainCurrencyModel>?> fetchCurrenciesByEmail(MyUser user) async {
+    differentCurrensies.clear();
+    List<MainCurrencyModel>? listCurrenciesFromService;
+    List<MainCurrencyModel>? listCurrenciesFromDb;
+
+    try {
+      if (true) {
+        listCurrenciesFromService =
+            await _userServiceController.fetchCoinInfoByEmail(user.email ?? "");
+        listCurrenciesFromDb = _fetchAllAddedCoinsFromDatabase();
+
+        if (listCurrenciesFromService != null) {
+          if (listCurrenciesFromDb != null) {
+            // DB BOŞ OLABİLİR BUNU DEĞİŞTİR
+            for (var itemFromService in listCurrenciesFromService) {
+              if (!(listCurrenciesFromDb.contains(itemFromService))) {
+                differentCurrensies.add(itemFromService);
+              }
+            }
+            if (differentCurrensies.isNotEmpty) {
+              emit(UserUpdate());
+              emit(UserFull(user: user));
+            }
+          }
+        }
+        return listCurrenciesFromService;
+      }
+    } catch (e) {
+      print("viewmodel fetch currencies error" + e.toString());
+
+      emit(UserError());
     }
   }
 
@@ -86,6 +179,7 @@ class UserCubit extends Cubit<UserState> implements AuthBase {
       emit(UserLoading());
       user = await _userServiceController.signInWithGoogle();
       if (user != null) {
+        fetchCurrenciesByEmail(user!);
         emit(UserFull(user: user!));
 
         return user; // YOU ARE YOU SUİNG BLOC YOU DONT NEED NEED RETURN STATEMENT ANYMORE.
@@ -93,8 +187,9 @@ class UserCubit extends Cubit<UserState> implements AuthBase {
         emit(UserNull());
       }
     } catch (e) {
-      emit(UserError());
       print("viewmodel google signin error:" + e.toString());
+
+      emit(UserError());
     }
   }
 
@@ -128,5 +223,13 @@ class UserCubit extends Cubit<UserState> implements AuthBase {
       emailErrorMessage = null;
     }
     return result;
+  }
+
+  Future<void> backUpWhenTapped() async {
+    List<MainCurrencyModel>? mainCurrencyList =
+        _fetchAllAddedCoinsFromDatabase();
+    await _userServiceController.updateUserCurrenciesInformation(user!,
+        listCurrency: mainCurrencyList);
+    await getCurrentUser();
   }
 }

@@ -2,9 +2,15 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
+import 'package:coin_with_architecture/core/enums/back_up_enum.dart';
+import 'package:coin_with_architecture/features/authentication/viewmodel/cubit/user_cubit.dart';
+import 'package:coin_with_architecture/product/model/user/my_user_model.dart';
+import 'package:coin_with_architecture/product/repository/service/user_service_controller/user_service_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+
+import 'package:provider/src/provider.dart';
 
 import '../../../../../locator.dart';
 import '../../../../../product/model/my_coin_model.dart';
@@ -25,6 +31,8 @@ class CoinCubit extends Cubit<CoinState> {
   List<String>? _itemsToBeDelete;
   List<String>? get itemsToBeDelete => _itemsToBeDelete;
   AudioPlayer? player;
+  final UserServiceController _userServiceController =
+      UserServiceController.instance;
 
   Timer? timer;
   Color textColor = Colors.black;
@@ -43,9 +51,69 @@ class CoinCubit extends Cubit<CoinState> {
 
     List<MainCurrencyModel>? coinListFromDataBase =
         _fetchAllAddedCoinsFromDatabase();
+    MyUser? myUser = context.read<UserCubit>().user;
 
     if (coinListFromDataBase == null) {
       return [];
+    }
+    if (context.read<UserCubit>().user != null &&
+        context.read<UserCubit>().user?.isBackUpActive == true) {
+      if (context.read<UserCubit>().user!.updatedAt != null) {
+        print(context.read<UserCubit>().user!.updatedAt!);
+        print(DateTime.now());
+
+        int day = ((DateTime.now().millisecondsSinceEpoch) -
+                context
+                    .read<UserCubit>()
+                    .user!
+                    .updatedAt!
+                    .millisecondsSinceEpoch) ~/
+            (1000 * 60 * 60 * 24);
+        print(day);
+        if (myUser!.backUpType == BackUpTypes.daily.name) {
+          if (day >= 1) {
+            print("YEEEEEEEEEEDEEEEEEEEEEEEEEKKKKKKKKKKKK    " +
+                context.read<UserCubit>().user!.backUpType!);
+            await _userServiceController.updateUserCurrenciesInformation(
+                context.read<UserCubit>().user!,
+                listCurrency: coinListFromDataBase);
+            await context.read<UserCubit>().getCurrentUser();
+          }
+        } else if (myUser.backUpType == BackUpTypes.weekly.name) {
+          if (day >= 7) {
+            print("YEEEEEEEEEEDEEEEEEEEEEEEEEKKKKKKKKKKKK    " +
+                context.read<UserCubit>().user!.backUpType!);
+            await _userServiceController.updateUserCurrenciesInformation(
+                context.read<UserCubit>().user!,
+                listCurrency: coinListFromDataBase);
+            await context.read<UserCubit>().getCurrentUser();
+          }
+        } else if (myUser.backUpType == BackUpTypes.monthly.name) {
+          if (day >= 30) {
+            print("YEEEEEEEEEEDEEEEEEEEEEEEEEKKKKKKKKKKKK    " +
+                context.read<UserCubit>().user!.backUpType!);
+            await _userServiceController.updateUserCurrenciesInformation(
+                context.read<UserCubit>().user!,
+                listCurrency: coinListFromDataBase);
+            await context.read<UserCubit>().getCurrentUser();
+          }
+        } //bunu farklı bir şekilde çözmen aslında bir şey yok ta direk login olan yere götür bunu
+
+        //  print(FieldValue.serverTimestamp().toString());
+
+        // await _userServiceController.updateUserCurrenciesInformation(
+        //     context.read<UserCubit>().user!,
+        //     listCurrency: coinListFromDataBase);
+
+        // ScaffoldMessenger.of(context).showSnackBar(SnackBar(   ////// SCAFFOLD MESSSENGER İÇİN CONTEXTİN MATERİALAPPTEN TÜREMESİ LAZIM BUNU AYARLARSIN SENİN YAPI ONA GÖRE RAYI DÜZELTİCEKSİN ZATEN
+        //     content: Text("yedek alınıyor " +
+        //         context.read<UserCubit>().user!.backUpType!)));
+      }
+    } else if (context.read<UserCubit>().user != null &&
+        context.read<UserCubit>().user?.isBackUpActive == false) {
+      print("YEDEK KAPALI");
+    } else if (context.read<UserCubit>().user == null) {
+      print("hesaaaapppp yoyoookk");
     }
     for (var i = 0; i < coinListFromService.length; i++) {
       for (var itemFromDataBase in coinListFromDataBase) {

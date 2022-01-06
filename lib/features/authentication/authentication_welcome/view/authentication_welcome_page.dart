@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../login/view/login_page.dart';
-import '../../register/view/register_page.dart';
-
 class AuthWelcomePage extends StatelessWidget {
   const AuthWelcomePage({Key? key}) : super(key: key);
 

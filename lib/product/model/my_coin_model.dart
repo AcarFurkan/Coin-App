@@ -47,6 +47,25 @@ class MainCurrencyModel {
   bool? isMaxLoop;
   @HiveField(19)
   String? lastUpdate;
+  Map<String, dynamic> toMap() {
+    return {
+      'isAlarmActive': isAlarmActive,
+      'currencyName': name,
+      'isFavorite': isFavorite,
+      'id': id,
+      'lastPrice': lastPrice
+    };
+  }
+
+  factory MainCurrencyModel.fromJson(Map<String, dynamic> json) =>
+      MainCurrencyModel(
+        id: json["id"] == null ? null : json["id"],
+        name: json["currencyName"] == null ? null : json["currencyName"],
+        isAlarmActive:
+            json["isAlarmActive"] == null ? null : json["isAlarmActive"],
+        isFavorite: json["isFavorite"] == null ? null : json["isFavorite"],
+        lastPrice: json["lastPrice"] == null ? null : json["lastPrice"],
+      );
 
   MainCurrencyModel({
     required this.name,
@@ -70,4 +89,16 @@ class MainCurrencyModel {
     this.min = 0,
     this.max = 0,
   });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is MainCurrencyModel && other.id == id;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode;
+  }
 }
