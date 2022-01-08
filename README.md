@@ -1,13 +1,9 @@
 first            |  second
 :-------------------------:|:-------------------------:
-![Screenshot_1641679147](https://user-images.githubusercontent.com/65075121/148661621-c73da690-0479-4286-a768-d6eb609b7f87.png)|!
-![Screenshot_1641679152](https://user-images.githubusercontent.com/65075121/148661623-4937c124-2ced-4340-bda2-a67806758157.png)
-![Screenshot_1641679153](https://user-images.githubusercontent.com/65075121/148661628-20cc98a1-9cc4-4ce9-a4e6-9de673161b90.png)|!
-![Screenshot_1641679179](https://user-images.githubusercontent.com/65075121/148661631-884454d0-bd0e-481e-84df-2e885ed4eaf4.png)
-![Screenshot_1641679160](https://user-images.githubusercontent.com/65075121/148661632-139b3115-37fe-4edf-b86b-f3c6603e1565.png)|!
-![Screenshot_1641679190](https://user-images.githubusercontent.com/65075121/148661640-9915d5fb-cad5-4866-a04c-2fecf94fcc9f.png)
-![Screenshot_1641679197](https://user-images.githubusercontent.com/65075121/148661645-e460a76f-51b6-46d1-ab6f-819cad859ae6.png)|!
-![Screenshot_1641679594](https://user-images.githubusercontent.com/65075121/148661648-36751bf5-a20b-467e-9d04-e25998f5cffc.png)
+![Screenshot_1641679147](https://user-images.githubusercontent.com/65075121/148661621-c73da690-0479-4286-a768-d6eb609b7f87.png)|![Screenshot_1641679152](https://user-images.githubusercontent.com/65075121/148661623-4937c124-2ced-4340-bda2-a67806758157.png)
+![Screenshot_1641679153](https://user-images.githubusercontent.com/65075121/148661628-20cc98a1-9cc4-4ce9-a4e6-9de673161b90.png)|![Screenshot_1641679179](https://user-images.githubusercontent.com/65075121/148661631-884454d0-bd0e-481e-84df-2e885ed4eaf4.png)
+![Screenshot_1641679160](https://user-images.githubusercontent.com/65075121/148661632-139b3115-37fe-4edf-b86b-f3c6603e1565.png)|![Screenshot_1641679190](https://user-images.githubusercontent.com/65075121/148661640-9915d5fb-cad5-4866-a04c-2fecf94fcc9f.png)
+![Screenshot_1641679197](https://user-images.githubusercontent.com/65075121/148661645-e460a76f-51b6-46d1-ab6f-819cad859ae6.png)|![Screenshot_1641679594](https://user-images.githubusercontent.com/65075121/148661648-36751bf5-a20b-467e-9d04-e25998f5cffc.png)
 
 ![Screenshot_1641679201](https://user-images.githubusercontent.com/65075121/148661653-2d21b4c2-85ea-43e4-9467-5ae11f5bc62f.png)
 
