@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:coin_with_architecture/core/enums/back_up_enum.dart';
+import 'package:flutter/material.dart';
 import '../../../../product/repository/cache/coin_cache_manager.dart';
 import '../../../../locator.dart';
 import '../../../../product/model/my_coin_model.dart';
 import '../../../../product/repository/service/firebase/auth/base/auth_base.dart';
-import 'package:meta/meta.dart';
 
 import '../../../../product/model/user/my_user_model.dart';
 import '../../../../product/repository/service/user_service_controller/user_service_controller.dart';
@@ -15,12 +15,17 @@ class UserCubit extends Cubit<UserState> implements AuthBase {
   UserCubit() : super(UserInitial()) {
     getCurrentUser();
     groupValue = BackUpTypes.never.name;
+    isLoginPage = true;
+    isLockOpen = true;
   }
 
   final UserServiceController _userServiceController =
       UserServiceController.instance;
   MyUser? user;
   String? email;
+  late bool isLoginPage;
+  late bool isLockOpen;
+
   String? password;
   String? emailErrorMessage;
   String? passwordErrorMessage;
@@ -28,12 +33,39 @@ class UserCubit extends Cubit<UserState> implements AuthBase {
   String? backUpTypeForUpdate;
   List<MainCurrencyModel> differentCurrensies = [];
   List<MainCurrencyModel>? coinListFromDataBase;
+  TextEditingController? emailController = TextEditingController();
+  TextEditingController? passwordController = TextEditingController();
+  TextEditingController? nameController = TextEditingController();
 
   final CoinCacheManager _cacheManager = locator<CoinCacheManager>();
   late String groupValue;
   changeGroupValue(String path) {
     groupValue = path;
     emit(UserFull(user: user!));
+  }
+
+  tappedLoginRegisterButton() async {
+    if (isLoginPage) {
+      await signInWithEmailandPassword(
+          emailController!.text, passwordController!.text);
+    } else {
+      await createUserWithEmailandPassword(emailController!.text,
+          passwordController!.text, nameController!.text);
+    }
+  }
+
+  changeIsLoginPage(int index) {
+    if (index == 0) {
+      isLoginPage = true;
+    } else {
+      isLoginPage = false;
+    }
+    emit(UserNull());
+  }
+
+  changeIsLockOpen() {
+    isLockOpen = !isLockOpen;
+    emit(UserNull());
   }
 
   Future<MyUser?> updateUser() async {
@@ -59,6 +91,7 @@ class UserCubit extends Cubit<UserState> implements AuthBase {
   }
 
   List<MainCurrencyModel>? _fetchAllAddedCoinsFromDatabase() {
+    print(_cacheManager.getValues()?.length);
     return _cacheManager.getValues();
   }
 
@@ -73,11 +106,14 @@ class UserCubit extends Cubit<UserState> implements AuthBase {
             email, password, name);
         if (user != null) {
           emit(UserFull(user: user!));
+        } else {
+          emit(UserNull());
         }
       } catch (e) {
         print("viewmodel creat user error" + e.toString());
 
         emit(UserError());
+        emit(UserNull());
       }
     }
   }
@@ -101,6 +137,7 @@ class UserCubit extends Cubit<UserState> implements AuthBase {
       print("Viewmodel current user error" + e.toString());
 
       emit(UserError());
+      emit(UserNull());
     }
   }
 
@@ -113,8 +150,6 @@ class UserCubit extends Cubit<UserState> implements AuthBase {
         emit(UserLoading());
         user = await _userServiceController.signInWithEmailandPassword(
             email, password);
-        print("666666666666666666666666666");
-        print(user?.updatedAt);
 
         if (user != null) {
           fetchCurrenciesByEmail(user!);
@@ -127,6 +162,7 @@ class UserCubit extends Cubit<UserState> implements AuthBase {
       print("viewmodel sign in with email error" + e.toString());
 
       emit(UserError());
+      emit(UserNull());
     }
   }
 
@@ -152,6 +188,7 @@ class UserCubit extends Cubit<UserState> implements AuthBase {
 
         if (listCurrenciesFromService != null) {
           if (listCurrenciesFromDb != null) {
+            // db de dont send null list it send empty list
             // DB BOŞ OLABİLİR BUNU DEĞİŞTİR
             for (var itemFromService in listCurrenciesFromService) {
               if (!(listCurrenciesFromDb.contains(itemFromService))) {
@@ -170,6 +207,7 @@ class UserCubit extends Cubit<UserState> implements AuthBase {
       print("viewmodel fetch currencies error" + e.toString());
 
       emit(UserError());
+      emit(UserNull());
     }
   }
 
@@ -190,6 +228,7 @@ class UserCubit extends Cubit<UserState> implements AuthBase {
       print("viewmodel google signin error:" + e.toString());
 
       emit(UserError());
+      emit(UserNull());
     }
   }
 
@@ -204,6 +243,8 @@ class UserCubit extends Cubit<UserState> implements AuthBase {
     } catch (e) {
       print("Viewmodel signout error" + e.toString());
       emit(UserError());
+      emit(UserNull());
+
       return false;
     }
   }
@@ -228,6 +269,7 @@ class UserCubit extends Cubit<UserState> implements AuthBase {
   Future<void> backUpWhenTapped() async {
     List<MainCurrencyModel>? mainCurrencyList =
         _fetchAllAddedCoinsFromDatabase();
+
     await _userServiceController.updateUserCurrenciesInformation(user!,
         listCurrency: mainCurrencyList);
     await getCurrentUser();

@@ -27,69 +27,10 @@ class HomeView extends StatefulWidget {
   State<HomeView> createState() => _HomeViewState();
 }
 
-Widget aastream() {
-  final Stream<QuerySnapshot> _usersStream =
-      FirebaseFirestore.instance.collection('users').snapshots();
-
-  return SafeArea(
-      child: StreamBuilder<QuerySnapshot>(
-    stream: _usersStream,
-    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-      if (snapshot.hasError) {
-        return Text('Something went wrong');
-      }
-
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        return Text("Loading");
-      }
-
-      return ListView(
-        children: snapshot.data!.docs.map((DocumentSnapshot document) {
-          Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-          return ListTile(
-            title: Text(data['full_name']),
-            subtitle: Text(data['age']),
-          );
-        }).toList(),
-      );
-    },
-  ));
-}
-
-Widget aa() {
-  CollectionReference users = FirebaseFirestore.instance.collection('users');
-
-  return SafeArea(
-    child: FutureBuilder<DocumentSnapshot>(
-      future: users.doc().get(),
-      builder:
-          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-        if (snapshot.hasError) {
-          return Text("Something went wrong");
-        }
-
-        if (snapshot.hasData && !snapshot.data!.exists) {
-          return Text("Document does not exist");
-        }
-
-        if (snapshot.connectionState == ConnectionState.done) {
-          Map<String, dynamic> data =
-              snapshot.data!.data() as Map<String, dynamic>;
-          return Text("Full Name: ${data['full_name']} ${data['age']}");
-        }
-
-        return Text("loading");
-      },
-    ),
-  );
-}
-
 class _HomeViewState extends State<HomeView>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
-  late FirebaseAuth auth;
-  late FirebaseFirestore firestore;
 
   List listPage = [
     SelectedCoinPage(),
@@ -103,16 +44,6 @@ class _HomeViewState extends State<HomeView>
   @override
   void initState() {
     super.initState();
-    auth = FirebaseAuth.instance;
-    firestore = FirebaseFirestore.instance;
-
-    //auth.authStateChanges().listen((User? user) {
-    //  if (user == null) {
-    //    print('User is currently signed out!');
-    //  } else {
-    //    print('User is signed in!');
-    //  }
-    //});
 
     _tabController = TabController(length: listPage.length, vsync: this);
     print("initState");
@@ -149,7 +80,6 @@ class _HomeViewState extends State<HomeView>
       context.read<TruncgilPageGeneralCubit>().closeKeyBoardAndUnFocus();
     }
     setState(() {
-      print("aaaaaaaaaa");
       _selectedIndex = index;
     });
   }
@@ -200,94 +130,11 @@ class _HomeViewState extends State<HomeView>
     );
   }
 
-  Future<UserCredential> signInWithGoogle() async {
-    // Trigger the authentication flow
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
-    // Obtain the auth details from the request
-    final GoogleSignInAuthentication? googleAuth =
-        await googleUser?.authentication;
-
-    // Create a new credential
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
-
-    // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
-  }
-
-  Future<void> adduser2() async {
-    CollectionReference users = FirebaseFirestore.instance.collection('users');
-    return users
-        .add({
-          'full_name': "fullName", // John Doe
-          'company': "company", // Stokes and Sons
-          'age': "age" // 42
-        })
-        .then((value) => print("User Added"))
-        .catchError((error) => print("Failed to add user: $error"));
-  }
-
-  Future<void> readaa() async {
-    FirebaseFirestore.instance
-        .collection('users')
-        .where(
-          "age",
-        )
-        .get()
-        .then((QuerySnapshot querySnapshot) {
-      querySnapshot.docs.forEach((doc) {
-        print(doc["full_name"]);
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
-        //floatingActionButton: Column(
-        //  mainAxisAlignment: MainAxisAlignment.end,
-        //  children: [
-        //    FloatingActionButton(
-        //      heroTag: "a",
-        //      onPressed: () async {
-        //        try {
-        //          await auth.createUserWithEmailAndPassword(
-        //              email: "facar@gmail.com", password: "123123");
-        //          await signInWithGoogle();
-        //          adduser2();
-        //        } catch (e) {
-        //          print(e);
-        //        }
-        //      },
-        //      child: Icon(Icons.add),
-        //    ),
-        //    FloatingActionButton(
-        //      heroTag: "b",
-        //      onPressed: () async {
-        //        await auth.signInWithEmailAndPassword(
-        //            email: "facar@gmail.com", password: "123123");
-        //        //await readaa();
-        //      },
-        //      child: Icon(Icons.multiline_chart),
-        //    ),
-        //    FloatingActionButton(
-        //      heroTag: "c",
-        //      onPressed: () {
-        //        AppCacheManager _cacheManager = locator<AppCacheManager>();
-
-        //        _cacheManager.putBoolItem(
-        //            PreferencesKeys.IS_FIRST_APP.name, false);
-        //        // auth.signOut();
-        //      },
-        //      child: Icon(Icons.remove),
-        //    )
-        //  ],
-        //),
         extendBody: true,
         body: listPage[_selectedIndex],
         bottomNavigationBar: CurvedNavigationBar(

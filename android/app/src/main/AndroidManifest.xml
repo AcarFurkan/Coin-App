@@ -6,9 +6,11 @@
    <application
         android:usesCleartextTraffic="true"
         android:requestLegacyExternalStorage="true"
+        android:windowSoftInputMode="adjustResize"
         android:label="Coin List"
         android:icon="@mipmap/launcher_icon">
         <activity
+        
             android:name=".MainActivity"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"

@@ -6,13 +6,11 @@ import '../../../core/extension/string_extension.dart';
 import '../../../product/language/locale_keys.g.dart';
 import '../../../product/theme/theme_provider.dart';
 import '../../../product/widget/component/settings_page_card_item.dart';
-import '../../authentication/login/view/login_page.dart';
 import '../../authentication/viewmodel/cubit/user_cubit.dart';
 import '../subpage/audio_settings/view/audio2.dart';
 import '../subpage/help_page/view/help_page.dart';
 import '../subpage/language_page/view/language_page.dart';
 import '../subpage/language_page/viewmodel/language_page_viewmodel.dart';
-import '../subpage/user_settings/view/user_settings_page.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -50,15 +48,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 size: MediaQuery.of(context).size.height / 40,
               ),
               ontap: () {
-                if (context.read<UserCubit>().user == null) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const UserSettings()));
-                } else {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => LoginPage()));
-                }
+                print("aaa");
+                Navigator.pushNamed(context, "/userSettings");
               },
             ),
             SettingsCardItem(

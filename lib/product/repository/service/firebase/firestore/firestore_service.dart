@@ -58,8 +58,6 @@ class FirestoreService implements StoreBase {
   @override
   Future<bool> saveUserInformations(MyUser user,
       {List<MainCurrencyModel>? listCurrency}) async {
-    //burda userın update olma durumunu ekle sen farkloı bir db kontrolü yapacaksın
-
     var map = user.toMap();
 
     if (user.updatedAt == null) {
@@ -88,31 +86,31 @@ class FirestoreService implements StoreBase {
 
   @override
   Future<bool> updateUserCurrenciesInformation(MyUser user,
-      {List<MainCurrencyModel>? listCurrency}) async {
+      {List<MainCurrencyModel>? listCurrencyFromDb}) async {
     DocumentSnapshot _user = await _firestore.doc("users/${user.email}").get();
-    print("1111111111111111111111111111111111111111");
     var map = user.toMap();
     map["updatedAt"] = FieldValue.serverTimestamp();
 
     await _firestore.collection("users").doc(user.email).set(map);
-    if (listCurrency != null && listCurrency.isNotEmpty) {
+    if (listCurrencyFromDb != null && listCurrencyFromDb.isNotEmpty) {
       List<MainCurrencyModel>? listFromService =
           await fetchCurrenciesByEmail(user.email!);
-      print("listFromService?.length");
 
       print(listFromService?.length);
 
       if (listFromService != null) {
+        for (var item in listCurrencyFromDb) {
+          await _firestore
+              .collection("users")
+              .doc(user.email)
+              .collection("currency")
+              .doc(item.id)
+              .set(item.toMap());
+        }
+
         for (var item in listFromService) {
-          if (listCurrency.contains(item)) {
+          if (!listCurrencyFromDb.contains(item)) {
             await _firestore
-                .collection("users")
-                .doc(user.email)
-                .collection("currency")
-                .doc(item.id)
-                .set(item.toMap());
-          } else {
-            _firestore
                 .collection("users")
                 .doc(user.email)
                 .collection("currency")
@@ -121,7 +119,7 @@ class FirestoreService implements StoreBase {
           }
         }
       } else {
-        for (var item in listCurrency) {
+        for (var item in listCurrencyFromDb) {
           await _firestore
               .collection("users")
               .doc(user.email)
@@ -138,8 +136,6 @@ class FirestoreService implements StoreBase {
   @override
   Future<bool> updateUserInformations(MyUser user,
       {List<MainCurrencyModel>? listCurrency}) async {
-    //await readUserInformations(user.email!);
-
     var map = user.toMap();
 
     if (user.updatedAt == null) {

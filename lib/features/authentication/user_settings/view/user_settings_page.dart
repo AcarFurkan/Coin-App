@@ -3,45 +3,38 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:kartal/kartal.dart';
 
 import '../../../../product/model/user/my_user_model.dart';
-import '../../../../product/repository/service/firebase/firestore/firestore_service.dart';
-import '../../../../product/widget/component/rounded_text_form_field.dart';
 import '../../viewmodel/cubit/user_cubit.dart';
+part './subview/login_register_view.dart';
 
-class LoginPage extends StatelessWidget {
-  LoginPage({Key? key}) : super(key: key);
+class UserSettings extends StatelessWidget {
+  UserSettings({Key? key}) : super(key: key);
   MyUser? userInformationForUpdate;
+  final GlobalKey<FormState> _formState = GlobalKey<FormState>();
 
+  late BuildContext _buildContextForViewInset;
   @override
   Widget build(BuildContext context) {
+    _buildContextForViewInset = context;
     return Scaffold(
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            FirestoreService.instance
-                .readUserInformations("gitprojectfurkan@gmail.com");
+          onPressed: () async {
+            await context.read<UserCubit>().getCurrentUser();
           },
           child: Icon(Icons.add),
-        ),
-        appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-            ),
-            onPressed: () {
-              Navigator.popUntil(
-                  context, (ModalRoute.withName("/settingsGeneral")));
-            },
-          ),
-          title: Text("Login"),
         ),
         body: BlocConsumer<UserCubit, UserState>(
           listener: (context, state) async {
             if (state is UserUpdate) {
               //ScaffoldMessenger.of(context)
               //    .showSnackBar(SnackBar(content: Text("data")));
-              showAlertDialog(context);
+              foundBackUpAlertDialog(context);
             }
+            //if (state is UserNull) {
+            //  Navigator.pushNamed(context, "/login");
+            //}
           },
           builder: (context, state) {
             if (state is UserFull) {
@@ -63,7 +56,7 @@ class LoginPage extends StatelessWidget {
                             Text("Back Up " + (user.backUpType ?? "") + "😍"),
                       ),
                       onTap: () {
-                        showAlertDialogForBackUp(context);
+                        selectedBackUpTypeAlertDialog(context);
                       },
                     ),
                     Text((user.email ?? "")),
@@ -97,38 +90,7 @@ class LoginPage extends StatelessWidget {
                         : Container(),
                   ]);
             } else if (state is UserNull) {
-              return Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: ListView(
-                    physics: const BouncingScrollPhysics(),
-                    shrinkWrap: true,
-                    children: [
-                      SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.5,
-                          child: SvgPicture.asset("assets/svg/login2.svg")),
-                      Padding(
-                          padding: EdgeInsets.symmetric(vertical: 10),
-                          child: buildTextFormField(
-                            "furkan@acar.com",
-                          )),
-                      Padding(
-                          padding: EdgeInsets.symmetric(vertical: 10),
-                          child: buildTextFormField("123123")),
-                      OutlinedButton(
-                          onPressed: () async {
-                            await context
-                                .read<UserCubit>()
-                                .signInWithEmailandPassword(
-                                    "furkan9@acar.com", "123123");
-                          },
-                          child: const Text("Login")),
-                      OutlinedButton(
-                          onPressed: () async {
-                            await context.read<UserCubit>().signInWithGoogle();
-                          },
-                          child: const Text("Google"))
-                    ]),
-              );
+              return loginRegisterView(context);
             } else if (state is UserLoading) {
               return const Center(child: CircularProgressIndicator.adaptive());
             } else {
@@ -140,7 +102,7 @@ class LoginPage extends StatelessWidget {
         ));
   }
 
-  showAlertDialogForBackUp(BuildContext context) async {
+  selectedBackUpTypeAlertDialog(BuildContext context) async {
     await showDialog(
       context: context,
       builder: (context) => CupertinoAlertDialog(
@@ -179,24 +141,11 @@ class LoginPage extends StatelessWidget {
             },
           ),
         ),
-        // actions: <Widget>[
-        //   TextButton(
-        //     onPressed: () => Navigator.of(context).pop(false),
-        //     child: const Text('No'),
-        //   ),
-        //   TextButton(
-        //     onPressed: () {
-        //       Navigator.of(context).pop(false);
-        //       context.read<UserCubit>().updateUser();
-        //     },
-        //     child: const Text('Yes'),
-        //   ),
-        // ],
       ),
     );
   }
 
-  showAlertDialog(BuildContext context) async {
+  foundBackUpAlertDialog(BuildContext context) async {
     await showDialog(
       context: context,
       builder: (context) => CupertinoAlertDialog(
@@ -224,18 +173,3 @@ class LoginPage extends StatelessWidget {
     );
   }
 }
-/**
- * TextFormField(
-              cursorHeight:
-                  context.watch<ListPageGeneralCubit>().isSearhOpen ? 18 : 0,
-              controller: _searchTextEditingController,
-              onChanged: (a) {
-                context.read<ListPageGeneralCubit>().textFormFieldChanged();
-              },
-              focusNode: context.watch<ListPageGeneralCubit>().myFocusNode,
-              autofocus: context.watch<ListPageGeneralCubit>().isSearhOpen
-                  ? true
-                  : false,
-              decoration: const InputDecoration(border: OutlineInputBorder()),
-            ),
- */

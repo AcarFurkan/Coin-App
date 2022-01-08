@@ -180,8 +180,8 @@ class CurrencyConverter {
         changeOf24H: (coin.priceChangePercentage24H ?? 0).toString(),
         lowOf24h: (coin.low24H ?? 0).toString(),
         highOf24h: (coin.high24H ?? 0).toString(),
-        lastUpdate: DateFormat.jms().format(
-            coin.lastUpdated!)); //DateFormat.jms().format(coin.lastUpdated!)
+        lastUpdate: coin.lastUpdated!
+            .toString()); //DateFormat.jms().format(coin.lastUpdated!)
   }
 
   MainCurrencyModel mainCurrencyGeneratorFromTrungilModel(Truncgil e) {

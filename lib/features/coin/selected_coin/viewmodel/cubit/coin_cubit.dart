@@ -71,6 +71,8 @@ class CoinCubit extends Cubit<CoinState> {
             (1000 * 60 * 60 * 24);
         print(day);
         if (myUser!.backUpType == BackUpTypes.daily.name) {
+          print(context.read<UserCubit>().user!.backUpType!);
+
           if (day >= 1) {
             print("YEEEEEEEEEEDEEEEEEEEEEEEEEKKKKKKKKKKKK    " +
                 context.read<UserCubit>().user!.backUpType!);
@@ -80,6 +82,7 @@ class CoinCubit extends Cubit<CoinState> {
             await context.read<UserCubit>().getCurrentUser();
           }
         } else if (myUser.backUpType == BackUpTypes.weekly.name) {
+          print(context.read<UserCubit>().user!.backUpType!);
           if (day >= 7) {
             print("YEEEEEEEEEEDEEEEEEEEEEEEEEKKKKKKKKKKKK    " +
                 context.read<UserCubit>().user!.backUpType!);
@@ -89,6 +92,8 @@ class CoinCubit extends Cubit<CoinState> {
             await context.read<UserCubit>().getCurrentUser();
           }
         } else if (myUser.backUpType == BackUpTypes.monthly.name) {
+          print(context.read<UserCubit>().user!.backUpType!);
+
           if (day >= 30) {
             print("YEEEEEEEEEEDEEEEEEEEEEEEEEKKKKKKKKKKKK    " +
                 context.read<UserCubit>().user!.backUpType!);
@@ -97,17 +102,7 @@ class CoinCubit extends Cubit<CoinState> {
                 listCurrency: coinListFromDataBase);
             await context.read<UserCubit>().getCurrentUser();
           }
-        } //bunu farklı bir şekilde çözmen aslında bir şey yok ta direk login olan yere götür bunu
-
-        //  print(FieldValue.serverTimestamp().toString());
-
-        // await _userServiceController.updateUserCurrenciesInformation(
-        //     context.read<UserCubit>().user!,
-        //     listCurrency: coinListFromDataBase);
-
-        // ScaffoldMessenger.of(context).showSnackBar(SnackBar(   ////// SCAFFOLD MESSSENGER İÇİN CONTEXTİN MATERİALAPPTEN TÜREMESİ LAZIM BUNU AYARLARSIN SENİN YAPI ONA GÖRE RAYI DÜZELTİCEKSİN ZATEN
-        //     content: Text("yedek alınıyor " +
-        //         context.read<UserCubit>().user!.backUpType!)));
+        }
       }
     } else if (context.read<UserCubit>().user != null &&
         context.read<UserCubit>().user?.isBackUpActive == false) {

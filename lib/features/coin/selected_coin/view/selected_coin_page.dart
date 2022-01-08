@@ -12,8 +12,6 @@ import '../../../../product/language/locale_keys.g.dart';
 import '../../../../product/model/my_coin_model.dart';
 import '../../../../product/response_models/genelpara/genelpara_service_model.dart';
 import '../../../../product/widget/component/coin_current_info_card.dart';
-import '../../../settings/view/settings_page.dart';
-import '../../coin_detail_page/view/coin_detail_page.dart';
 import '../viewmodel/cubit/coin_cubit.dart';
 import '../viewmodel/general/cubit/selected_page_general_cubit.dart';
 

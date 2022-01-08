@@ -1,9 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../home/home_view.dart';
-import '../../authentication_welcome/view/authentication_welcome_page.dart';
 
 class OnboardPage extends StatelessWidget {
   const OnboardPage({Key? key}) : super(key: key);
@@ -32,10 +30,8 @@ class OnboardPage extends StatelessWidget {
             ),
             OutlinedButton(
               onPressed: () {
-                Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                        builder: (context) => const AuthWelcomePage()));
+                Navigator.pushNamed(context,
+                    "/userSettings"); //bundan sonra geri kısmını bir düşün
               },
               child: Text(
                 "LOGIN/REGISTER",

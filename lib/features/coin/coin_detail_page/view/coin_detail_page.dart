@@ -51,9 +51,10 @@ class _CoinDetailPageState extends State<CoinDetailPage> {
             tag: widget.coin.id,
             child: Scaffold(
               appBar: buildAppBar(context),
-              body: SingleChildScrollView(
+              body: Center(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     //LineChartSample2(),
                     Row(
