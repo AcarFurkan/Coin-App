@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:coin_with_architecture/core/enums/back_up_enum.dart';
 import 'package:coin_with_architecture/features/authentication/viewmodel/cubit/user_cubit.dart';
 import 'package:coin_with_architecture/product/model/user/my_user_model.dart';
+import 'package:coin_with_architecture/product/repository/service/market/genelpara/genepara_service_controller.dart';
 import 'package:coin_with_architecture/product/repository/service/user_service_controller/user_service_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -74,8 +75,6 @@ class CoinCubit extends Cubit<CoinState> {
           print(context.read<UserCubit>().user!.backUpType!);
 
           if (day >= 1) {
-            print("YEEEEEEEEEEDEEEEEEEEEEEEEEKKKKKKKKKKKK    " +
-                context.read<UserCubit>().user!.backUpType!);
             await _userServiceController.updateUserCurrenciesInformation(
                 context.read<UserCubit>().user!,
                 listCurrency: coinListFromDataBase);
@@ -84,8 +83,6 @@ class CoinCubit extends Cubit<CoinState> {
         } else if (myUser.backUpType == BackUpTypes.weekly.name) {
           print(context.read<UserCubit>().user!.backUpType!);
           if (day >= 7) {
-            print("YEEEEEEEEEEDEEEEEEEEEEEEEEKKKKKKKKKKKK    " +
-                context.read<UserCubit>().user!.backUpType!);
             await _userServiceController.updateUserCurrenciesInformation(
                 context.read<UserCubit>().user!,
                 listCurrency: coinListFromDataBase);
@@ -95,8 +92,6 @@ class CoinCubit extends Cubit<CoinState> {
           print(context.read<UserCubit>().user!.backUpType!);
 
           if (day >= 30) {
-            print("YEEEEEEEEEEDEEEEEEEEEEEEEEKKKKKKKKKKKK    " +
-                context.read<UserCubit>().user!.backUpType!);
             await _userServiceController.updateUserCurrenciesInformation(
                 context.read<UserCubit>().user!,
                 listCurrency: coinListFromDataBase);
@@ -104,12 +99,12 @@ class CoinCubit extends Cubit<CoinState> {
           }
         }
       }
-    } else if (context.read<UserCubit>().user != null &&
+    } else if (context.read<UserCubit>().user !=
+            null && // YOU CAN DELETE THESE"1
         context.read<UserCubit>().user?.isBackUpActive == false) {
-      print("YEDEK KAPALI");
-    } else if (context.read<UserCubit>().user == null) {
-      print("hesaaaapppp yoyoookk");
-    }
+      // YOU CAN DELETE THESE
+    } else if (context.read<UserCubit>().user ==
+        null) {} // YOU CAN DELETE THESE
     for (var i = 0; i < coinListFromService.length; i++) {
       for (var itemFromDataBase in coinListFromDataBase) {
         if (coinListFromService[i].id == itemFromDataBase.id) {
@@ -306,6 +301,10 @@ class CoinCubit extends Cubit<CoinState> {
 
   List<MainCurrencyModel> fetchTruncgilService() {
     return TruncgilServiceController.instance.getTruncgilList;
+  }
+
+  List<MainCurrencyModel> fetchGenelParaService() {
+    return GenelParaServiceController.instance.getGenelParaStocks;
   }
 
   List<MainCurrencyModel> fetchTryCoinsFromGechoService() {
