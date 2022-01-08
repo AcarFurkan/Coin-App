@@ -4,6 +4,7 @@ extension LoginRegisterViewExtension on UserSettings {
   Widget loginRegisterView(BuildContext context) {
     return DefaultTabController(
       length: 2,
+      initialIndex: context.watch<UserCubit>().tabbarIndex,
       child: Scaffold(
           body: SafeArea(
         child: Column(
@@ -68,25 +69,25 @@ extension LoginRegisterViewExtension on UserSettings {
         ]);
   }
 
+  bool loginRegisterControl(BuildContext context) {
+    return context.watch<UserCubit>().isLoginPage;
+  }
+
   Form buildForm(BuildContext context) {
     return Form(
-      key: _formState,
-      autovalidateMode: AutovalidateMode.always,
+      key: context.read<UserCubit>().formState,
+      autovalidateMode: context.watch<UserCubit>().autoValidateMode,
       child: Column(
         children: [
-          context.watch<UserCubit>().isLoginPage
-              ? const Spacer(flex: 6)
-              : const Spacer(flex: 3),
-          context.watch<UserCubit>().isLoginPage
-              ? Container()
-              : buildTextFormFieldName(context),
-          const Spacer(flex: 3),
-          buildTextFormFieldEmail(context),
-          const Spacer(flex: 3),
-          buildTextFormFieldPassword(context),
+          loginRegisterControl(context)
+              ? const Spacer(flex: 4)
+              : const Spacer(flex: 2),
+          loginRegisterControl(context)
+              ? Expanded(flex: 15, child: buildLoginFormFields(context))
+              : Expanded(flex: 30, child: buildRegisterFormFields(context)),
           const Spacer(),
           buildTextForgot(),
-          context.watch<UserCubit>().isLoginPage
+          loginRegisterControl(context)
               ? const Spacer(flex: 6)
               : const Spacer(flex: 3),
           buildGoogleSignIn(context),
@@ -118,75 +119,6 @@ extension LoginRegisterViewExtension on UserSettings {
             : Container(),
         const Spacer(),
       ],
-    );
-  }
-
-  Widget buildTextFormFieldPassword(
-    BuildContext context,
-  ) {
-    return TextFormField(
-      controller: context.read<UserCubit>().passwordController,
-      onTap: () {
-        print("tapped password");
-        //   context.read<LoginRegisterCubit>().emitLogin();
-      },
-      validator: (value) => value!.isNotEmpty ? null : 'This field required',
-      obscureText: context.watch<UserCubit>().isLockOpen,
-      decoration: InputDecoration(
-          labelStyle: context.textTheme.subtitle1,
-          labelText: "password",
-          icon: buildContainerIconField(context, Icons.vpn_key),
-          suffixIcon: FlatButton(
-              onPressed: () {
-                //viewModel.isLockStateChange();
-                context.read<UserCubit>().changeIsLockOpen();
-              },
-              padding: EdgeInsets.zero,
-              child: //viewModel.isLockOpen
-                  Icon(context.watch<UserCubit>().isLockOpen
-                      ? Icons.visibility_off_outlined
-                      : Icons.visibility))),
-    );
-  }
-
-  TextFormField buildTextFormFieldName(BuildContext context) {
-    return TextFormField(
-      controller: context.read<UserCubit>().nameController,
-      onTap: () {
-        print("tapped name");
-        // context.read<LoginRegisterCubit>().emitLogin();
-      },
-      // validator: (value) => value!.isValidEmails ? 'asdasd' : null,
-      decoration: InputDecoration(
-        labelText: "name",
-        labelStyle: context.textTheme.subtitle1,
-        icon: buildContainerIconField(context, Icons.email),
-      ),
-    );
-  }
-
-  TextFormField buildTextFormFieldEmail(BuildContext context) {
-    return TextFormField(
-      keyboardType: TextInputType.emailAddress,
-      controller: context.read<UserCubit>().emailController,
-      onTap: () {
-        print("tapped email");
-        // context.read<LoginRegisterCubit>().emitLogin();
-      },
-      // validator: (value) => value!.isValidEmails ? 'asdasd' : null,
-      decoration: InputDecoration(
-        labelText: "email",
-        labelStyle: context.textTheme.subtitle1,
-        icon: buildContainerIconField(context, Icons.email),
-      ),
-    );
-  }
-
-  Container buildContainerIconField(BuildContext context, IconData icon) {
-    return Container(
-      color: Theme.of(context).colorScheme.onBackground,
-      padding: context.paddingLow,
-      child: Icon(icon, color: Theme.of(context).colorScheme.primaryVariant),
     );
   }
 

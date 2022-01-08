@@ -22,12 +22,14 @@ class OnboardPage extends StatelessWidget {
         body: Column(
           children: [
             const Spacer(),
+            //Expanded(
+            //  flex: 6,
+            //  child: SvgPicture.asset(
+            //    "assets/svg/welcome.svg",
+            //  ),
+            //),
             Expanded(
-              flex: 6,
-              child: SvgPicture.asset(
-                "assets/svg/stock.svg",
-              ),
-            ),
+                flex: 6, child: Image.asset("assets/images/welcome_two.png")),
             OutlinedButton(
               onPressed: () {
                 Navigator.pushNamed(context,

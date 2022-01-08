@@ -17,6 +17,8 @@ class UserCubit extends Cubit<UserState> implements AuthBase {
     groupValue = BackUpTypes.never.name;
     isLoginPage = true;
     isLockOpen = true;
+    autoValidateMode = AutovalidateMode.disabled;
+    tabbarIndex = 0;
   }
 
   final UserServiceController _userServiceController =
@@ -33,9 +35,15 @@ class UserCubit extends Cubit<UserState> implements AuthBase {
   String? backUpTypeForUpdate;
   List<MainCurrencyModel> differentCurrensies = [];
   List<MainCurrencyModel>? coinListFromDataBase;
-  TextEditingController? emailController = TextEditingController();
-  TextEditingController? passwordController = TextEditingController();
+  TextEditingController? emailControllerForLogin = TextEditingController();
+  TextEditingController? passwordControllerForLogin = TextEditingController();
+  TextEditingController? emailControllerForRegister = TextEditingController();
+  TextEditingController? passwordControllerForRegister =
+      TextEditingController();
+  late int tabbarIndex;
   TextEditingController? nameController = TextEditingController();
+  late AutovalidateMode autoValidateMode;
+  final GlobalKey<FormState> formState = GlobalKey<FormState>();
 
   final CoinCacheManager _cacheManager = locator<CoinCacheManager>();
   late String groupValue;
@@ -44,20 +52,37 @@ class UserCubit extends Cubit<UserState> implements AuthBase {
     emit(UserFull(user: user!));
   }
 
+  changeAutoValidateMode() {
+    autoValidateMode = AutovalidateMode.always;
+
+    //if (autoValidateMode == AutovalidateMode.disabled) {
+    //} else {
+    //  autoValidateMode = AutovalidateMode.disabled;
+    //}
+  }
+
   tappedLoginRegisterButton() async {
-    if (isLoginPage) {
-      await signInWithEmailandPassword(
-          emailController!.text, passwordController!.text);
-    } else {
-      await createUserWithEmailandPassword(emailController!.text,
-          passwordController!.text, nameController!.text);
-    }
+    changeAutoValidateMode();
+    print("object");
+    print(formState.currentState!.validate());
+    emit(UserNull());
+
+    // if (isLoginPage) {
+    //   await signInWithEmailandPassword(
+    //       emailController!.text, passwordController!.text);
+    // } else {
+    //   await createUserWithEmailandPassword(emailController!.text,
+    //       passwordController!.text, nameController!.text);
+    // }
   }
 
   changeIsLoginPage(int index) {
     if (index == 0) {
+      tabbarIndex = 0;
       isLoginPage = true;
     } else {
+      tabbarIndex = 1;
+
       isLoginPage = false;
     }
     emit(UserNull());

@@ -8,11 +8,12 @@ import 'package:kartal/kartal.dart';
 import '../../../../product/model/user/my_user_model.dart';
 import '../../viewmodel/cubit/user_cubit.dart';
 part './subview/login_register_view.dart';
+part './subview/form_fields_for_register.dart';
+part './subview/form_fields_for_login.dart';
 
 class UserSettings extends StatelessWidget {
   UserSettings({Key? key}) : super(key: key);
   MyUser? userInformationForUpdate;
-  final GlobalKey<FormState> _formState = GlobalKey<FormState>();
 
   late BuildContext _buildContextForViewInset;
   @override
@@ -90,6 +91,8 @@ class UserSettings extends StatelessWidget {
                         : Container(),
                   ]);
             } else if (state is UserNull) {
+              print(
+                  "NULLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL");
               return loginRegisterView(context);
             } else if (state is UserLoading) {
               return const Center(child: CircularProgressIndicator.adaptive());

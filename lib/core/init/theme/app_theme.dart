@@ -34,7 +34,7 @@ abstract class ThemeManager {
                   MaterialStateProperty.all(theme.colors.colors.purplish))),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
           foregroundColor: theme.colors.colors.white,
-          backgroundColor: theme.colors.colors.mediumGreyBold),
+          backgroundColor: theme.colors.colors.purplish),
       appBarTheme: AppBarTheme(
         backgroundColor: theme.colors.appBarColor,
       ),
