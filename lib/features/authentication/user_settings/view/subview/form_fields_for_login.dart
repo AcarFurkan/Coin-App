@@ -4,9 +4,13 @@ extension FormFieldsForLoginExtension on UserSettings {
   Widget buildLoginFormFields(BuildContext context) {
     return Column(
       children: [
-        _buildTextFormFieldEmail(context),
+        SizedBox(
+            height: MediaQuery.of(context).size.height * 0.07,
+            child: _buildTextFormFieldEmail(context)),
         const Spacer(flex: 1),
-        _buildTextFormFieldPassword(context)
+        SizedBox(
+            height: MediaQuery.of(context).size.height * 0.07,
+            child: _buildTextFormFieldPassword(context))
       ],
     );
   }
@@ -14,26 +18,24 @@ extension FormFieldsForLoginExtension on UserSettings {
   Widget _buildTextFormFieldPassword(BuildContext context) {
     return TextFormField(
       controller: context.read<UserCubit>().passwordControllerForLogin,
-      onTap: () {
-        print("tapped password");
-        //   context.read<LoginRegisterCubit>().emitLogin();
+      validator: (value) {
+        if (value!.length > 3) {
+          return null;
+        } else {
+          return "Must be longer than 3 characters";
+        }
       },
-      validator: (value) => value!.isNotEmpty ? null : 'This field required',
       obscureText: context.watch<UserCubit>().isLockOpen,
       decoration: InputDecoration(
-          labelStyle: context.textTheme.subtitle1,
           labelText: "password",
           icon: buildContainerIconField(context, Icons.vpn_key),
-          suffixIcon: FlatButton(
+          suffixIcon: IconButton(
               onPressed: () {
-                //viewModel.isLockStateChange();
                 context.read<UserCubit>().changeIsLockOpen();
               },
-              padding: EdgeInsets.zero,
-              child: //viewModel.isLockOpen
-                  Icon(context.watch<UserCubit>().isLockOpen
-                      ? Icons.visibility_off_outlined
-                      : Icons.visibility))),
+              icon: Icon(context.watch<UserCubit>().isLockOpen
+                  ? Icons.visibility_off_outlined
+                  : Icons.visibility))),
     );
   }
 
@@ -43,12 +45,10 @@ extension FormFieldsForLoginExtension on UserSettings {
       controller: context.read<UserCubit>().emailControllerForLogin,
       onTap: () {
         print("tapped email");
-        // context.read<LoginRegisterCubit>().emitLogin();
       },
-      // validator: (value) => value!.isValidEmails ? 'asdasd' : null,
+      validator: (value) => value!.isValidEmail ? null : "invalid email",
       decoration: InputDecoration(
         labelText: "email",
-        labelStyle: context.textTheme.subtitle1,
         icon: buildContainerIconField(context, Icons.email),
       ),
     );

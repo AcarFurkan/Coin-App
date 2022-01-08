@@ -4,11 +4,18 @@ extension FormFieldsForRegisterExtension on UserSettings {
   Widget buildRegisterFormFields(BuildContext context) {
     return Column(
       children: [
-        _buildTextFormFieldName(context),
         const Spacer(flex: 3),
-        _buildTextFormFieldEmail(context),
+        SizedBox(
+            height: MediaQuery.of(context).size.height * 0.07,
+            child: _buildTextFormFieldEmail(context)),
         const Spacer(flex: 3),
-        _buildTextFormFieldPassword(context)
+        SizedBox(
+            height: MediaQuery.of(context).size.height * 0.07,
+            child: _buildTextFormFieldPassword(context)),
+        const Spacer(flex: 3),
+        SizedBox(
+            height: MediaQuery.of(context).size.height * 0.07,
+            child: _buildTextFormFieldName(context)),
       ],
     );
   }
@@ -16,26 +23,25 @@ extension FormFieldsForRegisterExtension on UserSettings {
   Widget _buildTextFormFieldPassword(BuildContext context) {
     return TextFormField(
       controller: context.read<UserCubit>().passwordControllerForRegister,
-      onTap: () {
-        print("tapped password");
-        //   context.read<LoginRegisterCubit>().emitLogin();
+      validator: (value) {
+        if (value!.length > 3) {
+          return null;
+        } else {
+          return "Must be longer than 3 characters";
+        }
       },
-      validator: (value) => value!.isNotEmpty ? null : 'This field required',
       obscureText: context.watch<UserCubit>().isLockOpen,
       decoration: InputDecoration(
-          labelStyle: context.textTheme.subtitle1,
+          errorStyle: TextStyle(fontSize: 10),
           labelText: "password",
           icon: buildContainerIconField(context, Icons.vpn_key),
-          suffixIcon: FlatButton(
+          suffixIcon: IconButton(
               onPressed: () {
-                //viewModel.isLockStateChange();
                 context.read<UserCubit>().changeIsLockOpen();
               },
-              padding: EdgeInsets.zero,
-              child: //viewModel.isLockOpen
-                  Icon(context.watch<UserCubit>().isLockOpen
-                      ? Icons.visibility_off_outlined
-                      : Icons.visibility))),
+              icon: Icon(context.watch<UserCubit>().isLockOpen
+                  ? Icons.visibility_off_outlined
+                  : Icons.visibility))),
     );
   }
 
@@ -43,14 +49,9 @@ extension FormFieldsForRegisterExtension on UserSettings {
     return TextFormField(
       keyboardType: TextInputType.emailAddress,
       controller: context.read<UserCubit>().emailControllerForRegister,
-      onTap: () {
-        print("tapped email");
-        // context.read<LoginRegisterCubit>().emitLogin();
-      },
-      // validator: (value) => value!.isValidEmails ? 'asdasd' : null,
+      validator: (value) => value.isValidEmail ? null : "invalid email",
       decoration: InputDecoration(
         labelText: "email",
-        labelStyle: context.textTheme.subtitle1,
         icon: buildContainerIconField(context, Icons.email),
       ),
     );
@@ -59,24 +60,17 @@ extension FormFieldsForRegisterExtension on UserSettings {
   TextFormField _buildTextFormFieldName(BuildContext context) {
     return TextFormField(
       controller: context.read<UserCubit>().nameController,
-      onTap: () {
-        print("tapped name");
-        // context.read<LoginRegisterCubit>().emitLogin();
-      },
-      // validator: (value) => value!.isValidEmails ? 'asdasd' : null,
       validator: (value) {
         if (value!.length > 3) {
           return null;
         } else {
-          print(" ");
-
           return "Must be longer than 3 characters";
         }
       },
       decoration: InputDecoration(
         labelText: "name",
         labelStyle: context.textTheme.subtitle1,
-        icon: buildContainerIconField(context, Icons.email),
+        icon: buildContainerIconField(context, Icons.person),
       ),
     );
   }

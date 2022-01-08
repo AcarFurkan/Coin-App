@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-
-import '../../../home/home_view.dart';
 
 class OnboardPage extends StatelessWidget {
   const OnboardPage({Key? key}) : super(key: key);
@@ -9,42 +6,49 @@ class OnboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () {
-            Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (c) => HomeView()));
-          },
-          label: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [Text("Geç"), Icon(Icons.arrow_forward_ios)],
-          ),
-        ),
+        floatingActionButton: buildFloatingActionButton(context),
         body: Column(
           children: [
             const Spacer(),
-            //Expanded(
-            //  flex: 6,
-            //  child: SvgPicture.asset(
-            //    "assets/svg/welcome.svg",
-            //  ),
-            //),
-            Expanded(
-                flex: 6, child: Image.asset("assets/images/welcome_two.png")),
-            OutlinedButton(
-              onPressed: () {
-                Navigator.pushNamed(context,
-                    "/userSettings"); //bundan sonra geri kısmını bir düşün
-              },
-              child: Text(
-                "LOGIN/REGISTER",
-                style:
-                    TextStyle(color: Theme.of(context).colorScheme.background),
-              ),
-            ),
-            Spacer(
-              flex: 2,
-            )
+            Expanded(flex: 6, child: buildWelcomeImage()),
+            buildLoginRegisterButton(context),
+            const Spacer(flex: 2)
           ],
         ));
+  }
+
+  FloatingActionButton buildFloatingActionButton(BuildContext context) {
+    return FloatingActionButton.extended(
+      onPressed: () => Navigator.popAndPushNamed(context, "/home"),
+      label: buildFloatingActionButtonContent(),
+    );
+  }
+
+  Row buildFloatingActionButtonContent() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: const [Text("Geç"), Icon(Icons.arrow_forward_ios)],
+    );
+  }
+
+  Image buildWelcomeImage() => Image.asset("assets/images/welcome_two.png");
+
+  OutlinedButton buildLoginRegisterButton(BuildContext context) {
+    return OutlinedButton(
+      onPressed: () {
+        Navigator.popAndPushNamed(context, "/home");
+        Navigator.pushNamed(context, "/settingsGeneral");
+        Navigator.pushNamed(
+            context, "/userSettings"); //bundan sonra geri kısmını bir düşün
+      },
+      child: buildButtonText(context),
+    );
+  }
+
+  Text buildButtonText(BuildContext context) {
+    return Text(
+      "LOGIN/REGISTER",
+      style: TextStyle(color: Theme.of(context).colorScheme.background),
+    );
   }
 }

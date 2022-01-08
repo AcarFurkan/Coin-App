@@ -48,12 +48,9 @@ class UserServiceController {
         _user.name = name;
       }
 
-      bool _sonuc = await _firestoreService.saveUserInformations(_user,
-          listCurrency: coins);
-      if (_sonuc) {
-        return await _firestoreService
-            .readUserInformations(_user.email ?? ""); // BUNA GEREK YOK
-      }
+      return await _firestoreService.saveUserInformations(_user,
+          listCurrency: coins); // BUNA GEREK YOK
+
     }
   }
 
@@ -105,11 +102,12 @@ class UserServiceController {
 
       MyUser? userFromService =
           await _firestoreService.readUserInformations(_user.email ?? "");
-      if (userFromService != null) {
-      } else {
+      print(userFromService);
+      if (userFromService == null) {
         _user.backUpType = BackUpTypes.never.name;
         _user.isBackUpActive = false;
-        await _firestoreService.saveUserInformations(_user);
+        _user.name = _user.email!.split("@")[0];
+        userFromService = await _firestoreService.saveUserInformations(_user);
       }
 
       return userFromService;

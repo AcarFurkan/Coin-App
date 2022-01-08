@@ -56,7 +56,7 @@ class FirestoreService implements StoreBase {
   }
 
   @override
-  Future<bool> saveUserInformations(MyUser user,
+  Future<MyUser?> saveUserInformations(MyUser user,
       {List<MainCurrencyModel>? listCurrency}) async {
     var map = user.toMap();
 
@@ -80,8 +80,8 @@ class FirestoreService implements StoreBase {
             .set(item.toMap());
       }
     }
-
-    return true;
+    MyUser? myUser = await readUserInformations(user.email!);
+    return myUser;
   }
 
   @override
@@ -92,7 +92,7 @@ class FirestoreService implements StoreBase {
     map["updatedAt"] = FieldValue.serverTimestamp();
 
     await _firestore.collection("users").doc(user.email).set(map);
-    if (listCurrencyFromDb != null && listCurrencyFromDb.isNotEmpty) {
+    if (listCurrencyFromDb != null) {
       List<MainCurrencyModel>? listFromService =
           await fetchCurrenciesByEmail(user.email!);
 

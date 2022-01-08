@@ -63,17 +63,17 @@ class UserCubit extends Cubit<UserState> implements AuthBase {
 
   tappedLoginRegisterButton() async {
     changeAutoValidateMode();
-    print("object");
-    print(formState.currentState!.validate());
-    emit(UserNull());
-
-    // if (isLoginPage) {
-    //   await signInWithEmailandPassword(
-    //       emailController!.text, passwordController!.text);
-    // } else {
-    //   await createUserWithEmailandPassword(emailController!.text,
-    //       passwordController!.text, nameController!.text);
-    // }
+    if (formState.currentState!.validate()) {
+      if (isLoginPage) {
+        await signInWithEmailandPassword(
+            emailControllerForLogin!.text, passwordControllerForLogin!.text);
+      } else {
+        await createUserWithEmailandPassword(emailControllerForRegister!.text,
+            passwordControllerForRegister!.text, nameController!.text);
+      }
+    } else {
+      emit(UserNull());
+    }
   }
 
   changeIsLoginPage(int index) {

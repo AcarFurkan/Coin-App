@@ -73,6 +73,10 @@ CLOUD TRANSACTİONS
 -- register ve login olurken eski datalar silinmeden üstüne yazılmalı ama normal kayıt anında datalar update olmalı
 --gmaille giriş yaparken name i @ e kadar alup atayabilirsin
 --LOGİN DE Kİ SIKINTI ŞU EĞER USUR ERRORDAN NULLA DÜŞERSE BUNU REGİSTER DA YAPARSA TAB DEĞİŞMİYO BU YÜZDEN LOGİN VE REGİSTER VİEWLARI KAYIYOR.
+
+-- botton barın olduğu görünümde de ki app bar problemini çöz
+
+
 MaterialPageRoute({--maintainstate e bak dene
     required this.builder,
     RouteSettings? settings,

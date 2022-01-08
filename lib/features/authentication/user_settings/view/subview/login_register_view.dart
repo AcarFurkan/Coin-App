@@ -14,7 +14,8 @@ extension LoginRegisterViewExtension on UserSettings {
             Expanded(
                 flex: 6,
                 child: Padding(
-                    padding: context.paddingNormal, child: buildForm(context))),
+                    padding: context.horizontalPaddingNormal,
+                    child: buildForm(context))),
           ],
         ),
       )),
@@ -59,9 +60,7 @@ extension LoginRegisterViewExtension on UserSettings {
                 bottom: BorderSide(
                     color: Theme.of(context).colorScheme.onBackground,
                     width: 3))),
-        onTap: (index) {
-          context.read<UserCubit>().changeIsLoginPage(index);
-        },
+        onTap: (index) => context.read<UserCubit>().changeIsLoginPage(index),
         indicatorSize: TabBarIndicatorSize.label,
         tabs: [
           Tab(text: '   Login   '),
@@ -69,52 +68,51 @@ extension LoginRegisterViewExtension on UserSettings {
         ]);
   }
 
-  bool loginRegisterControl(BuildContext context) {
-    return context.watch<UserCubit>().isLoginPage;
-  }
+  bool loginRegisterControl(BuildContext context) =>
+      context.watch<UserCubit>().isLoginPage;
 
-  Form buildForm(BuildContext context) {
-    return Form(
-      key: context.read<UserCubit>().formState,
-      autovalidateMode: context.watch<UserCubit>().autoValidateMode,
-      child: Column(
-        children: [
-          loginRegisterControl(context)
-              ? const Spacer(flex: 4)
-              : const Spacer(flex: 2),
-          loginRegisterControl(context)
-              ? Expanded(flex: 15, child: buildLoginFormFields(context))
-              : Expanded(flex: 30, child: buildRegisterFormFields(context)),
-          const Spacer(),
-          buildTextForgot(),
-          loginRegisterControl(context)
-              ? const Spacer(flex: 6)
-              : const Spacer(flex: 3),
-          buildGoogleSignIn(context),
-          buildWrapForgot(),
-          const Spacer(),
-        ],
+  Widget buildForm(BuildContext context) {
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Form(
+        key: context.watch<UserCubit>().formState,
+        autovalidateMode: context.watch<UserCubit>().autoValidateMode,
+        child: SizedBox(
+          height: MediaQuery.of(_buildContextForViewInset).size.height * 0.5,
+          child: Column(
+            children: [
+              loginRegisterControl(context)
+                  ? const Spacer(flex: 4)
+                  : const Spacer(flex: 2),
+              loginRegisterControl(context)
+                  ? Expanded(flex: 10, child: buildLoginFormFields(context))
+                  : Expanded(flex: 30, child: buildRegisterFormFields(context)),
+              const Spacer(),
+              buildTextForgot(),
+              const Spacer(flex: 3),
+              buildLoginButtons(context),
+              const Spacer(flex: 2),
+              // buildWrapForgot(),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  Widget buildGoogleSignIn(BuildContext context) {
+  Widget buildLoginButtons(BuildContext context) {
     return Row(
       children: [
-        Expanded(flex: 20, child: buildRaisedButtonLogin(context)),
+        Spacer(
+          flex: 2,
+        ),
+        Expanded(flex: 20, child: buildElevatedButtonLogin(context)),
         const Spacer(),
         context.watch<UserCubit>().isLoginPage
             ? InkWell(
-                onTap: () async {
-                  await context.read<UserCubit>().signInWithGoogle();
-                },
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(25),
-                  child: Image.asset(
-                    "assets/images/google_icon.png",
-                    width: context.width * 0.13,
-                  ),
-                ),
+                onTap: () async =>
+                    await context.read<UserCubit>().signInWithGoogle(),
+                child: buildGoogleIcon(context),
               )
             : Container(),
         const Spacer(),
@@ -122,24 +120,25 @@ extension LoginRegisterViewExtension on UserSettings {
     );
   }
 
+  Widget buildElevatedButtonLogin(BuildContext context) {
+    return ElevatedButton(
+      style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(Colors.white),
+          //   padding: MaterialStateProperty.all<EdgeInsetsGeometry?>( context.paddingNormal),
+          shape: MaterialStateProperty.all(StadiumBorder())),
+      onPressed: () async {
+        await context.read<UserCubit>().tappedLoginRegisterButton();
+      },
+      child: Center(
+          child: Text(
+              context.read<UserCubit>().isLoginPage ? "Login" : "Register",
+              style: context.textTheme.headline5)),
+    );
+  }
+
   Widget buildTextForgot() => Align(
       alignment: Alignment.centerRight,
       child: Text("forgot password", textAlign: TextAlign.end));
-
-  Widget buildRaisedButtonLogin(BuildContext context) {
-    return RaisedButton(
-      padding: context.paddingNormal,
-      onPressed: () async {
-        await context.read<UserCubit>().tappedLoginRegisterButton();
-      }, // viewModel.isLoading? null: () {viewModel.fetchLoginSevice();},
-      shape: StadiumBorder(),
-      child: Center(
-          child: Text(
-              context.read<UserCubit>().isLoginPage ? "login" : "Register",
-              style: context.textTheme.headline5)),
-      color: Theme.of(context).colorScheme.onError,
-    );
-  }
 
   Wrap buildWrapForgot() {
     return Wrap(
@@ -150,4 +149,14 @@ extension LoginRegisterViewExtension on UserSettings {
       ],
     );
   }
+}
+
+ClipRRect buildGoogleIcon(BuildContext context) {
+  return ClipRRect(
+    borderRadius: BorderRadius.circular(25),
+    child: Image.asset(
+      "assets/images/google_icon.png",
+      width: context.width * 0.10,
+    ),
+  );
 }
