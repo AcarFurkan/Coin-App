@@ -1,4 +1,4 @@
-import 'package:coin_with_architecture/product/widget/component/removable_card_item.dart';
+import '../../../../product/widget/component/removable_card_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

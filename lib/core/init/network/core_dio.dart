@@ -38,12 +38,11 @@ class CoreDio with DioMixin implements Dio, ICoreDio {
           return ResponseModel<R>(data: model);
 
         default:
-          return ResponseModel<R>(error: BaseError('message'));
+          return ResponseModel<R>(
+              error: BaseError(message: response.statusCode.toString()));
       }
     } catch (e) {
-      print(e);
-
-      return ResponseModel<R>(error: BaseError('message'));
+      return ResponseModel<R>(error: BaseError(message: e.toString()));
     }
   }
 

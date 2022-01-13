@@ -1,8 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:provider/provider.dart';
 
 import 'core/constant/app/app_constant.dart';
@@ -22,7 +20,6 @@ import 'features/home/landing_page.dart/landing_page.dart';
 import 'features/home/landing_page.dart/splash_page.dart';
 import 'features/settings/subpage/audio_settings/viewmodel/cubit/audio_cubit.dart';
 import 'product/language/language_manager.dart';
-
 import 'product/theme/theme_provider.dart';
 import 'product/untility/navigation/route_generator.dart';
 

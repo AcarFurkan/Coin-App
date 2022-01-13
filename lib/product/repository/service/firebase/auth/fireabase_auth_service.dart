@@ -1,6 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
+import '../../../../../core/enums/fireauth_request_enum.dart';
+import '../../../../../core/init/network/firebase/auth/firebase_auth.dart';
+import '../../../../../core/model/firebase/firebase_auth_request_model.dart';
+import '../../../../../core/model/response_model/IResponse_model.dart';
 import '../../../../model/user/my_user_model.dart';
 import 'base/auth_base.dart';
 
@@ -11,92 +14,51 @@ class FirebaseAuthService implements AuthBase {
     return _instace!;
   }
 
+  late FirebaseAuthCustom firebaseCustom;
+
   FirebaseAuthService._init() {
+    firebaseCustom = FirebaseAuthCustom();
     _auth = FirebaseAuth.instance;
   }
 
   late final FirebaseAuth _auth;
   @override
-  Future<MyUser?> createUserWithEmailandPassword(
+  Future<IResponseModel<MyUser>> createUserWithEmailandPassword(
       String email, String password, String name) async {
-    try {
-      UserCredential userCredential = await _auth
-          .createUserWithEmailAndPassword(email: email, password: password);
-      return _userFromFirebase(userCredential.user);
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
-      }
-    } catch (e) {
-      print(e);
-    }
+    return await firebaseCustom.get(
+        type: FirebaseAuthTypes.register,
+        auth: _auth,
+        requestModel:
+            FirebaseAuthRequestModel(email: email, password: password));
   }
 
   @override
-  Future<MyUser?> getCurrentUser() {
-    try {
-      User? user = _auth.currentUser;
-      return Future.value(_userFromFirebase(user));
-    } catch (e) {
-      print("current user error" + e.toString());
-      return Future.value(null);
-    }
+  Future<IResponseModel<MyUser>> getCurrentUser() {
+    return Future.value(firebaseCustom.get(
+      type: FirebaseAuthTypes.currentUser,
+      auth: _auth,
+    ));
   }
 
   @override
-  Future<MyUser?> signInWithEmailandPassword(
+  Future<IResponseModel<MyUser>> signInWithEmailandPassword(
       String email, String password) async {
-    try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
-      if (userCredential.user != null) {}
-      return _userFromFirebase(userCredential.user);
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
-      }
-    }
-  }
-
-  MyUser? _userFromFirebase(User? user) {
-    if (user == null) {
-      return null;
-    } else {
-      return MyUser(email: user.email, name: user.uid);
-    }
+    return await firebaseCustom.get(
+        type: FirebaseAuthTypes.login,
+        auth: _auth,
+        requestModel:
+            FirebaseAuthRequestModel(email: email, password: password));
   }
 
   @override
-  Future<MyUser?> signInWithGoogle() async {
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
-    final GoogleSignInAuthentication? googleAuth =
-        await googleUser?.authentication;
-
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
-    UserCredential userCredential =
-        await FirebaseAuth.instance.signInWithCredential(credential);
-    return _userFromFirebase(userCredential.user);
+  Future<IResponseModel<MyUser>> signInWithGoogle() async {
+    return await firebaseCustom.get(
+        type: FirebaseAuthTypes.google, auth: _auth);
   }
 
   @override
-  Future<bool> signOut() async {
-    try {
-      final _googleSignIn = GoogleSignIn();
-      await _googleSignIn.signOut();
-
-      await _auth.signOut();
-      return true;
-    } catch (e) {
-      print("sign out error:" + e.toString());
-      return false;
-    }
+  Future<IResponseModel<MyUser>> signOut() async {
+    return await firebaseCustom.get(
+        type: FirebaseAuthTypes.signOut, auth: _auth);
   }
 }

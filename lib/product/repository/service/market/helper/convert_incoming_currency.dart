@@ -26,6 +26,7 @@ class CurrencyConverter {
   Future<ResponseModel<MainCurrencyModel>> convertBitexenCoinToMyCoin(
       String name) async {
     var response = await BitexenService.instance.getCoinByName(name);
+
     Bitexen? bitexenCoin = response.data;
     MainCurrencyModel? myCoin;
     if (bitexenCoin != null) {

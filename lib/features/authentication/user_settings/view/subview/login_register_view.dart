@@ -24,7 +24,8 @@ extension LoginRegisterViewExtension on UserSettings {
 
   Widget buildAnimatedContainer(BuildContext context) {
     return AnimatedContainer(
-        duration: Duration(milliseconds: 250),
+        duration:
+            Duration(milliseconds: context.durationLow.inMilliseconds ~/ 3),
         height: context.mediaQuery.viewInsets.bottom > 0
             ? context.height * 0
             : context.height * 0.3,

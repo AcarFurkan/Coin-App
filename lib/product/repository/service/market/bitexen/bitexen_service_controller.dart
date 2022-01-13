@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:coin_with_architecture/core/model/response_model/IResponse_model.dart';
+
 import '../../../../../core/enums/price_control.dart';
 import '../../../../../core/model/response_model/response_model.dart';
 import '../../../../model/my_coin_model.dart';
@@ -8,8 +10,6 @@ import '../helper/convert_incoming_currency.dart';
 class BitexenServiceController {
   final int timerSecond = 2;
 
-  static CurrencyConverter? _currencyConverter;
-
   static BitexenServiceController? _instance;
   static BitexenServiceController get instance {
     _instance ??= BitexenServiceController._init();
@@ -17,36 +17,39 @@ class BitexenServiceController {
   }
 
   BitexenServiceController._init() {
-    _currencyConverter = CurrencyConverter.instance;
+    _previousbitexenCoins = ResponseModel(data: []);
+    _lastbitexenCoins = ResponseModel(data: []);
   }
 
   late Timer timer;
 
-  List<MainCurrencyModel> _previousbitexenCoins = [];
-  List<MainCurrencyModel> _lastbitexenCoins = [];
-  List<MainCurrencyModel> get getBitexenCoins => _lastbitexenCoins;
+  late IResponseModel<List<MainCurrencyModel>> _previousbitexenCoins;
+  late IResponseModel<List<MainCurrencyModel>> _lastbitexenCoins;
+  IResponseModel<List<MainCurrencyModel>> get getBitexenCoins =>
+      _lastbitexenCoins;
 
   Future<void> fetchBitexenCoinListEveryTwoSecond() async {
+    await fetchDataTrarnsactions();
+    timer = Timer.periodic(Duration(seconds: timerSecond), (timer) async {
+      await fetchDataTrarnsactions();
+      if (_previousbitexenCoins.data!.isNotEmpty &&
+          _lastbitexenCoins.data!.isNotEmpty) {
+        lastPriceControl(_previousbitexenCoins.data!, _lastbitexenCoins.data!);
+      }
+      transferLastListToPreviousList(
+          _previousbitexenCoins.data!, _lastbitexenCoins.data!);
+    });
+  }
+
+  Future<void> fetchDataTrarnsactions() async {
     ResponseModel<List<MainCurrencyModel>> response =
         await CurrencyConverter.instance.convertBitexenListCoinToMyCoinList();
-
-    if (response.data != null) {
-      _lastbitexenCoins = response.data!;
-      percentageControl(_lastbitexenCoins);
+    if (response.error != null) {
+      _lastbitexenCoins = response;
+    } else if (response.data != null) {
+      _lastbitexenCoins = response;
+      percentageControl(_lastbitexenCoins.data!);
     }
-
-    timer = Timer.periodic(Duration(seconds: timerSecond), (timer) async {
-      response =
-          await CurrencyConverter.instance.convertBitexenListCoinToMyCoinList();
-      if (response.data != null) {
-        _lastbitexenCoins = response.data!;
-        percentageControl(_lastbitexenCoins);
-      }
-      if (_previousbitexenCoins.isEmpty != true) {
-        lastPriceControl(_previousbitexenCoins, _lastbitexenCoins);
-      }
-      transferLastListToPreviousList(_previousbitexenCoins, _lastbitexenCoins);
-    });
   }
 
   void transferLastListToPreviousList(

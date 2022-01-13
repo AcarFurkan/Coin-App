@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:coin_with_architecture/core/model/response_model/IResponse_model.dart';
 import 'package:meta/meta.dart';
 
 import '../../../../../locator.dart';
@@ -19,33 +20,30 @@ class BitexenCubit extends Cubit<BitexenState> {
   List<MainCurrencyModel> coinListFromDb = [];
 
   Future<void> fetchAllCoins() async {
-    coinListFromDb = getAllListFromDB() ?? [];
     emit(BitexenLoading());
-    bitexenCoins.clear();
-
-    for (var item in fetchBitexenCoinListFromService()) {
-      bitexenCoins.add(item);
-      favoriteFeatureAndAlarmTransaction(coinListFromDb, bitexenCoins);
-    }
-
-    emit(BitexenCompleted(
-      bitexenCoinsList: bitexenCoins,
-    ));
+    dataTransaction();
     timer = Timer.periodic(const Duration(milliseconds: 2000), (Timer t) async {
-      bitexenCoins.clear();
       coinListFromDb = getAllListFromDB() ?? [];
-      for (var item in fetchBitexenCoinListFromService()) {
-        bitexenCoins.add(item);
-        favoriteFeatureAndAlarmTransaction(coinListFromDb, bitexenCoins);
-      }
-
-      emit(BitexenCompleted(
-        bitexenCoinsList: bitexenCoins,
-      ));
+      dataTransaction();
     });
   }
 
-  List<MainCurrencyModel> fetchBitexenCoinListFromService() {
+  void dataTransaction() {
+    bitexenCoins.clear();
+    var response = fetchBitexenCoinListFromService();
+    if (response.error != null) {
+      emit(BitexenError("Bitexen ERRRRRRRRRRRRORRRR"));
+    }
+    if (response.data != null) {
+      for (var item in response.data!) {
+        bitexenCoins.add(item);
+        favoriteFeatureAndAlarmTransaction(coinListFromDb, bitexenCoins);
+      }
+      emit(BitexenCompleted(bitexenCoinsList: bitexenCoins));
+    }
+  }
+
+  IResponseModel<List<MainCurrencyModel>> fetchBitexenCoinListFromService() {
     return BitexenServiceController.instance.getBitexenCoins;
   }
 

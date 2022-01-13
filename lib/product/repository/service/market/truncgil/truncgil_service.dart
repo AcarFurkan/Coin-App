@@ -62,16 +62,21 @@ class TruncgilService {
 
   @override
   Future<IResponseModel<List<Truncgil>>> getAllTruncgil() async {
-    var response = await coreDio!
-        .get<List<Truncgil>>(dotenv.get(DotEnvEnums.BASE_URL_TRUNCGIL.name));
-    switch (response.statusCode) {
-      case HttpStatus.ok:
-      case HttpStatus.accepted:
-        return ResponseModel<List<Truncgil>>(data: response.data);
+    try {
+      var response = await coreDio!
+          .get<List<Truncgil>>(dotenv.get(DotEnvEnums.BASE_URL_TRUNCGIL.name));
+      switch (response.statusCode) {
+        case HttpStatus.ok:
+        case HttpStatus.accepted:
+          return ResponseModel<List<Truncgil>>(data: response.data);
 
-      default:
-        print("status code ${response.statusCode}   ${response.statusMessage}");
-        return ResponseModel<List<Truncgil>>(error: BaseError('message'));
+        default:
+          return ResponseModel<List<Truncgil>>(
+              error: BaseError(message: response.statusCode.toString()));
+      }
+    } catch (e) {
+      return ResponseModel<List<Truncgil>>(
+          error: BaseError(message: e.toString()));
     }
   }
 }

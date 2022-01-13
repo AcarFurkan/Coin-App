@@ -8,8 +8,6 @@ import '../helper/convert_incoming_currency.dart';
 class GenelParaServiceController {
   final int timerSecond = 200;
 
-  static CurrencyConverter? _currencyConverter;
-
   static GenelParaServiceController? _instance;
   static GenelParaServiceController get instance {
     _instance ??= GenelParaServiceController._init();
@@ -17,37 +15,46 @@ class GenelParaServiceController {
   }
 
   GenelParaServiceController._init() {
-    _currencyConverter = CurrencyConverter.instance;
+    _previousGenelParaStocks = ResponseModel(data: []);
+    _lastGenelParaStocks = ResponseModel(data: []);
   }
 
   late Timer timer;
 
-  List<MainCurrencyModel> _previousGenelParaStocks = [];
-  List<MainCurrencyModel> _lastGenelParaStocks = [];
-  List<MainCurrencyModel> get getGenelParaStocks => _lastGenelParaStocks;
+  late ResponseModel<List<MainCurrencyModel>> _previousGenelParaStocks;
+  late ResponseModel<List<MainCurrencyModel>> _lastGenelParaStocks;
+  ResponseModel<List<MainCurrencyModel>> get getGenelParaStocks =>
+      _lastGenelParaStocks;
 
   Future<void> fetchGenelParaStocksEveryTwoSecond() async {
     ResponseModel<List<MainCurrencyModel>> response = await CurrencyConverter
         .instance
         .convertGenelParaStockListToMyMainCurrencyList();
-
-    if (response.data != null) {
-      _lastGenelParaStocks = response.data!;
-      percentageControl(_lastGenelParaStocks);
+    if (response.error != null) {
+      _lastGenelParaStocks = response;
+    } else if (response.data != null) {
+      _lastGenelParaStocks = response;
+      percentageControl(_lastGenelParaStocks.data!);
     }
 
     timer = Timer.periodic(Duration(seconds: timerSecond), (timer) async {
       response = await CurrencyConverter.instance
           .convertGenelParaStockListToMyMainCurrencyList();
-      if (response.data != null) {
-        _lastGenelParaStocks = response.data!;
-        percentageControl(_lastGenelParaStocks);
+      if (response.error != null) {
+        _lastGenelParaStocks = response;
+      } else if (response.data != null) {
+        _lastGenelParaStocks = response;
+        percentageControl(_lastGenelParaStocks.data!);
       }
-      if (_previousGenelParaStocks.isEmpty != true) {
-        lastPriceControl(_previousGenelParaStocks, _lastGenelParaStocks);
+      if (_previousGenelParaStocks.data!.isNotEmpty &&
+          _lastGenelParaStocks.data!.isNotEmpty) {
+        lastPriceControl(
+            _previousGenelParaStocks.data!,
+            _lastGenelParaStocks
+                .data!); // _last general para stock boş gelme ihtimali var mı
       }
       transferLastListToPreviousList(
-          _previousGenelParaStocks, _lastGenelParaStocks);
+          _previousGenelParaStocks.data!, _lastGenelParaStocks.data!);
     });
   }
 

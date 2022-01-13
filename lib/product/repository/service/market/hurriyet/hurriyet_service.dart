@@ -62,7 +62,8 @@ class HurriyetService {
         return ResponseModel<List<String>>(data: response.data);
 
       default:
-        return ResponseModel<List<String>>(error: BaseError('message'));
+        return ResponseModel<List<String>>(
+            error: BaseError(message: 'message'));
     }
   }
 
@@ -77,7 +78,7 @@ class HurriyetService {
         return ResponseModel<Hurriyet>(data: response.data);
 
       default:
-        return ResponseModel<Hurriyet>(error: BaseError('message'));
+        return ResponseModel<Hurriyet>(error: BaseError(message: 'message'));
     }
   }
 

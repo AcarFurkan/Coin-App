@@ -1,17 +1,18 @@
 import 'package:bloc/bloc.dart';
-import 'package:coin_with_architecture/core/enums/back_up_enum.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../../../../product/repository/cache/coin_cache_manager.dart';
+
+import '../../../../core/enums/back_up_enum.dart';
+import '../../../../core/exception/custom_exception_firebase.dart';
 import '../../../../locator.dart';
 import '../../../../product/model/my_coin_model.dart';
-import '../../../../product/repository/service/firebase/auth/base/auth_base.dart';
-
 import '../../../../product/model/user/my_user_model.dart';
+import '../../../../product/repository/cache/coin_cache_manager.dart';
 import '../../../../product/repository/service/user_service_controller/user_service_controller.dart';
 
 part 'user_state.dart';
 
-class UserCubit extends Cubit<UserState> implements AuthBase {
+class UserCubit extends Cubit<UserState> {
   UserCubit() : super(UserInitial()) {
     getCurrentUser();
     groupValue = BackUpTypes.never.name;
@@ -64,12 +65,23 @@ class UserCubit extends Cubit<UserState> implements AuthBase {
   tappedLoginRegisterButton() async {
     changeAutoValidateMode();
     if (formState.currentState!.validate()) {
-      if (isLoginPage) {
-        await signInWithEmailandPassword(
-            emailControllerForLogin!.text, passwordControllerForLogin!.text);
-      } else {
-        await createUserWithEmailandPassword(emailControllerForRegister!.text,
-            passwordControllerForRegister!.text, nameController!.text);
+      try {
+        if (isLoginPage) {
+          await signInWithEmailandPassword(
+              emailControllerForLogin!.text, passwordControllerForLogin!.text);
+        } else {
+          await createUserWithEmailandPassword(emailControllerForRegister!.text,
+              passwordControllerForRegister!.text, nameController!.text);
+        }
+      } on FirebaseAuthException catch (e) {
+        String errorMessage =
+            FirebaseCustomExceptions.convertFirebaseMessage(e.code);
+        print(FirebaseCustomExceptions.convertFirebaseMessage(errorMessage));
+
+        emit(UserError(message: errorMessage));
+        emit(UserNull());
+      } catch (e) {
+        print(e);
       }
     } else {
       emit(UserNull());
@@ -120,75 +132,101 @@ class UserCubit extends Cubit<UserState> implements AuthBase {
     return _cacheManager.getValues();
   }
 
-  @override
-  Future<MyUser?> createUserWithEmailandPassword(
+  Future<void> createUserWithEmailandPassword(
       String email, String password, String name) async {
-    if (true) {
-      // email password control
-      try {
-        emit(UserLoading());
-        user = await _userServiceController.createUserWithEmailandPassword(
-            email, password, name);
-        if (user != null) {
-          emit(UserFull(user: user!));
-        } else {
-          emit(UserNull());
-        }
-      } catch (e) {
-        print("viewmodel creat user error" + e.toString());
+    emit(UserLoading());
+    var result = await _userServiceController.createUserWithEmailandPassword(
+        email, password, name);
+    if (result.error != null) {
+      user = result.data;
+      emit(UserError(message: result.error!.message));
+      emit(UserNull());
+    } else if (result.data != null) {
+      user = result.data;
+      emit(UserFull(user: user!));
+    } else if (result.data == null) {
+      user = result.data;
 
-        emit(UserError());
-        emit(UserNull());
-      }
-    }
-  }
+      emit(UserNull());
+    } else {
+      user = result.data;
 
-  @override
-  Future<MyUser?> getCurrentUser() async {
-    try {
-      if (user == null) {
-        emit(UserLoading());
-      }
-
-      user = await _userServiceController.getCurrentUser();
-      if (user != null) {
-        emit(UserFull(user: user!));
-
-        return user; // YOU ARE YOU SUİNG BLOC YOU DONT NEED NEED RETURN STATEMENT ANYMORE.
-      } else {
-        emit(UserNull());
-      }
-    } catch (e) {
-      print("Viewmodel current user error" + e.toString());
-
-      emit(UserError());
       emit(UserNull());
     }
   }
 
-  @override
-  Future<MyUser?> signInWithEmailandPassword(
-      String email, String password) async {
-    try {
-      if (true) {
-        // Email Password control
-        emit(UserLoading());
-        user = await _userServiceController.signInWithEmailandPassword(
-            email, password);
+  Future<void> getCurrentUser() async {
+    if (user == null) {
+      emit(UserLoading());
+    }
+    var result = await _userServiceController.getCurrentUser();
+    if (result.error != null) {
+      user = result.data;
 
-        if (user != null) {
-          fetchCurrenciesByEmail(user!);
-          emit(UserFull(user: user!));
-        } else {
-          emit(UserNull());
-        }
-      }
-    } catch (e) {
-      print("viewmodel sign in with email error" + e.toString());
+      emit(UserError(message: result.error!.message));
+      emit(UserNull());
+    } else if (result.data != null) {
+      user = result.data;
+      emit(UserFull(user: user!));
+    } else {
+      user = result.data;
 
-      emit(UserError());
       emit(UserNull());
     }
+  }
+
+  Future<void> signInWithEmailandPassword(String email, String password) async {
+    emit(UserLoading());
+
+    var result = await _userServiceController.signInWithEmailandPassword(
+        email, password);
+    if (result.error != null) {
+      user = result.data;
+
+      emit(UserError(message: result.error!.message));
+      emit(UserNull());
+    } else if (result.data != null) {
+      user = result.data;
+      emit(UserFull(user: user!));
+    } else {
+      user = result.data;
+
+      emit(UserNull());
+    }
+  }
+
+  //on PlatformException catch (e) {
+  //   return ResponseModel<MyUser>(error: BaseError(message: e.toString()));
+  // }
+  //PlatformException (PlatformException(sign_in_canceled, com.google.android.gms.common.api.ApiException: 12501: , null, null))
+  Future<MyUser?> signInWithGoogle() async {
+    emit(UserLoading());
+    var result = await _userServiceController.signInWithGoogle();
+    if (result.error != null) {
+      user = result.data;
+      emit(UserError(message: "Cancelled"));
+      emit(UserNull());
+    } else if (result.data != null) {
+      user = result.data;
+      fetchCurrenciesByEmail(user!);
+      emit(UserFull(user: user!));
+    } else {
+      user = result.data;
+
+      emit(UserNull());
+    }
+  }
+
+  Future<void> signOut() async {
+    emit(UserLoading());
+    var result = await _userServiceController.signOut();
+    if (result.error != null) {
+      user = result.data;
+      emit(UserError(message: result.error!.message));
+      emit(UserNull());
+    }
+    user = result.data;
+    emit(UserNull());
   }
 
   void overwriteDataToDb() {
@@ -199,7 +237,6 @@ class UserCubit extends Cubit<UserState> implements AuthBase {
     });
   }
 
-  @override
   Future<List<MainCurrencyModel>?> fetchCurrenciesByEmail(MyUser user) async {
     differentCurrensies.clear();
     List<MainCurrencyModel>? listCurrenciesFromService;
@@ -231,46 +268,8 @@ class UserCubit extends Cubit<UserState> implements AuthBase {
     } catch (e) {
       print("viewmodel fetch currencies error" + e.toString());
 
-      emit(UserError());
+      emit(UserError(message: "errorMessage"));
       emit(UserNull());
-    }
-  }
-
-  @override
-  Future<MyUser?> signInWithGoogle() async {
-    try {
-      emit(UserLoading());
-      user = await _userServiceController.signInWithGoogle();
-      if (user != null) {
-        fetchCurrenciesByEmail(user!);
-        emit(UserFull(user: user!));
-
-        return user; // YOU ARE YOU SUİNG BLOC YOU DONT NEED NEED RETURN STATEMENT ANYMORE.
-      } else {
-        emit(UserNull());
-      }
-    } catch (e) {
-      print("viewmodel google signin error:" + e.toString());
-
-      emit(UserError());
-      emit(UserNull());
-    }
-  }
-
-  @override
-  Future<bool> signOut() async {
-    try {
-      emit(UserLoading());
-      bool result = await _userServiceController.signOut();
-      user = null;
-      emit(UserNull());
-      return result;
-    } catch (e) {
-      print("Viewmodel signout error" + e.toString());
-      emit(UserError());
-      emit(UserNull());
-
-      return false;
     }
   }
 

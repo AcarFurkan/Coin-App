@@ -43,13 +43,6 @@ class _HomeViewState extends State<HomeView>
     super.initState();
 
     _tabController = TabController(length: listPage.length, vsync: this);
-    print("initState");
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      print("WidgetsBinding");
-    });
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
-      print("SchedulerBinding");
-    });
   }
 
   int _selectedIndex = 0;

@@ -1,8 +1,7 @@
 import 'dart:async';
-
 import 'package:bloc/bloc.dart';
+import '../../../../../core/model/response_model/IResponse_model.dart';
 import 'package:meta/meta.dart';
-
 import '../../../../../locator.dart';
 import '../../../../../product/model/my_coin_model.dart';
 import '../../../../../product/repository/cache/coin_cache_manager.dart';
@@ -11,9 +10,11 @@ import '../../../../../product/repository/service/market/genelpara/genepara_serv
 part 'hurriyet_state.dart';
 
 class HurriyetCubit extends Cubit<HurriyetState> {
-  HurriyetCubit() : super(HurriyetInitial());
+  HurriyetCubit() : super(HurriyetInitial()) {
+    _coinCacheManager = locator<CoinCacheManager>();
+  }
 
-  CoinCacheManager _coinCacheManager = locator<CoinCacheManager>();
+  late final CoinCacheManager _coinCacheManager;
 
   Timer? timer;
   List<MainCurrencyModel> hurriyetStockList = [];
@@ -22,32 +23,30 @@ class HurriyetCubit extends Cubit<HurriyetState> {
   Future<void> fetchAllCoins() async {
     coinListFromDb = getAllListFromDB() ?? [];
     emit(HurriyetLoading());
-    hurriyetStockList.clear();
-
-    for (var item in fetchHurriyetStockListFromService()) {
-      hurriyetStockList.add(item);
-      favoriteFeatureAndAlarmTransaction(coinListFromDb, hurriyetStockList);
-    }
-
-    emit(HurriyetCompleted(
-      hurriyetCoinsList: hurriyetStockList,
-    ));
+    dataTransaction();
     timer = Timer.periodic(const Duration(milliseconds: 2000), (Timer t) async {
-      hurriyetStockList.clear();
       coinListFromDb = getAllListFromDB() ?? [];
-      for (var item in fetchHurriyetStockListFromService()) {
-        hurriyetStockList.add(item);
-        favoriteFeatureAndAlarmTransaction(coinListFromDb, hurriyetStockList);
-      }
-
-      emit(HurriyetCompleted(
-        hurriyetCoinsList: hurriyetStockList,
-      ));
+      dataTransaction();
     });
   }
 
-  List<MainCurrencyModel> fetchHurriyetStockListFromService() {
+  IResponseModel<List<MainCurrencyModel>> fetchHurriyetStockListFromService() {
     return GenelParaServiceController.instance.getGenelParaStocks;
+  }
+
+  void dataTransaction() {
+    hurriyetStockList.clear();
+    var response = fetchHurriyetStockListFromService();
+    if (response.error != null) {
+      emit(HurriyetError("Hürriyet ERRRRRRRRRRRRORRRR"));
+    }
+    if (response.data != null) {
+      for (var item in response.data!) {
+        hurriyetStockList.add(item);
+        favoriteFeatureAndAlarmTransaction(coinListFromDb, hurriyetStockList);
+      }
+      emit(HurriyetCompleted(hurriyetCoinsList: hurriyetStockList));
+    }
   }
 
   void favoriteFeatureAndAlarmTransaction(

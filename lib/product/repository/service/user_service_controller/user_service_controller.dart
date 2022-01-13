@@ -1,4 +1,5 @@
-import 'package:coin_with_architecture/core/enums/back_up_enum.dart';
+import '../../../../core/enums/back_up_enum.dart';
+import '../../../../core/model/response_model/IResponse_model.dart';
 
 import '../../../model/my_coin_model.dart';
 import '../../../model/user/my_user_model.dart';
@@ -24,11 +25,8 @@ class UserServiceController {
     _firestoreService = FirestoreService.instance;
   }
 
-  Future<MyUser?> getCurrentUser() async {
-    MyUser? _user = await _firebaseAuthService.getCurrentUser();
-    if (_user != null) {
-      return await _firestoreService.readUserInformations(_user.email ?? "");
-    }
+  Future<IResponseModel<MyUser>> getCurrentUser() async {
+    return await _firebaseAuthService.getCurrentUser();
   }
 
   final CoinCacheManager _cacheManager = locator<CoinCacheManager>();
@@ -36,22 +34,68 @@ class UserServiceController {
     return _cacheManager.getValues();
   }
 
-  Future<MyUser?> createUserWithEmailandPassword(
+  Future<IResponseModel<MyUser>> createUserWithEmailandPassword(
       String email, String password, String name) async {
-    MyUser? _user = await _firebaseAuthService.createUserWithEmailandPassword(
-        email, password, name);
-    if (_user != null) {
+    IResponseModel<MyUser> response = await _firebaseAuthService
+        .createUserWithEmailandPassword(email, password, name);
+    if (response.error != null) {
+      return response;
+    } else if (response.data != null) {
       List<MainCurrencyModel>? coins = _fetchAllAddedCoinsFromDatabase();
       if (coins != null) {
-        _user.backUpType = BackUpTypes.never.name;
-        _user.isBackUpActive = false;
-        _user.name = name;
+        response.data!.backUpType = BackUpTypes.never.name;
+        response.data!.isBackUpActive = false;
+        response.data!.name = name;
       }
-
-      return await _firestoreService.saveUserInformations(_user,
-          listCurrency: coins); // BUNA GEREK YOK
-
+      return response;
     }
+    return response;
+  }
+
+  Future<IResponseModel<MyUser>> signInWithEmailandPassword(
+      String email, String password) async {
+    IResponseModel<MyUser> response =
+        await _firebaseAuthService.signInWithEmailandPassword(email, password);
+
+    if (response.error != null) {
+      return response;
+    } else if (response.data != null) {
+      MyUser? userFromService = await _firestoreService
+          .readUserInformations(response.data!.email ?? "");
+      if (userFromService != null) {
+        await _firestoreService.saveUserInformations(userFromService);
+        response.data = userFromService;
+      }
+      return response;
+    }
+    return response;
+  }
+
+  Future<IResponseModel<MyUser>> signInWithGoogle() async {
+    IResponseModel<MyUser> response =
+        await _firebaseAuthService.signInWithGoogle();
+    if (response.error != null) {
+      return response;
+    } else if (response.data != null) {
+      List<MainCurrencyModel>? coins = _fetchAllAddedCoinsFromDatabase();
+
+      MyUser? userFromService = await _firestoreService
+          .readUserInformations(response.data!.email ?? "");
+      if (userFromService == null) {
+        response.data!.backUpType = BackUpTypes.never.name;
+        response.data!.isBackUpActive = false;
+        response.data!.name = response.data!.email!.split("@")[0];
+        userFromService =
+            await _firestoreService.saveUserInformations(response.data!);
+        return response;
+      }
+      return response;
+    }
+    return response;
+  }
+
+  Future<IResponseModel<MyUser>> signOut() async {
+    return await _firebaseAuthService.signOut();
   }
 
   Future<MyUser?> updateUser(MyUser user) async {
@@ -78,43 +122,5 @@ class UserServiceController {
     List<MainCurrencyModel>? currenciesList =
         await _firestoreService.fetchCurrenciesByEmail(email);
     return currenciesList;
-  }
-
-  Future<MyUser?> signInWithEmailandPassword(
-      String email, String password) async {
-    MyUser? _user =
-        await _firebaseAuthService.signInWithEmailandPassword(email, password);
-    if (_user != null) {
-      MyUser? userFromService =
-          await _firestoreService.readUserInformations(_user.email ?? "");
-
-      if (userFromService != null) {
-        await _firestoreService.saveUserInformations(userFromService);
-      }
-      return userFromService;
-    }
-  }
-
-  Future<MyUser?> signInWithGoogle() async {
-    MyUser? _user = await _firebaseAuthService.signInWithGoogle();
-    if (_user != null) {
-      List<MainCurrencyModel>? coins = _fetchAllAddedCoinsFromDatabase();
-
-      MyUser? userFromService =
-          await _firestoreService.readUserInformations(_user.email ?? "");
-      print(userFromService);
-      if (userFromService == null) {
-        _user.backUpType = BackUpTypes.never.name;
-        _user.isBackUpActive = false;
-        _user.name = _user.email!.split("@")[0];
-        userFromService = await _firestoreService.saveUserInformations(_user);
-      }
-
-      return userFromService;
-    }
-  }
-
-  Future<bool> signOut() async {
-    return await _firebaseAuthService.signOut();
   }
 }

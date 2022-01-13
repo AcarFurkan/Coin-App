@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:coin_with_architecture/core/model/response_model/IResponse_model.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
@@ -13,7 +14,7 @@ part 'coin_list_state.dart';
 
 class CoinListCubit extends Cubit<CoinListState> {
   CoinListCubit() : super(CoinListInitial());
-  CoinCacheManager _coinCacheManager = locator<CoinCacheManager>();
+  final CoinCacheManager _coinCacheManager = locator<CoinCacheManager>();
 
   Timer? timer;
 
@@ -26,34 +27,25 @@ class CoinListCubit extends Cubit<CoinListState> {
   List<MainCurrencyModel> coinListFromDb = [];
 
   Future<void> fetchAllCoins() async {
-    coinListFromDb = getAllListFromDB() ?? [];
     emit(CoinListLoading());
-    tryCoins.clear();
-    btcCoins.clear();
-    ethCoins.clear();
-    usdtCoins.clear();
-    newCoins.clear();
+    fetchDataTransactions();
+    timer = Timer.periodic(const Duration(milliseconds: 2000), (Timer t) async {
+      coinListFromDb = getAllListFromDB() ?? [];
+      fetchDataTransactions();
+    });
+  }
 
-    for (var item in fetchTryCoinsFromGechoService()) {
-      tryCoins.add(item);
-      favoriteFeatureAndAlarmTransaction(coinListFromDb, tryCoins);
-    }
-    for (var item in fetchUsdtCoinsFromGechoService()) {
-      usdtCoins.add(item);
-      favoriteFeatureAndAlarmTransaction(coinListFromDb, usdtCoins);
-    }
-    for (var item in fetchEthCoinsFromGechoService()) {
-      ethCoins.add(item);
-      favoriteFeatureAndAlarmTransaction(coinListFromDb, ethCoins);
-    }
-    for (var item in fetchBtcCoinsFromGechoService()) {
-      btcCoins.add(item);
-      favoriteFeatureAndAlarmTransaction(coinListFromDb, btcCoins);
-    }
-    for (var item in fetchUsdNewCoinsFromGechoService()) {
-      newCoins.add(item);
-      favoriteFeatureAndAlarmTransaction(coinListFromDb, btcCoins);
-    }
+  void fetchDataTransactions() {
+    var responseTry = fetchTryCoinsFromGechoService();
+    var responseUsd = fetchTryCoinsFromGechoService();
+    var responseEth = fetchTryCoinsFromGechoService();
+    var responseBtc = fetchTryCoinsFromGechoService();
+    var responseUsdNew = fetchTryCoinsFromGechoService();
+    responseToListTransAction(tryCoins, responseTry);
+    responseToListTransAction(usdtCoins, responseUsd);
+    responseToListTransAction(ethCoins, responseEth);
+    responseToListTransAction(btcCoins, responseBtc);
+    responseToListTransAction(newCoins, responseUsdNew);
 
     emit(CoinListCompleted(
         tryCoinsList: tryCoins,
@@ -61,61 +53,39 @@ class CoinListCubit extends Cubit<CoinListState> {
         ethCoinsList: ethCoins,
         usdtCoinsList: usdtCoins,
         newUsdCoinsList: newCoins));
-    timer = Timer.periodic(const Duration(milliseconds: 2000), (Timer t) async {
-      tryCoins.clear();
-      btcCoins.clear();
-      ethCoins.clear();
-      usdtCoins.clear();
-      newCoins.clear();
-
-      coinListFromDb = getAllListFromDB() ?? [];
-      for (var item in fetchTryCoinsFromGechoService()) {
-        tryCoins.add(item);
-        favoriteFeatureAndAlarmTransaction(coinListFromDb, tryCoins);
-      }
-      for (var item in fetchUsdtCoinsFromGechoService()) {
-        usdtCoins.add(item);
-        favoriteFeatureAndAlarmTransaction(coinListFromDb, usdtCoins);
-      }
-      for (var item in fetchEthCoinsFromGechoService()) {
-        ethCoins.add(item);
-        favoriteFeatureAndAlarmTransaction(coinListFromDb, ethCoins);
-      }
-      for (var item in fetchBtcCoinsFromGechoService()) {
-        btcCoins.add(item);
-        favoriteFeatureAndAlarmTransaction(coinListFromDb, btcCoins);
-      }
-      for (var item in fetchUsdNewCoinsFromGechoService()) {
-        newCoins.add(item);
-        favoriteFeatureAndAlarmTransaction(coinListFromDb, btcCoins);
-      }
-
-      emit(CoinListCompleted(
-          tryCoinsList: tryCoins,
-          btcCoinsList: btcCoins,
-          ethCoinsList: ethCoins,
-          usdtCoinsList: usdtCoins,
-          newUsdCoinsList: newCoins));
-    });
   }
 
-  List<MainCurrencyModel> fetchTryCoinsFromGechoService() {
+  void responseToListTransAction(
+      List<MainCurrencyModel> list, IResponseModel response) {
+    list.clear();
+    if (response.error != null) {
+      emit(CoinListError("all list ERRRRRRRRRRRRORRRR"));
+    }
+    if (response.data != null) {
+      for (var item in response.data!) {
+        list.add(item);
+        favoriteFeatureAndAlarmTransaction(coinListFromDb, list);
+      }
+    }
+  }
+
+  IResponseModel<List<MainCurrencyModel>> fetchTryCoinsFromGechoService() {
     return GechoServiceController.instance.getGechoTryCoinList;
   }
 
-  List<MainCurrencyModel> fetchUsdtCoinsFromGechoService() {
+  IResponseModel<List<MainCurrencyModel>> fetchUsdtCoinsFromGechoService() {
     return GechoServiceController.instance.getGechoUsdCoinList;
   }
 
-  List<MainCurrencyModel> fetchBtcCoinsFromGechoService() {
+  IResponseModel<List<MainCurrencyModel>> fetchBtcCoinsFromGechoService() {
     return GechoServiceController.instance.getGechoBtcCoinList;
   }
 
-  List<MainCurrencyModel> fetchEthCoinsFromGechoService() {
+  IResponseModel<List<MainCurrencyModel>> fetchEthCoinsFromGechoService() {
     return GechoServiceController.instance.getGechoEthCoinList;
   }
 
-  List<MainCurrencyModel> fetchUsdNewCoinsFromGechoService() {
+  IResponseModel<List<MainCurrencyModel>> fetchUsdNewCoinsFromGechoService() {
     return GechoServiceController.instance.getNewGechoUsdCoinList;
   }
 

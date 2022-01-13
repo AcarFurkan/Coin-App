@@ -1,6 +1,6 @@
-import 'package:coin_with_architecture/features/authentication/user_settings/view/user_settings_page.dart';
-import 'package:coin_with_architecture/features/home/landing_page.dart/landing_page.dart';
-import 'package:coin_with_architecture/features/home/landing_page.dart/splash_page.dart';
+import '../../../features/authentication/user_settings/view/user_settings_page.dart';
+import '../../../features/home/landing_page.dart/landing_page.dart';
+import '../../../features/home/landing_page.dart/splash_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

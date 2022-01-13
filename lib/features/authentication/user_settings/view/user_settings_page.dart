@@ -1,4 +1,4 @@
-import 'package:coin_with_architecture/core/enums/back_up_enum.dart';
+import '../../../../core/enums/back_up_enum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,7 +29,11 @@ class UserSettings extends StatelessWidget {
   BlocConsumer<UserCubit, UserState> get buildBlocConsumer =>
       BlocConsumer<UserCubit, UserState>(
         listener: (context, state) async {
-          if (state is UserUpdate) foundBackUpAlertDialog(context);
+          if (state is UserUpdate) {
+            foundBackUpAlertDialog(context);
+          } else if (state is UserError) {
+            showScaffoldMessage(context, state.message);
+          }
         },
         builder: (context, state) {
           if (state is UserFull) {
@@ -65,6 +69,11 @@ class UserSettings extends StatelessWidget {
         actions: buildFoundDialogActionButtons(context),
       ),
     );
+  }
+
+  showScaffoldMessage(BuildContext context, String message) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 
   List<Widget> buildFoundDialogActionButtons(BuildContext context) {

@@ -47,15 +47,21 @@ class GenelParaService {
 
   @override
   Future<IResponseModel<List<GenelPara>>> getAllGenelParaStocksList() async {
-    var response = await coreDio!.get<List<GenelPara>>(
-        dotenv.get(DotEnvEnums.BASE_URL_STOCK_MARKET_GENELPARA.name));
-    switch (response.statusCode) {
-      case HttpStatus.ok:
-      case HttpStatus.accepted:
-        return ResponseModel<List<GenelPara>>(data: response.data);
+    try {
+      var response = await coreDio!.get<List<GenelPara>>(
+          dotenv.get(DotEnvEnums.BASE_URL_STOCK_MARKET_GENELPARA.name));
+      switch (response.statusCode) {
+        case HttpStatus.ok:
+        case HttpStatus.accepted:
+          return ResponseModel<List<GenelPara>>(data: response.data);
 
-      default:
-        return ResponseModel<List<GenelPara>>(error: BaseError('message'));
+        default:
+          return ResponseModel<List<GenelPara>>(
+              error: BaseError(message: response.statusCode.toString()));
+      }
+    } catch (e) {
+      return ResponseModel<List<GenelPara>>(
+          error: BaseError(message: e.toString()));
     }
   }
 }

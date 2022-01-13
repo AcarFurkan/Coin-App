@@ -2,11 +2,15 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
-import 'package:coin_with_architecture/core/enums/back_up_enum.dart';
-import 'package:coin_with_architecture/features/authentication/viewmodel/cubit/user_cubit.dart';
-import 'package:coin_with_architecture/product/model/user/my_user_model.dart';
-import 'package:coin_with_architecture/product/repository/service/market/genelpara/genepara_service_controller.dart';
-import 'package:coin_with_architecture/product/repository/service/user_service_controller/user_service_controller.dart';
+import 'package:coin_with_architecture/core/model/error_model/IError_model.dart';
+import 'package:coin_with_architecture/core/model/error_model/base_error_model.dart';
+import 'package:coin_with_architecture/core/model/response_model/IResponse_model.dart';
+import 'package:coin_with_architecture/core/model/response_model/response_model.dart';
+import '../../../../../core/enums/back_up_enum.dart';
+import '../../../../authentication/viewmodel/cubit/user_cubit.dart';
+import '../../../../../product/model/user/my_user_model.dart';
+import '../../../../../product/repository/service/market/genelpara/genepara_service_controller.dart';
+import '../../../../../product/repository/service/user_service_controller/user_service_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
@@ -48,7 +52,8 @@ class CoinCubit extends Cubit<CoinState> {
   }
 
   Future<List<MainCurrencyModel>> compareCoins() async {
-    List<MainCurrencyModel> coinListFromService = fetchAllCoinsFromService();
+    IResponseModel<List<MainCurrencyModel>> currencyServiceResponse =
+        fetchAllCoinsFromService();
 
     List<MainCurrencyModel>? coinListFromDataBase =
         _fetchAllAddedCoinsFromDatabase();
@@ -105,59 +110,68 @@ class CoinCubit extends Cubit<CoinState> {
       // YOU CAN DELETE THESE
     } else if (context.read<UserCubit>().user ==
         null) {} // YOU CAN DELETE THESE
-    for (var i = 0; i < coinListFromService.length; i++) {
-      for (var itemFromDataBase in coinListFromDataBase) {
-        if (coinListFromService[i].id == itemFromDataBase.id) {
-          double doubleParse =
-              double.parse(coinListFromService[i].lastPrice ?? "0");
-          double changeOf24H =
-              double.parse(coinListFromService[i].changeOf24H ?? "0");
+    if (currencyServiceResponse.error != null) {
+      emit(CoinError("general error"));
+    } else if (currencyServiceResponse.data != null) {
+      for (var i = 0; i < currencyServiceResponse.data!.length; i++) {
+        for (var itemFromDataBase in coinListFromDataBase) {
+          if (currencyServiceResponse.data![i].id == itemFromDataBase.id) {
+            double doubleParse =
+                double.parse(currencyServiceResponse.data![i].lastPrice ?? "0");
+            double changeOf24H = double.parse(
+                currencyServiceResponse.data![i].changeOf24H ?? "0");
 
-          itemFromDataBase.percentageControl =
-              coinListFromService[i].percentageControl;
-          itemFromDataBase.priceControl = coinListFromService[i].priceControl;
-          itemFromDataBase.lastPrice = coinListFromService[i].lastPrice ??
-              "0"; ////Bunları değiştiriyosun da data base hiçbiri gitmiyo galiba tam anlamadım gitmemesi lazım ama okadar değişikliği nasıl algılıyo
-          itemFromDataBase.changeOf24H = changeOf24H.toString();
-          itemFromDataBase.highOf24h = coinListFromService[i].highOf24h ?? "0";
-          itemFromDataBase.lowOf24h = coinListFromService[i].lowOf24h ?? "0";
+            itemFromDataBase.percentageControl =
+                currencyServiceResponse.data![i].percentageControl;
+            itemFromDataBase.priceControl =
+                currencyServiceResponse.data![i].priceControl;
+            itemFromDataBase.lastPrice = currencyServiceResponse
+                    .data![i].lastPrice ??
+                "0"; ////Bunları değiştiriyosun da data base hiçbiri gitmiyo galiba tam anlamadım gitmemesi lazım ama okadar değişikliği nasıl algılıyo
+            itemFromDataBase.changeOf24H = changeOf24H.toString();
+            itemFromDataBase.highOf24h =
+                currencyServiceResponse.data![i].highOf24h ?? "0";
+            itemFromDataBase.lowOf24h =
+                currencyServiceResponse.data![i].lowOf24h ?? "0";
 
-          if (doubleParse < itemFromDataBase.min &&
-              itemFromDataBase.isMinAlarmActive) {
-            //playMusic(itemFromDataBase.minAlarmAudio!,"Minumum fiyatının altına düştü");
+            if (doubleParse < itemFromDataBase.min &&
+                itemFromDataBase.isMinAlarmActive) {
+              //playMusic(itemFromDataBase.minAlarmAudio!,"Minumum fiyatının altına düştü");
 
-            playMusic(
-                itemFromDataBase.minAlarmAudio ??
-                    AudioModel("audio1", "assets/audio/audio_one.mp3"),
-                itemFromDataBase.isMinLoop!);
-            itemFromDataBase.isMinAlarmActive = false;
-            addToDb(itemFromDataBase);
+              playMusic(
+                  itemFromDataBase.minAlarmAudio ??
+                      AudioModel("audio1", "assets/audio/audio_one.mp3"),
+                  itemFromDataBase.isMinLoop!);
+              itemFromDataBase.isMinAlarmActive = false;
+              addToDb(itemFromDataBase);
 
-            showAlertDialog(
-                itemFromDataBase, " fiyat minimum fiyatın altına indi.");
+              showAlertDialog(
+                  itemFromDataBase, " fiyat minimum fiyatın altına indi.");
 
-            // playMusic();
-          }
-          if (doubleParse > itemFromDataBase.max &&
-              itemFromDataBase.isMaxAlarmActive &&
-              itemFromDataBase.max != 0) {
-            /* playMusic(itemFromDataBase.maxAlarmAudio!,
+              // playMusic();
+            }
+            if (doubleParse > itemFromDataBase.max &&
+                itemFromDataBase.isMaxAlarmActive &&
+                itemFromDataBase.max != 0) {
+              /* playMusic(itemFromDataBase.maxAlarmAudio!,
                 "Maximum fiyatının üstüne çıktı");*/
 
-            playMusic(
-                itemFromDataBase.maxAlarmAudio ??
-                    AudioModel("audio1", "assets/audio/audio_one.mp3"),
-                itemFromDataBase.isMaxLoop!);
-            itemFromDataBase.isMaxAlarmActive = false;
-            addToDb(itemFromDataBase);
-            showAlertDialog(
-                itemFromDataBase, " fiyat maximum fiyatın üzerine çıktı");
+              playMusic(
+                  itemFromDataBase.maxAlarmAudio ??
+                      AudioModel("audio1", "assets/audio/audio_one.mp3"),
+                  itemFromDataBase.isMaxLoop!);
+              itemFromDataBase.isMaxAlarmActive = false;
+              addToDb(itemFromDataBase);
+              showAlertDialog(
+                  itemFromDataBase, " fiyat maximum fiyatın üzerine çıktı");
 
-            //playMusic();
+              //playMusic();
+            }
           }
         }
       }
     }
+
     return coinListFromDataBase;
   }
 
@@ -222,38 +236,20 @@ class CoinCubit extends Cubit<CoinState> {
   }
 
   addItemToBeDeletedList(String id) {
-    // sadece ID OLARAK DA GUNCELLEYE BİLİRSİN BUNU BİR DÜŞÜN
-    //  probably you can deletejusty with id think that..
     _itemsToBeDelete ??= [];
     for (var item in _itemsToBeDelete!) {
       if (item == id) {
         return;
       }
     }
-
     _itemsToBeDelete!.add(id);
   }
 
-  printDeletedItemList() {
-    if (_itemsToBeDelete != null) {
-      if (_itemsToBeDelete!.isEmpty) {
-        return;
-      }
-      for (var item in _itemsToBeDelete!) {}
-    } else if (_itemsToBeDelete == []) {
-    } else {}
-  }
-
   removeItemFromBeDeletedList(String id) {
-    // sadece ID OLARAK DA GUNCELLEYE BİLİRSİN BUNU BİR DÜŞÜN
-    //  probably you can deletejusty with id think that..
-
     _itemsToBeDelete ??= [];
     for (var item in _itemsToBeDelete!) {
       if (item == id) {
-        printDeletedItemList();
         _itemsToBeDelete!.remove(id);
-        printDeletedItemList();
         return;
       }
     }
@@ -286,97 +282,66 @@ class CoinCubit extends Cubit<CoinState> {
     return _cacheManager.getValues();
   }
 
-  List<MainCurrencyModel> fetchAllCoinsFromService() {
-    List<MainCurrencyModel> aa = [];
-    aa.clear();
-    aa.addAll(fetchTryCoinsFromGechoService());
-    aa.addAll(fetchUsdtCoinsFromGechoService());
-    aa.addAll(fetchBtcCoinsFromGechoService());
-    aa.addAll(fetchEthCoinsFromGechoService());
-    aa.addAll(fetchAllCoinsFromBitexen());
-    aa.addAll(fetchTruncgilService());
-    aa.addAll(fetchUsdNewCoinsFromGechoService());
-    return aa;
+  IResponseModel<List<MainCurrencyModel>> fetchAllCoinsFromService() {
+    IResponseModel<List<MainCurrencyModel>> allResponse =
+        ResponseModel(data: []);
+
+    var resposneTryGecho = fetchTryCoinsFromGechoService();
+    var resposneUsdGecho = fetchUsdtCoinsFromGechoService();
+    var resposneBtcGecho = fetchBtcCoinsFromGechoService();
+    var resposneEthGecho = fetchEthCoinsFromGechoService();
+    var resposneBitexen = fetchAllCoinsFromBitexen();
+    var resposneTruncgil = fetchTruncgilService();
+
+    if (resposneTryGecho.error != null ||
+        resposneUsdGecho.error != null ||
+        resposneBtcGecho.error != null ||
+        resposneEthGecho.error != null ||
+        resposneBitexen.error != null ||
+        resposneTruncgil.error != null) {
+      allResponse.error = BaseError(message: "error");
+    }
+    allResponse.data?.addAll(resposneTryGecho.data!);
+    allResponse.data?.addAll(resposneUsdGecho.data!);
+    allResponse.data?.addAll(resposneBtcGecho.data!);
+    allResponse.data?.addAll(resposneEthGecho.data!);
+    allResponse.data?.addAll(resposneBitexen.data!);
+    allResponse.data?.addAll(resposneTruncgil.data!);
+    return allResponse;
   }
 
-  List<MainCurrencyModel> fetchTruncgilService() {
+  IResponseModel<List<MainCurrencyModel>> fetchTruncgilService() {
     return TruncgilServiceController.instance.getTruncgilList;
   }
 
-  List<MainCurrencyModel> fetchGenelParaService() {
+  IResponseModel<List<MainCurrencyModel>> fetchGenelParaService() {
     return GenelParaServiceController.instance.getGenelParaStocks;
   }
 
-  List<MainCurrencyModel> fetchTryCoinsFromGechoService() {
+  IResponseModel<List<MainCurrencyModel>> fetchTryCoinsFromGechoService() {
     return GechoServiceController.instance.getGechoTryCoinList;
   }
 
-  List<MainCurrencyModel> fetchUsdtCoinsFromGechoService() {
+  IResponseModel<List<MainCurrencyModel>> fetchUsdtCoinsFromGechoService() {
     return GechoServiceController.instance.getGechoUsdCoinList;
   }
 
-  List<MainCurrencyModel> fetchBtcCoinsFromGechoService() {
+  IResponseModel<List<MainCurrencyModel>> fetchBtcCoinsFromGechoService() {
     return GechoServiceController.instance.getGechoBtcCoinList;
   }
 
-  List<MainCurrencyModel> fetchEthCoinsFromGechoService() {
+  IResponseModel<List<MainCurrencyModel>> fetchEthCoinsFromGechoService() {
     return GechoServiceController.instance.getGechoEthCoinList;
   }
 
-  List<MainCurrencyModel> fetchAllCoinsFromBitexen() {
+  IResponseModel<List<MainCurrencyModel>> fetchAllCoinsFromBitexen() {
     return BitexenServiceController.instance.getBitexenCoins;
   }
 
-  List<MainCurrencyModel> fetchUsdNewCoinsFromGechoService() {
+  IResponseModel<List<MainCurrencyModel>> fetchUsdNewCoinsFromGechoService() {
     return GechoServiceController.instance.getNewGechoUsdCoinList;
   }
 
-/*
-  List<MainCurrencyModel> fetchTryCoinsFromService() {
-    try {
-      return _serviceViewModel.getTryCoinList;
-    } catch (e) {
-      print(e);
-      throw ("FETCH ALL COINS ERRORR");
-    }
-  }
-
-  List<MainCurrencyModel> fetchUsdtCoinsFromService() {
-    try {
-      return _serviceViewModel.getUsdtCoinList;
-    } catch (e) {
-      print(e);
-      throw ("FETCH ALL COINS ERRORR");
-    }
-  }
-
-  List<MainCurrencyModel> fetchBtcCoinsFromService() {
-    try {
-      return _serviceViewModel.getBtcCoinList;
-    } catch (e) {
-      print(e);
-      throw ("FETCH ALL COINS ERRORR");
-    }
-  }
-
-  List<MainCurrencyModel> fetchEthCoinsFromService() {
-    try {
-      return _serviceViewModel.getEthCoinList;
-    } catch (e) {
-      print(e);
-      throw ("FETCH ALL COINS ERRORR");
-    }
-  }
-
-  List<MainCurrencyModel> fetchGechoCoinsFromService() {
-    try {
-      return _serviceViewModel.getGechoUsdtCoinList;
-    } catch (e) {
-      print(e);
-      throw ("FETCH ALL COINS ERRORR");
-    }
-  }
-*/
   stopMusic() async {
     await player!.pause();
     await player!.seek(Duration.zero);

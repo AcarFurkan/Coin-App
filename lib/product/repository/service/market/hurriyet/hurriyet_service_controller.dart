@@ -8,17 +8,13 @@ import '../helper/convert_incoming_currency.dart';
 class HurriyetServiceController {
   final int timerSecond = 200;
 
-  static CurrencyConverter? _currencyConverter;
-
   static HurriyetServiceController? _instance;
   static HurriyetServiceController get instance {
     _instance ??= HurriyetServiceController._init();
     return _instance!;
   }
 
-  HurriyetServiceController._init() {
-    _currencyConverter = CurrencyConverter.instance;
-  }
+  HurriyetServiceController._init() {}
 
   late Timer timer;
 

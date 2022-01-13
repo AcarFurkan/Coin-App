@@ -1,8 +1,6 @@
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
 import '../../../../../core/enums/dotenv_enums.dart';
 import '../../../../../core/init/network/core_dio.dart';
 import '../../../../../core/model/error_model/base_error_model.dart';
@@ -42,16 +40,22 @@ class BitexenService implements BaseRepository<Bitexen> {
 
   @override
   Future<IResponseModel<List<Bitexen>>> getAllCoins() async {
-    var response = await coreDioForAllCoins!
-        .get<List<Bitexen>>(dotenv.get(DotEnvEnums.BASE_URL_BITEXEN.name));
+    try {
+      var response = await coreDioForAllCoins!
+          .get<List<Bitexen>>(dotenv.get(DotEnvEnums.BASE_URL_BITEXEN.name));
 
-    switch (response.statusCode) {
-      case HttpStatus.ok:
-      case HttpStatus.accepted:
-        return ResponseModel<List<Bitexen>>(data: response.data);
+      switch (response.statusCode) {
+        case HttpStatus.ok:
+        case HttpStatus.accepted:
+          return ResponseModel<List<Bitexen>>(data: response.data);
 
-      default:
-        return ResponseModel<List<Bitexen>>(error: BaseError('message'));
+        default:
+          return ResponseModel<List<Bitexen>>(
+              error: BaseError(message: response.statusCode.toString()));
+      }
+    } catch (e) {
+      return ResponseModel<List<Bitexen>>(
+          error: BaseError(message: e.toString()));
     }
   }
 
@@ -66,7 +70,7 @@ class BitexenService implements BaseRepository<Bitexen> {
         return ResponseModel<Bitexen>(data: response?.data);
 
       default:
-        return ResponseModel<Bitexen>(error: BaseError('message'));
+        return ResponseModel<Bitexen>(error: BaseError(message: 'message'));
     }
   }
 }

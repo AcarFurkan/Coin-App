@@ -9,7 +9,12 @@ class UserNull extends UserState {}
 
 class UserLoading extends UserState {}
 
-class UserError extends UserState {}
+class UserError extends UserState {
+  String message;
+  UserError({
+    required this.message,
+  });
+}
 
 class UserUpdate extends UserState {}
 

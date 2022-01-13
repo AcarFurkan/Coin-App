@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:coin_with_architecture/core/model/response_model/IResponse_model.dart';
 import '../../../../../core/enums/price_control.dart';
 import '../../../../../core/model/response_model/response_model.dart';
 import '../../../../model/my_coin_model.dart';
@@ -8,8 +8,6 @@ import '../helper/convert_incoming_currency.dart';
 class TruncgilServiceController {
   final int timerSecond = 5;
 
-  static CurrencyConverter? _currencyConverter;
-
   static TruncgilServiceController? _instance;
   static TruncgilServiceController get instance {
     _instance ??= TruncgilServiceController._init();
@@ -17,37 +15,41 @@ class TruncgilServiceController {
   }
 
   TruncgilServiceController._init() {
-    _currencyConverter = CurrencyConverter.instance;
+    _previousTruncgilList = ResponseModel(data: []);
+    _lastTruncgilList = ResponseModel(data: []);
   }
 
   late Timer timer;
 
-  List<MainCurrencyModel> _previousTruncgilList = [];
-  List<MainCurrencyModel> _lastTruncgilList = [];
-  List<MainCurrencyModel> get getTruncgilList => _lastTruncgilList;
+  late IResponseModel<List<MainCurrencyModel>> _previousTruncgilList;
+  late IResponseModel<List<MainCurrencyModel>> _lastTruncgilList;
+  IResponseModel<List<MainCurrencyModel>> get getTruncgilList =>
+      _lastTruncgilList;
 
   Future<void> fetchTruncgilListEveryTwoSecond() async {
+    fetchDataTrasaction();
+    timer = Timer.periodic(Duration(seconds: timerSecond), (timer) async {
+      fetchDataTrasaction();
+      if (_previousTruncgilList.data!.isNotEmpty &&
+          _lastTruncgilList.data!.isNotEmpty) {
+        lastPriceControl(_previousTruncgilList.data!, _lastTruncgilList.data!);
+      }
+      transferLastListToPreviousList(
+          _previousTruncgilList.data!, _lastTruncgilList.data!);
+    });
+  }
+
+  Future<void> fetchDataTrasaction() async {
     ResponseModel<List<MainCurrencyModel>> response = await CurrencyConverter
         .instance
         .convertTruncgilListToMyMainCurrencyList();
 
-    if (response.data != null) {
-      _lastTruncgilList = response.data!;
-      percentageControl(_lastTruncgilList);
+    if (response.error != null) {
+      _lastTruncgilList = response;
+    } else if (response.data != null) {
+      _lastTruncgilList = response;
+      percentageControl(_lastTruncgilList.data!);
     }
-
-    timer = Timer.periodic(Duration(seconds: timerSecond), (timer) async {
-      response = await CurrencyConverter.instance
-          .convertTruncgilListToMyMainCurrencyList();
-      if (response.data != null) {
-        _lastTruncgilList = response.data!;
-        percentageControl(_lastTruncgilList);
-      }
-      if (_previousTruncgilList.isEmpty != true) {
-        lastPriceControl(_previousTruncgilList, _lastTruncgilList);
-      }
-      transferLastListToPreviousList(_previousTruncgilList, _lastTruncgilList);
-    });
   }
 
   void transferLastListToPreviousList(

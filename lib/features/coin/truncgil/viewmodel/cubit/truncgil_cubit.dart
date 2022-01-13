@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:coin_with_architecture/core/model/response_model/IResponse_model.dart';
 import 'package:meta/meta.dart';
 
 import '../../../../../locator.dart';
@@ -12,40 +13,37 @@ part 'truncgil_state.dart';
 
 class TruncgilCubit extends Cubit<TruncgilState> {
   TruncgilCubit() : super(TruncgilInitial());
-  CoinCacheManager _coinCacheManager = locator<CoinCacheManager>();
+  final CoinCacheManager _coinCacheManager = locator<CoinCacheManager>();
 
   Timer? timer;
   List<MainCurrencyModel> truncgilList = [];
   List<MainCurrencyModel> coinListFromDb = [];
 
   Future<void> fetchAllCoins() async {
-    coinListFromDb = getAllListFromDB() ?? [];
     emit(TruncgilLoading());
-    truncgilList.clear();
-
-    for (var item in fetchBitexenCoinListFromService()) {
-      truncgilList.add(item);
-      favoriteFeatureAndAlarmTransaction(coinListFromDb, truncgilList);
-    }
-
-    emit(TruncgilCompleted(
-      truncgilCoinsList: truncgilList,
-    ));
+    dataTransaction();
     timer = Timer.periodic(const Duration(milliseconds: 2000), (Timer t) async {
-      truncgilList.clear();
       coinListFromDb = getAllListFromDB() ?? [];
-      for (var item in fetchBitexenCoinListFromService()) {
-        truncgilList.add(item);
-        favoriteFeatureAndAlarmTransaction(coinListFromDb, truncgilList);
-      }
-
-      emit(TruncgilCompleted(
-        truncgilCoinsList: truncgilList,
-      ));
+      dataTransaction();
     });
   }
 
-  List<MainCurrencyModel> fetchBitexenCoinListFromService() {
+  void dataTransaction() {
+    truncgilList.clear();
+    var response = fetchTruncgilListFromService();
+    if (response.error != null) {
+      emit(TruncgilError("Truncgil ERRRRRRRRRRRRORRRR"));
+    }
+    if (response.data != null) {
+      for (var item in response.data!) {
+        truncgilList.add(item);
+        favoriteFeatureAndAlarmTransaction(coinListFromDb, truncgilList);
+      }
+      emit(TruncgilCompleted(truncgilCoinsList: truncgilList));
+    }
+  }
+
+  IResponseModel<List<MainCurrencyModel>> fetchTruncgilListFromService() {
     return TruncgilServiceController.instance.getTruncgilList;
   }
 
