@@ -77,7 +77,6 @@ class GechoServiceController {
     await fetchDataTransactionForUsd();
     timerForUSD = Timer.periodic(Duration(seconds: timerSecond), (timer) async {
       await fetchDataTransactionForUsd();
-
       if (_previousGechoUsdCoins.data!.isNotEmpty &&
           _lastGechoUsdCoins.data!.isNotEmpty) {
         lastPriceControl(
@@ -141,6 +140,8 @@ class GechoServiceController {
       responseUSD = responseUSD;
     } else if (responseUSD.data != null) {
       if (responseNEW.data != null && responseNEW.data!.isNotEmpty) {
+        print(responseNEW.data!.length);
+        print("***************************************");
         responseUSD.data?.addAll(responseNEW.data!);
       }
       _lastGechoUsdCoins = responseUSD;
@@ -237,9 +238,6 @@ class GechoServiceController {
 
   void lastPriceControl(
       List<MainCurrencyModel> previousList, List<MainCurrencyModel> lastList) {
-    print(previousList.length);
-    print(lastList.length);
-
     for (var i = 0; i < lastList.length; i++) {
       double lastPrice = double.parse(lastList[i].lastPrice ?? "0");
       double previousPrice = double.parse(previousList[i].lastPrice ?? "0");

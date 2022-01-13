@@ -37,10 +37,10 @@ class CoinListCubit extends Cubit<CoinListState> {
 
   void fetchDataTransactions() {
     var responseTry = fetchTryCoinsFromGechoService();
-    var responseUsd = fetchTryCoinsFromGechoService();
-    var responseEth = fetchTryCoinsFromGechoService();
-    var responseBtc = fetchTryCoinsFromGechoService();
-    var responseUsdNew = fetchTryCoinsFromGechoService();
+    var responseUsd = fetchUsdtCoinsFromGechoService();
+    var responseEth = fetchEthCoinsFromGechoService();
+    var responseBtc = fetchBtcCoinsFromGechoService();
+    var responseUsdNew = fetchUsdNewCoinsFromGechoService();
     responseToListTransAction(tryCoins, responseTry);
     responseToListTransAction(usdtCoins, responseUsd);
     responseToListTransAction(ethCoins, responseEth);

@@ -32,20 +32,17 @@ class CoinListPage extends StatelessWidget {
         //extendBody: true,
         appBar: _appBar(context),
         body: TabBarView(children: tabBarViewGenerator(context)),
-        drawer: Drawer(
-          child: SettingsPage(),
-        ),
       ),
     );
   }
 
   AppBar _appBar(BuildContext context) {
     return AppBar(
-      //leading: IconButton(
-      //   onPressed: () {
-      //   Navigator.pushNamed(context, "/settingsGeneral");
-      //   },
-      //   icon: const Icon(Icons.settings)),
+      leading: IconButton(
+          onPressed: () {
+            Navigator.pushNamed(context, "/settingsGeneral");
+          },
+          icon: const Icon(Icons.settings)),
       titleSpacing: 0,
       actions: [
         buildAppBarActions(context),

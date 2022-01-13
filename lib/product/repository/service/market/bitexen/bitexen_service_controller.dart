@@ -36,8 +36,11 @@ class BitexenServiceController {
           _lastbitexenCoins.data!.isNotEmpty) {
         lastPriceControl(_previousbitexenCoins.data!, _lastbitexenCoins.data!);
       }
-      transferLastListToPreviousList(
-          _previousbitexenCoins.data!, _lastbitexenCoins.data!);
+      if (_previousbitexenCoins.data != null &&
+          _lastbitexenCoins.data != null) {
+        transferLastListToPreviousList(
+            _previousbitexenCoins.data!, _lastbitexenCoins.data!);
+      }
     });
   }
 

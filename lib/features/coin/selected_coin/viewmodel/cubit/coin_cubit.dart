@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
-import 'package:coin_with_architecture/core/model/error_model/IError_model.dart';
 import 'package:coin_with_architecture/core/model/error_model/base_error_model.dart';
 import 'package:coin_with_architecture/core/model/response_model/IResponse_model.dart';
 import 'package:coin_with_architecture/core/model/response_model/response_model.dart';
@@ -120,7 +119,8 @@ class CoinCubit extends Cubit<CoinState> {
                 double.parse(currencyServiceResponse.data![i].lastPrice ?? "0");
             double changeOf24H = double.parse(
                 currencyServiceResponse.data![i].changeOf24H ?? "0");
-
+            itemFromDataBase.lastUpdate =
+                currencyServiceResponse.data![i].lastUpdate;
             itemFromDataBase.percentageControl =
                 currencyServiceResponse.data![i].percentageControl;
             itemFromDataBase.priceControl =

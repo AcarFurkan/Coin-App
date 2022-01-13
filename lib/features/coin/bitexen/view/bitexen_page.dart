@@ -31,7 +31,7 @@ class BitexenPage extends StatelessWidget {
     return AppBar(
       leading: IconButton(
           onPressed: () {
-            Navigator.pushNamed(context, "settingsGeneral");
+            Navigator.pushNamed(context, "/settingsGeneral");
           },
           icon: const Icon(Icons.settings)),
       titleSpacing: 0,

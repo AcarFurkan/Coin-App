@@ -1,5 +1,3 @@
-import 'package:easy_localization/easy_localization.dart';
-
 import '../../../../../core/enums/price_control.dart';
 import '../../../../../core/model/response_model/response_model.dart';
 import '../../../../model/my_coin_model.dart';
@@ -13,6 +11,7 @@ import '../gecho/gecho_service.dart';
 import '../genelpara/genelpara_service.dart';
 import '../hurriyet/hurriyet_service.dart';
 import '../truncgil/truncgil_service.dart';
+import 'package:intl/intl.dart';
 
 class CurrencyConverter {
   static CurrencyConverter? _instance;
@@ -164,15 +163,22 @@ class CurrencyConverter {
         counterCurrencyCode: coin.market?.counterCurrencyCode,
         lowOf24h: coin.low24H,
         highOf24h: coin.high24H,
-        lastUpdate: date
-            .toString()); //DateFormat.jms().format(date)/// DateFormat.jms().format(date)
+        lastUpdate: dateConvert(
+            date)); //DateFormat.jms().format(date)/// DateFormat.jms().format(date)
+  }
+
+  String dateConvert(DateTime date) {
+    var h = date.hour;
+    var m = date.minute;
+    var s = date.second.toString();
+    if (s.length == 1) {
+      s = "0" + s;
+    }
+    return "$h:$m:$s";
   }
 
   MainCurrencyModel mainCurrencyGeneratorFromGechoModel(
       Gecho coin, String currecny) {
-    String changeOf24Hour =
-        percentageCotnrol((coin.priceChangePercentage24H ?? 0).toString());
-    // var duration = DateTime.now().timeZoneOffset;
     return MainCurrencyModel(
         counterCurrencyCode: currecny,
         name: coin.symbol ?? "",
@@ -181,8 +187,8 @@ class CurrencyConverter {
         changeOf24H: (coin.priceChangePercentage24H ?? 0).toString(),
         lowOf24h: (coin.low24H ?? 0).toString(),
         highOf24h: (coin.high24H ?? 0).toString(),
-        lastUpdate: coin.lastUpdated!
-            .toString()); //DateFormat.jms().format(coin.lastUpdated!)
+        lastUpdate: dateConvert(
+            coin.lastUpdated!)); //DateFormat.jms().format(coin.lastUpdated!)
   }
 
   MainCurrencyModel mainCurrencyGeneratorFromTrungilModel(Truncgil e) {

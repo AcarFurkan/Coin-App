@@ -48,9 +48,8 @@ dependencies:
   #utils
   persian_tools: ^1.0.1
   flutter_svg: any
-  intl: ^0.17.0
   kartal: ^2.3.0
-
+ 
  
   #core utility
   flutter_dotenv: ^5.0.2
@@ -67,6 +66,7 @@ dependencies:
   fl_chart: ^0.40.5
   search_page: ^2.0.0+1
   flutter_tabler_icons: ^1.1.1
+  flutter_zoom_drawer: ^2.1.2
 
  
   just_audio: ^0.9.18

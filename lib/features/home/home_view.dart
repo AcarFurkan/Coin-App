@@ -26,10 +26,13 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView>
     with SingleTickerProviderStateMixin {
-  late TabController _tabController;
   GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
 
-  List listPage = [
+  static final PageController _pageController = PageController(
+    initialPage: _selectedIndex,
+    keepPage: true,
+  );
+  List<Widget> listPage = [
     SelectedCoinPage(),
     CoinListPage(),
     BitexenPage(),
@@ -41,11 +44,9 @@ class _HomeViewState extends State<HomeView>
   @override
   void initState() {
     super.initState();
-
-    _tabController = TabController(length: listPage.length, vsync: this);
   }
 
-  int _selectedIndex = 0;
+  static int _selectedIndex = 0;
   void _onItemTapped(int index) {
     if (context.read<ListPageGeneralCubit>().textEditingController != null) {
       context.read<ListPageGeneralCubit>().closeKeyBoardAndUnFocus();
@@ -70,6 +71,9 @@ class _HomeViewState extends State<HomeView>
       context.read<TruncgilPageGeneralCubit>().closeKeyBoardAndUnFocus();
     }
     setState(() {
+      // _pageController.jumpToPage(index);
+      _pageController.animateToPage(index,
+          duration: const Duration(milliseconds: 700), curve: Curves.ease);
       _selectedIndex = index;
     });
   }
@@ -95,38 +99,21 @@ class _HomeViewState extends State<HomeView>
         false;
   }
 
-  _tabBarView() {
-    return AnimatedBuilder(
-      animation: (_tabController.animation as Animation<double>),
-      builder: (BuildContext context, snapshot) {
-        return Transform.rotate(
-          angle: _tabController.animation!.value * pi,
-          child: [
-            Container(
-              color: Colors.blue,
-            ),
-            Container(
-              color: Colors.orange,
-            ),
-            Container(
-              color: Colors.lightGreen,
-            ),
-            Container(
-              color: Colors.red,
-            ),
-          ][_tabController.animation!.value.round()],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
         extendBody: true,
-        body: listPage[_selectedIndex],
+        body: PageView(
+          controller: _pageController,
+          onPageChanged: (index) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          },
+          children: listPage,
+        ),
         bottomNavigationBar: CurvedNavigationBar(
             key: _bottomNavigationKey,
             color: Theme.of(context).colorScheme.onPrimary,
@@ -135,6 +122,7 @@ class _HomeViewState extends State<HomeView>
             animationDuration: Duration(milliseconds: 450),
             //color: Theme.of(context).colorScheme.secondaryVariant,
             onTap: _onItemTapped,
+            index: _selectedIndex,
             items: [
               Icon(
                 Icons.home,
