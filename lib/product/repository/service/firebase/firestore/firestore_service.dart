@@ -52,6 +52,8 @@ class FirestoreService implements StoreBase {
         ).toLocal();
       }
     }
+    print("66666666666666666");
+    print(userFromMap!.backUpType);
     return userFromMap;
   }
 
@@ -85,7 +87,7 @@ class FirestoreService implements StoreBase {
   }
 
   @override
-  Future<bool> updateUserCurrenciesInformation(MyUser user,
+  Future<MyUser?> updateUserCurrenciesInformation(MyUser user,
       {List<MainCurrencyModel>? listCurrencyFromDb}) async {
     DocumentSnapshot _user = await _firestore.doc("users/${user.email}").get();
     var map = user.toJson();
@@ -129,8 +131,9 @@ class FirestoreService implements StoreBase {
         }
       }
     }
+    MyUser? myUser = await readUserInformations(user.email!);
 
-    return true;
+    return myUser;
   }
 
   @override

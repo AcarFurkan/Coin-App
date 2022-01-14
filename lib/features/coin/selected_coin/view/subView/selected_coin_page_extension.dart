@@ -16,7 +16,7 @@ extension SelectedCoinBlocConsumerView on SelectedCoinPage {
             child: CupertinoActivityIndicator(),
           );
         } else if (state is CoinLoading) {
-          return Center(child: CupertinoActivityIndicator());
+          return const Center(child: CupertinoActivityIndicator());
         } else if (state is CoinCompleted) {
           return _buildCoinCompletedStateView(context, state);
         } else if (state is UpdateSelectedCoinPage) {

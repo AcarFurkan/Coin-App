@@ -1,9 +1,7 @@
-import "dart:math" show pi;
-
+import 'package:coin_with_architecture/features/home/viewmodel/home_viewmodel.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:provider/src/provider.dart';
 
 import '../coin/bitexen/view/bitexen_page.dart';
@@ -28,26 +26,20 @@ class _HomeViewState extends State<HomeView>
     with SingleTickerProviderStateMixin {
   GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
 
-  static final PageController _pageController = PageController(
-    initialPage: _selectedIndex,
-    keepPage: true,
-  );
   List<Widget> listPage = [
     SelectedCoinPage(),
     CoinListPage(),
     BitexenPage(),
     TruncgilPage(),
-    // aa(),
     HurriyetPage(),
   ];
 
-  @override
-  void initState() {
-    super.initState();
+  void _onItemTapped(int index) {
+    context.read<HomeViewModel>().selectedIndex = index;
+    context.read<HomeViewModel>().animateToPage = index;
   }
 
-  static int _selectedIndex = 0;
-  void _onItemTapped(int index) {
+  void closeKeyBoardsAndUnFocus() {
     if (context.read<ListPageGeneralCubit>().textEditingController != null) {
       context.read<ListPageGeneralCubit>().closeKeyBoardAndUnFocus();
     }
@@ -70,12 +62,6 @@ class _HomeViewState extends State<HomeView>
         null) {
       context.read<TruncgilPageGeneralCubit>().closeKeyBoardAndUnFocus();
     }
-    setState(() {
-      // _pageController.jumpToPage(index);
-      _pageController.animateToPage(index,
-          duration: const Duration(milliseconds: 700), curve: Curves.ease);
-      _selectedIndex = index;
-    });
   }
 
   Future<bool> _onWillPop() async {
@@ -106,11 +92,10 @@ class _HomeViewState extends State<HomeView>
       child: Scaffold(
         extendBody: true,
         body: PageView(
-          controller: _pageController,
+          key: widget.key,
+          controller: context.read<HomeViewModel>().pageController,
           onPageChanged: (index) {
-            setState(() {
-              _selectedIndex = index;
-            });
+            context.read<HomeViewModel>().selectedIndex = index;
           },
           children: listPage,
         ),
@@ -122,7 +107,7 @@ class _HomeViewState extends State<HomeView>
             animationDuration: Duration(milliseconds: 450),
             //color: Theme.of(context).colorScheme.secondaryVariant,
             onTap: _onItemTapped,
-            index: _selectedIndex,
+            index: context.watch<HomeViewModel>().selectedIndex,
             items: [
               Icon(
                 Icons.home,
@@ -160,7 +145,7 @@ class _HomeViewState extends State<HomeView>
   }
 
   Color tabbarLabelColorGenerator(int index) {
-    if (_selectedIndex == index) {
+    if (context.read<HomeViewModel>().selectedIndex == index) {
       return Theme.of(context).colorScheme.background;
     } else {
       return Theme.of(context).tabBarTheme.unselectedLabelColor ??

@@ -36,6 +36,8 @@ class GenelParaService {
                 GenelPara.fromJson((response.data as Map).values.toList()[i]));
             genelParaList[i].id = keys[i];
             genelParaList[i].degisim =
+                genelParaList[i].degisim?.replaceAll(".", "");
+            genelParaList[i].degisim =
                 genelParaList[i].degisim?.replaceAll(",", ".");
           }
         }

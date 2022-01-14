@@ -175,15 +175,26 @@ class _ListCardItemState extends State<ListCardItem> {
   }
 
   AutoSizeText buildCurrenctPercentageText() {
-    String price =
-        double.parse((widget.coin.changeOf24H ?? "0")).toStringAsFixed(2);
-    return AutoSizeText(
-      price + " %",
-      maxLines: 1,
-      minFontSize: 10,
-      style: TextStyle(
-        color: Theme.of(context).colorScheme.background,
-      ),
-    );
+    try {
+      String price =
+          double.parse((widget.coin.changeOf24H ?? "0")).toStringAsFixed(2);
+      return AutoSizeText(
+        price + " %",
+        maxLines: 1,
+        minFontSize: 10,
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.background,
+        ),
+      );
+    } catch (e) {
+      return AutoSizeText(
+        "0 %",
+        maxLines: 1,
+        minFontSize: 10,
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.background,
+        ),
+      );
+    }
   }
 }

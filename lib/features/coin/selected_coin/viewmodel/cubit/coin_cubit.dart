@@ -61,6 +61,74 @@ class CoinCubit extends Cubit<CoinState> {
     if (coinListFromDataBase == null) {
       return [];
     }
+    await backUpCheck(myUser, coinListFromDataBase); // YOU CAN DELETE THESE
+    if (currencyServiceResponse.error != null) {
+      emit(CoinError("general error"));
+    } else if (currencyServiceResponse.data != null) {
+      dataFullTransactions(coinListFromDataBase, currencyServiceResponse.data!);
+    }
+
+    return coinListFromDataBase;
+  }
+
+  void dataFullTransactions(
+    List<MainCurrencyModel> coinListFromDataBase,
+    List<MainCurrencyModel> coinListFromService,
+  ) {
+    for (var i = 0; i < coinListFromService.length; i++) {
+      for (var itemFromDataBase in coinListFromDataBase) {
+        if (coinListFromService[i].id == itemFromDataBase.id) {
+          MainCurrencyModel currentSeviceItem = coinListFromService[i];
+          double lastPrice = double.parse(currentSeviceItem.lastPrice ?? "0");
+          arrangeCurrencyByInComingValue(itemFromDataBase, currentSeviceItem);
+          alarmControl(lastPrice, itemFromDataBase);
+        }
+      }
+    }
+  }
+
+  void alarmControl(double lastPrice, MainCurrencyModel itemFromDataBase) {
+    if (lastPrice < itemFromDataBase.min && itemFromDataBase.isMinAlarmActive) {
+      playMusic(
+          itemFromDataBase.minAlarmAudio ??
+              AudioModel("audio1", "assets/audio/audio_one.mp3"),
+          itemFromDataBase.isMinLoop!);
+      itemFromDataBase.isMinAlarmActive = false;
+      addToDb(itemFromDataBase);
+
+      showAlertDialog(itemFromDataBase, " fiyat minimum fiyatın altına indi.");
+    }
+    if (lastPrice > itemFromDataBase.max &&
+        itemFromDataBase.isMaxAlarmActive &&
+        itemFromDataBase.max != 0) {
+      playMusic(
+          itemFromDataBase.maxAlarmAudio ??
+              AudioModel("audio1", "assets/audio/audio_one.mp3"),
+          itemFromDataBase.isMaxLoop!);
+      itemFromDataBase.isMaxAlarmActive = false;
+      addToDb(itemFromDataBase);
+      showAlertDialog(itemFromDataBase, " fiyat maximum fiyatın üzerine çıktı");
+
+      //playMusic();
+    }
+  }
+
+  void arrangeCurrencyByInComingValue(
+    MainCurrencyModel itemFromDataBase,
+    MainCurrencyModel currentSeviceItem,
+  ) {
+    itemFromDataBase.changeOf24H = currentSeviceItem.changeOf24H ?? "0";
+
+    itemFromDataBase.lastUpdate = currentSeviceItem.lastUpdate;
+    itemFromDataBase.percentageControl = currentSeviceItem.percentageControl;
+    itemFromDataBase.priceControl = currentSeviceItem.priceControl;
+    itemFromDataBase.lastPrice = currentSeviceItem.lastPrice ?? "0";
+    itemFromDataBase.highOf24h = currentSeviceItem.highOf24h ?? "0";
+    itemFromDataBase.lowOf24h = currentSeviceItem.lowOf24h ?? "0";
+  }
+
+  Future<void> backUpCheck(
+      MyUser? myUser, List<MainCurrencyModel> coinListFromDataBase) async {
     if (context.read<UserCubit>().user != null &&
         context.read<UserCubit>().user?.isBackUpActive == true) {
       if (context.read<UserCubit>().user!.updatedAt != null) {
@@ -106,73 +174,12 @@ class CoinCubit extends Cubit<CoinState> {
     } else if (context.read<UserCubit>().user !=
             null && // YOU CAN DELETE THESE"1
         context.read<UserCubit>().user?.isBackUpActive == false) {
+      print("back up active değil");
+
       // YOU CAN DELETE THESE
-    } else if (context.read<UserCubit>().user ==
-        null) {} // YOU CAN DELETE THESE
-    if (currencyServiceResponse.error != null) {
-      emit(CoinError("general error"));
-    } else if (currencyServiceResponse.data != null) {
-      for (var i = 0; i < currencyServiceResponse.data!.length; i++) {
-        for (var itemFromDataBase in coinListFromDataBase) {
-          if (currencyServiceResponse.data![i].id == itemFromDataBase.id) {
-            double doubleParse =
-                double.parse(currencyServiceResponse.data![i].lastPrice ?? "0");
-            double changeOf24H = double.parse(
-                currencyServiceResponse.data![i].changeOf24H ?? "0");
-            itemFromDataBase.lastUpdate =
-                currencyServiceResponse.data![i].lastUpdate;
-            itemFromDataBase.percentageControl =
-                currencyServiceResponse.data![i].percentageControl;
-            itemFromDataBase.priceControl =
-                currencyServiceResponse.data![i].priceControl;
-            itemFromDataBase.lastPrice = currencyServiceResponse
-                    .data![i].lastPrice ??
-                "0"; ////Bunları değiştiriyosun da data base hiçbiri gitmiyo galiba tam anlamadım gitmemesi lazım ama okadar değişikliği nasıl algılıyo
-            itemFromDataBase.changeOf24H = changeOf24H.toString();
-            itemFromDataBase.highOf24h =
-                currencyServiceResponse.data![i].highOf24h ?? "0";
-            itemFromDataBase.lowOf24h =
-                currencyServiceResponse.data![i].lowOf24h ?? "0";
-
-            if (doubleParse < itemFromDataBase.min &&
-                itemFromDataBase.isMinAlarmActive) {
-              //playMusic(itemFromDataBase.minAlarmAudio!,"Minumum fiyatının altına düştü");
-
-              playMusic(
-                  itemFromDataBase.minAlarmAudio ??
-                      AudioModel("audio1", "assets/audio/audio_one.mp3"),
-                  itemFromDataBase.isMinLoop!);
-              itemFromDataBase.isMinAlarmActive = false;
-              addToDb(itemFromDataBase);
-
-              showAlertDialog(
-                  itemFromDataBase, " fiyat minimum fiyatın altına indi.");
-
-              // playMusic();
-            }
-            if (doubleParse > itemFromDataBase.max &&
-                itemFromDataBase.isMaxAlarmActive &&
-                itemFromDataBase.max != 0) {
-              /* playMusic(itemFromDataBase.maxAlarmAudio!,
-                "Maximum fiyatının üstüne çıktı");*/
-
-              playMusic(
-                  itemFromDataBase.maxAlarmAudio ??
-                      AudioModel("audio1", "assets/audio/audio_one.mp3"),
-                  itemFromDataBase.isMaxLoop!);
-              itemFromDataBase.isMaxAlarmActive = false;
-              addToDb(itemFromDataBase);
-              showAlertDialog(
-                  itemFromDataBase, " fiyat maximum fiyatın üzerine çıktı");
-
-              //playMusic();
-            }
-          }
-        }
-      }
-    }
-
-    return coinListFromDataBase;
+    } else if (context.read<UserCubit>().user == null) {
+      print("user null");
+    } // YOU CAN DELETE THESE
   }
 
   showAlertDialog(MainCurrencyModel coin, String message) {

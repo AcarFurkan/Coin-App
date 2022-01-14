@@ -4,7 +4,7 @@ extension CoinCompletedStateExtension on SelectedCoinPage {
   Widget _buildCoinCompletedStateView(
       BuildContext context, CoinCompleted state) {
     List<MainCurrencyModel> coinListToShow = (state.myCoinList ?? []);
-    if (coinListToShow.isEmpty) return _buildDontHaveCoinText();
+    if (coinListToShow.isEmpty) return _buildDontHaveCoin(context);
 
     if (context.read<SelectedPageGeneralCubit>().isSearhOpen &&
         _searchTextEditingController.text != "") {
@@ -83,8 +83,24 @@ Hero _buildListCardItem(
   );
 }
 
-Center _buildDontHaveCoinText() {
-  return Center(
-    child: Text("OMG YOU DONT HAVE ANY FAVORITE COIN"),
+ListView _buildDontHaveCoin(BuildContext context) {
+  return ListView(
+    padding: EdgeInsets.symmetric(
+        horizontal: MediaQuery.of(context).size.width * .05),
+    children: [
+      SizedBox(
+        height: MediaQuery.of(context).size.height * 0.04,
+      ),
+      SizedBox(
+          height: MediaQuery.of(context).size.height * 0.5,
+          child: InkWell(
+              onTap: () {
+                context.read<HomeViewModel>().selectedIndex =
+                    context.read<HomeViewModel>().selectedIndex + 1;
+                context.read<HomeViewModel>().animateToPage =
+                    context.read<HomeViewModel>().selectedIndex;
+              },
+              child: SvgPicture.asset("assets/svg/add.svg"))),
+    ],
   );
 }

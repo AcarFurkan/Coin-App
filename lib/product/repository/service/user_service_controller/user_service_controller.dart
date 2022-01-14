@@ -26,7 +26,33 @@ class UserServiceController {
   }
 
   Future<IResponseModel<MyUser>> getCurrentUser() async {
-    return await _firebaseAuthService.getCurrentUser();
+    IResponseModel<MyUser> response =
+        await _firebaseAuthService.getCurrentUser();
+    if (response.data != null) {
+      print("111111111111");
+      MyUser? user = await _firestoreService
+          .readUserInformations(response.data!.email ?? "");
+      //print("-------------------------");
+      //print(user!.backUpType);
+      //print(user.isBackUpActive);
+
+      //print(user.updatedAt);
+      //print("-------------------------");
+
+      //print(response.data!.backUpType);
+      //print(response.data!.isBackUpActive);
+      //print(response.data!.updatedAt);
+
+      response.data!.backUpType = user!.backUpType!;
+      response.data!.isBackUpActive = user.isBackUpActive!;
+      response.data!.updatedAt = user.updatedAt!;
+      /**
+      * TODO : BURDA NASIL OLURDA  response.data = user; ÇALIŞMAZZZ
+      */
+
+    } else {}
+
+    return response;
   }
 
   final CoinCacheManager _cacheManager = locator<CoinCacheManager>();

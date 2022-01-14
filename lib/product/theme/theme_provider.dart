@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/init/theme/app_theme.dart';
 
-class ThemeProvider extends ChangeNotifier {
+class ThemeProvider with ChangeNotifier {
   bool isdark = false;
 
   ThemeData theme = ThemeManager.craeteTheme(AppThemeLight());

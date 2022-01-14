@@ -18,6 +18,7 @@ import 'features/coin/truncgil/viewmodel/cubit/truncgil_cubit.dart';
 import 'features/coin/truncgil/viewmodel/page_viewmodel.dart/cubit/truncgil_page_general_cubit.dart';
 import 'features/home/landing_page.dart/landing_page.dart';
 import 'features/home/landing_page.dart/splash_page.dart';
+import 'features/home/viewmodel/home_viewmodel.dart';
 import 'features/settings/subpage/audio_settings/viewmodel/cubit/audio_cubit.dart';
 import 'product/language/language_manager.dart';
 import 'product/theme/theme_provider.dart';
@@ -27,8 +28,11 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
 
-  runApp(ChangeNotifierProvider(
-    create: (context) => ThemeProvider(),
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (context) => ThemeProvider()),
+      ChangeNotifierProvider(create: (context) => HomeViewModel())
+    ],
     child: EasyLocalization(
         child: BlocProvider<UserCubit>(
             create: (BuildContext context) => UserCubit(),
