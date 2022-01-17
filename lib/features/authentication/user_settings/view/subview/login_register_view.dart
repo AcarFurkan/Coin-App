@@ -59,8 +59,7 @@ extension LoginRegisterViewExtension on UserSettings {
         indicator: BoxDecoration(
             border: Border(
                 bottom: BorderSide(
-                    color: Theme.of(context).colorScheme.onBackground,
-                    width: 3))),
+                    color: Theme.of(context).colorScheme.onPrimary, width: 3))),
         onTap: (index) => context.read<UserCubit>().changeIsLoginPage(index),
         indicatorSize: TabBarIndicatorSize.label,
         tabs: [
@@ -89,7 +88,7 @@ extension LoginRegisterViewExtension on UserSettings {
                   ? Expanded(flex: 10, child: buildLoginFormFields(context))
                   : Expanded(flex: 30, child: buildRegisterFormFields(context)),
               const Spacer(),
-              buildTextForgot(),
+              loginRegisterControl(context) ? buildTextForgot() : Container(),
               const Spacer(flex: 3),
               buildLoginButtons(context),
               const Spacer(flex: 2),
@@ -124,40 +123,35 @@ extension LoginRegisterViewExtension on UserSettings {
   Widget buildElevatedButtonLogin(BuildContext context) {
     return ElevatedButton(
       style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(Colors.white),
-          //   padding: MaterialStateProperty.all<EdgeInsetsGeometry?>( context.paddingNormal),
+          backgroundColor:
+              MaterialStateProperty.all(Theme.of(context).colorScheme.onError),
+          padding: MaterialStateProperty.all<EdgeInsetsGeometry?>(
+              EdgeInsets.symmetric(vertical: 5)),
           shape: MaterialStateProperty.all(StadiumBorder())),
       onPressed: () async {
         await context.read<UserCubit>().tappedLoginRegisterButton();
       },
-      child: Center(
-          child: Text(
-              context.read<UserCubit>().isLoginPage ? "Login" : "Register",
-              style: context.textTheme.headline5)),
+      child: Center(child: buildLoginButtonText(context)),
     );
   }
 
   Widget buildTextForgot() => Align(
       alignment: Alignment.centerRight,
       child: Text("forgot password", textAlign: TextAlign.end));
+  Text buildLoginButtonText(BuildContext context) {
+    return Text(context.read<UserCubit>().isLoginPage ? "Login" : "Register",
+        style: context.textTheme.headline5!.copyWith(
+            color: Theme.of(context).colorScheme.primary,
+            fontWeight: FontWeight.w600));
+  }
 
-  Wrap buildWrapForgot() {
-    return Wrap(
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: [
-        Text("dont have a acount"),
-        FlatButton(onPressed: () {}, child: Text("sign up"))
-      ],
+  ClipRRect buildGoogleIcon(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(25),
+      child: Image.asset(
+        "assets/images/google_icon.png",
+        width: context.width * 0.10,
+      ),
     );
   }
-}
-
-ClipRRect buildGoogleIcon(BuildContext context) {
-  return ClipRRect(
-    borderRadius: BorderRadius.circular(25),
-    child: Image.asset(
-      "assets/images/google_icon.png",
-      width: context.width * 0.10,
-    ),
-  );
 }

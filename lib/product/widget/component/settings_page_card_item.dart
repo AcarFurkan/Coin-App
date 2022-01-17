@@ -17,6 +17,7 @@ class SettingsCardItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       borderRadius: BorderRadius.all(Radius.circular(10)),
+      overlayColor: MaterialStateProperty.all(Colors.transparent),
       splashColor: Colors.grey[200],
       onTap: ontap,
       child: Padding(
@@ -31,10 +32,10 @@ class SettingsCardItem extends StatelessWidget {
                 bottomRight: Radius.circular(10)),
             boxShadow: [
               BoxShadow(
-                color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.3),
+                color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.4),
                 spreadRadius: 1,
-                blurRadius: 25,
-                offset: Offset(2, 8), // changes position of shadow
+                blurRadius: 1,
+                offset: Offset(2, 3), // changes position of shadow
               ),
             ],
           ),
@@ -46,7 +47,7 @@ class SettingsCardItem extends StatelessWidget {
                 child: prefix,
               ),
               Spacer(
-                flex: 2,
+                flex: 3,
               ),
               Expanded(
                 flex: 25,

@@ -1,7 +1,9 @@
 import 'package:coin_with_architecture/features/home/viewmodel/home_viewmodel.dart';
+import 'package:coin_with_architecture/features/settings/view/settings_page.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:provider/src/provider.dart';
 
 import '../coin/bitexen/view/bitexen_page.dart';
@@ -37,6 +39,7 @@ class _HomeViewState extends State<HomeView>
   void _onItemTapped(int index) {
     context.read<HomeViewModel>().selectedIndex = index;
     context.read<HomeViewModel>().animateToPage = index;
+    closeKeyBoardsAndUnFocus();
   }
 
   void closeKeyBoardsAndUnFocus() {
@@ -73,11 +76,12 @@ class _HomeViewState extends State<HomeView>
             actions: <Widget>[
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: const Text('No'),
+                child: Text('No', style: Theme.of(context).textTheme.bodyText1),
               ),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(true),
-                child: const Text('Yes'),
+                child:
+                    Text('Yes', style: Theme.of(context).textTheme.bodyText1),
               ),
             ],
           ),
@@ -101,8 +105,11 @@ class _HomeViewState extends State<HomeView>
         ),
         bottomNavigationBar: CurvedNavigationBar(
             key: _bottomNavigationKey,
-            color: Theme.of(context).colorScheme.onPrimary,
-            buttonBackgroundColor: Theme.of(context).colorScheme.onPrimary,
+            color: Theme.of(context).bottomNavigationBarTheme.backgroundColor ??
+                Theme.of(context).colorScheme.onError,
+            buttonBackgroundColor:
+                Theme.of(context).bottomNavigationBarTheme.backgroundColor ??
+                    Theme.of(context).colorScheme.onError,
             backgroundColor: Colors.transparent,
             animationDuration: Duration(milliseconds: 450),
             //color: Theme.of(context).colorScheme.secondaryVariant,
@@ -146,9 +153,10 @@ class _HomeViewState extends State<HomeView>
 
   Color tabbarLabelColorGenerator(int index) {
     if (context.read<HomeViewModel>().selectedIndex == index) {
-      return Theme.of(context).colorScheme.background;
+      return Theme.of(context).bottomNavigationBarTheme.selectedItemColor ??
+          Theme.of(context).colorScheme.primary;
     } else {
-      return Theme.of(context).tabBarTheme.unselectedLabelColor ??
+      return Theme.of(context).bottomNavigationBarTheme.unselectedItemColor ??
           Theme.of(context).colorScheme.primary;
     }
   }

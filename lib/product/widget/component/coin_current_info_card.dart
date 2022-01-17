@@ -30,7 +30,7 @@ class _ListCardItemState extends State<ListCardItem> {
         PriceLevelControl.DESCREASING.name) {
       return Colors.red;
     } else {
-      return Colors.black;
+      return Theme.of(context).colorScheme.onBackground;
     }
   }
   /* DateTime now = DateTime.now();
@@ -49,7 +49,7 @@ class _ListCardItemState extends State<ListCardItem> {
     } else if (widget.coin.priceControl == PriceLevelControl.DESCREASING.name) {
       return Colors.red;
     } else {
-      return Colors.black;
+      return Theme.of(context).colorScheme.onBackground;
     }
   }
 
@@ -183,7 +183,7 @@ class _ListCardItemState extends State<ListCardItem> {
         maxLines: 1,
         minFontSize: 10,
         style: TextStyle(
-          color: Theme.of(context).colorScheme.background,
+          color: Theme.of(context).colorScheme.onError,
         ),
       );
     } catch (e) {

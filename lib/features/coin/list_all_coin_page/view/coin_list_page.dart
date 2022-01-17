@@ -68,15 +68,16 @@ class CoinListPage extends StatelessWidget {
 
   TabBar buildTabBar(BuildContext context) {
     return TabBar(
-        indicatorColor: Theme.of(context).colorScheme.onPrimary,
-        labelColor: Theme.of(context).colorScheme.onPrimary,
+        //indicatorColor: Theme.of(context).colorScheme.onPrimary,
+        //labelColor: Theme.of(context).colorScheme.onPrimary,
         indicatorWeight: 0,
         // labelStyle: Theme.of(context).textTheme.bodyText1,
         unselectedLabelStyle: Theme.of(context).textTheme.bodyText2,
         indicator: BoxDecoration(
             border: Border(
                 bottom: BorderSide(
-                    color: Theme.of(context).colorScheme.onPrimary, width: 3))),
+                    color: Theme.of(context).colorScheme.onBackground,
+                    width: 3))),
         tabs: _tabGenerator(context));
   }
 

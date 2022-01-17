@@ -90,14 +90,14 @@ class UserSettings extends StatelessWidget {
         Navigator.pushNamedAndRemoveUntil(
             context, "/home", (ModalRoute.withName("/home")));
       },
-      child: const Text('Yes'),
+      child: Text('Yes', style: Theme.of(context).textTheme.bodyText1),
     );
   }
 
   TextButton buildNoButton(BuildContext context) {
     return TextButton(
       onPressed: () => Navigator.of(context).pop(false),
-      child: const Text('No'),
+      child: Text('No', style: Theme.of(context).textTheme.bodyText1),
     );
   }
 }

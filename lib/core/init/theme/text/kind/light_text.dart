@@ -69,6 +69,7 @@ class TextThemeLight implements ITextTheme {
       overline: GoogleFonts.roboto(
           fontSize: 10, fontWeight: FontWeight.w400, letterSpacing: 1.5),
     ).apply(
+      fontFamily: GoogleFonts.notoSans().fontFamily,
       bodyColor: primaryColor,
     );
     fontFamily = GoogleFonts.notoSans().fontFamily;

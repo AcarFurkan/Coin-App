@@ -26,30 +26,36 @@ class LanguagePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.read<LanguageViewModel>().getCurrentLanguage();
-    List<LanguageModel> langList = context.read<LanguageViewModel>().langModel;
-
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        title: Text(
-          LocaleKeys.changeLanguagePage_appBarTitle.locale,
-          style: TextStyle(color: Colors.grey[800]),
-        ),
-        leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(
-              Icons.arrow_back_ios,
-            )),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ListView(
-          children: languageWidgetList(langList),
-        ),
-      ),
+    return ChangeNotifierProvider(
+      create: (BuildContext context) => LanguageViewModel(context: context),
+      builder: (context, a) {
+        context.read<LanguageViewModel>().getCurrentLanguage();
+        List<LanguageModel> langList =
+            context.read<LanguageViewModel>().langModel;
+        return Scaffold(
+          appBar: AppBar(
+            elevation: 0,
+            title: Text(
+              LocaleKeys.changeLanguagePage_appBarTitle.locale,
+              style: TextStyle(color: Colors.grey[800]),
+            ),
+            leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(
+                Icons.arrow_back_ios,
+              ),
+            ),
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ListView(
+              children: languageWidgetList(langList),
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -76,7 +82,7 @@ class ListTileItem extends StatelessWidget {
       child: Container(
         height: MediaQuery.of(context).size.height / 14,
         decoration: BoxDecoration(
-          color: ThemeData().colorScheme.onSecondary,
+          color: Theme.of(context).appBarTheme.backgroundColor,
           borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(10),
               topRight: Radius.circular(10),
@@ -84,10 +90,10 @@ class ListTileItem extends StatelessWidget {
               bottomRight: Radius.circular(10)),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.3),
+              color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
               spreadRadius: 1,
-              blurRadius: 25,
-              offset: Offset(2, 8), // changes position of shadow
+              blurRadius: 5,
+              offset: Offset(5, 10), // changes position of shadow
             ),
           ],
         ),
@@ -103,7 +109,7 @@ class ListTileItem extends StatelessWidget {
             ),
             Expanded(
               flex: 6,
-              child: Text(text),
+              child: Text(text, style: Theme.of(context).textTheme.bodyText1),
             ),
             Spacer(
               flex: 3,

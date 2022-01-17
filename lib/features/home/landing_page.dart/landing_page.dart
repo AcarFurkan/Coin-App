@@ -1,63 +1,29 @@
 import 'dart:io';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:libwinmedia/libwinmedia.dart';
+import 'package:provider/src/provider.dart';
+
 import '../../../core/enums/locale_keys_enum.dart';
-import '../../authentication/onboard/view/onboard_page.dart';
-import '../../coin/bitexen/viewmodel/cubit/bitexen_cubit.dart';
-import '../../coin/hurriyet/viewmodel/cubit/hurriyet_cubit.dart';
-import '../../coin/list_all_coin_page/viewmodel/cubit/coin_list_cubit.dart';
-import '../../coin/selected_coin/viewmodel/cubit/coin_cubit.dart';
-import '../../coin/truncgil/viewmodel/cubit/truncgil_cubit.dart';
+import '../../../firebase_options.dart';
+import '../../../locator.dart';
 import '../../../product/repository/cache/app_cache_manager.dart';
 import '../../../product/repository/cache/coin_cache_manager.dart';
 import '../../../product/repository/service/market/bitexen/bitexen_service_controller.dart';
 import '../../../product/repository/service/market/gecho/gecho_service_controller.dart';
 import '../../../product/repository/service/market/genelpara/genepara_service_controller.dart';
 import '../../../product/repository/service/market/truncgil/truncgil_service_controller.dart';
-import '../../../product/theme/theme_provider.dart';
-import '../../../product/untility/navigation/route_generator.dart';
-import 'package:easy_localization/src/public_ext.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:provider/src/provider.dart';
-import 'package:libwinmedia/libwinmedia.dart';
-
-import '../../../firebase_options.dart';
-import '../../../locator.dart';
+import '../../authentication/onboard/view/onboard_page.dart';
+import '../../coin/bitexen/viewmodel/cubit/bitexen_cubit.dart';
+import '../../coin/hurriyet/viewmodel/cubit/hurriyet_cubit.dart';
+import '../../coin/list_all_coin_page/viewmodel/cubit/coin_list_cubit.dart';
+import '../../coin/selected_coin/viewmodel/cubit/coin_cubit.dart';
+import '../../coin/truncgil/viewmodel/cubit/truncgil_cubit.dart';
 import '../home_view.dart';
 import 'splash_page.dart';
-
-class FutureBuilderForSplash extends StatelessWidget {
-  const FutureBuilderForSplash({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: Init.instance.initialize(context),
-      builder: (context, AsyncSnapshot snapshot) {
-        // Show splash screen while waiting for app resources to load:
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const MaterialApp(home: Splash());
-        } else {
-          // Loading is done, return the app:
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            localizationsDelegates: context.localizationDelegates,
-            supportedLocales: context.supportedLocales,
-            locale: context.locale,
-            theme: context.watch<ThemeProvider>().theme,
-            title: 'Material App',
-            onGenerateRoute: RouteGenerator.routeGenerator,
-            home: TrialSomething(), //BUNU NİYE YAZMAMIZ LAZIM ONU ANLAMADIM
-          );
-        }
-      },
-    );
-  }
-}
 
 class Init {
   static Init? _instace;
@@ -78,15 +44,6 @@ class Init {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    FirebaseAuth auth = FirebaseAuth.instance;
-
-    auth.authStateChanges().listen((User? user) {
-      if (user == null) {
-        print('User is currently signed out!');
-      } else {
-        print('User is signed in!');
-      }
-    });
 
     await Hive.initFlutter();
     setupLocator();
@@ -116,15 +73,18 @@ class Init {
     await _appCacheManager.init();
 
     await Future.delayed(const Duration(seconds: 3));
+    /**
+     * TODO: FİX DURATİON
+     */
   }
 }
 
-class TrialSomething extends StatelessWidget {
-  TrialSomething({Key? key}) : super(key: key);
-  AppCacheManager _cacheManager = locator<AppCacheManager>();
+class FutureBuilderForIsFirstOpen extends StatelessWidget {
+  FutureBuilderForIsFirstOpen({Key? key}) : super(key: key);
+  final AppCacheManager _cacheManager = locator<AppCacheManager>();
 
-  open() {
-    _cacheManager.putBoolItem(PreferencesKeys.IS_FIRST_APP.name, true);
+  Future<void> open() async {
+    await _cacheManager.putBoolItem(PreferencesKeys.IS_FIRST_APP.name, true);
   }
 
   @override

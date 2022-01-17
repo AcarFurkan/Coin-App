@@ -28,7 +28,6 @@ class _SettingsPageState extends State<SettingsPage> {
         elevation: 0,
         title: Text(
           LocaleKeys.SettingsPage_appBarTitle.locale,
-          // style: ThemeData().textTheme.headline6,
         ),
       ),
       body: Padding(
@@ -67,21 +66,8 @@ class _SettingsPageState extends State<SettingsPage> {
                       context.read<ThemeProvider>().changeTheme();
                     }),
               ),
-              ontap: () {},
-            ),
-            SettingsCardItem(
-              prefix: Icon(
-                Icons.language,
-                size: MediaQuery.of(context).size.height / 33,
-              ),
-              text: "Zil sesi ekle",
-              suffix: Icon(
-                Icons.arrow_forward_ios,
-                size: MediaQuery.of(context).size.height / 40,
-              ),
               ontap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => AudioPage()));
+                context.read<ThemeProvider>().changeTheme();
               },
             ),
             SettingsCardItem(
@@ -95,14 +81,10 @@ class _SettingsPageState extends State<SettingsPage> {
                 size: MediaQuery.of(context).size.height / 40,
               ),
               ontap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ChangeNotifierProvider(
-                              create: (context) =>
-                                  LanguageViewModel(context: context),
-                              child: LanguagePage(),
-                            ))).whenComplete(() => {setState(() {})});
+                Navigator.of(context)
+                    .push(
+                        MaterialPageRoute(builder: (context) => LanguagePage()))
+                    .whenComplete(() => {setState(() {})});
               },
             ),
             SettingsCardItem(

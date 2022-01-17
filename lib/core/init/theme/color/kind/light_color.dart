@@ -40,12 +40,10 @@ class LightColors implements IColors {
       secondaryVariant: colors.lightGrey,
       background: colors.white,
       error: colors.red,
-      onSurface: colors.mediumGreyBold, onBackground: colors.purplish,
-      //onBackground: ,
-      // onError: ,
-
+      onSurface: colors.mediumGreyBold,
+      onBackground: colors.black,
+      onError: colors.white,
       surface: colors.green,
-
       brightness: Brightness.light,
     );
     brightness = Brightness.light;

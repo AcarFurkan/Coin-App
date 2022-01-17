@@ -26,6 +26,7 @@ extension FormFieldsForLoginExtension on UserSettings {
         }
       },
       obscureText: context.watch<UserCubit>().isLockOpen,
+      cursorColor: Theme.of(context).colorScheme.onBackground,
       decoration: InputDecoration(
           labelText: "password",
           icon: buildContainerIconField(context, Icons.vpn_key),
@@ -46,6 +47,7 @@ extension FormFieldsForLoginExtension on UserSettings {
       onTap: () {
         print("tapped email");
       },
+      cursorColor: Theme.of(context).colorScheme.onBackground,
       validator: (value) => value!.isValidEmail ? null : "invalid email",
       decoration: InputDecoration(
         labelText: "email",
@@ -56,7 +58,7 @@ extension FormFieldsForLoginExtension on UserSettings {
 
   Container buildContainerIconField(BuildContext context, IconData icon) {
     return Container(
-      color: Theme.of(context).colorScheme.onBackground,
+      color: Theme.of(context).canvasColor,
       padding: context.paddingLow,
       child: Icon(icon, color: Theme.of(context).colorScheme.primaryVariant),
     );

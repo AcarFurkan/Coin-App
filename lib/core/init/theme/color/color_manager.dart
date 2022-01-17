@@ -18,6 +18,10 @@ class _AppColors {
   final Color green = const Color(0xff4CAF50);
   final Color green2 = Color(0xff43A047);
   final Color purplish = Color(0xff6c63ff);
+  final Color darkColorForTrial = Color(0xff2e2e2e);
+  final Color appBarBlack = Color(0xff424242);
+
+  final Color black = Color(0xff000000);
 }
 
 abstract class IColors {

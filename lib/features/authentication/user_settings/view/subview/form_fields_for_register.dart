@@ -77,7 +77,7 @@ extension FormFieldsForRegisterExtension on UserSettings {
 
   Container buildContainerIconField(BuildContext context, IconData icon) {
     return Container(
-      color: Theme.of(context).colorScheme.onBackground,
+      color: Theme.of(context).canvasColor,
       padding: context.paddingLow,
       child: Icon(icon, color: Theme.of(context).colorScheme.primaryVariant),
     );

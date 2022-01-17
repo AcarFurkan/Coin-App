@@ -37,7 +37,6 @@ class AppCacheManager {
   }
 
   getBoolValue(String key) {
-    print(_box == null ? "box null" : "box full");
     return (_box?.get(key) ?? false).toString();
   }
 

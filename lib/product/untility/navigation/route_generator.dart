@@ -1,3 +1,5 @@
+import 'package:coin_with_architecture/features/settings/view/settings_page_two.dart';
+
 import '../../../features/authentication/user_settings/view/user_settings_page.dart';
 import '../../../features/home/landing_page.dart/landing_page.dart';
 import '../../../features/home/landing_page.dart/splash_page.dart';
@@ -34,7 +36,7 @@ class RouteGenerator {
   static Route<dynamic>? routeGenerator(RouteSettings settings) {
     switch (settings.name) {
       case '/':
-        return _routeOlustur(TrialSomething(), settings);
+        return _routeOlustur(FutureBuilderForIsFirstOpen(), settings);
       case '/home':
         return _routeOlustur(const HomeView(), settings);
       case '/userSettings':

@@ -38,6 +38,7 @@ extension CoinCompletedStateExtension on SelectedCoinPage {
                       ? 18
                       : 0,
               controller: _searchTextEditingController,
+              cursorColor: Theme.of(context).colorScheme.onBackground,
               onChanged: (a) {
                 context.read<SelectedPageGeneralCubit>().textFormFieldChanged();
               },
@@ -45,7 +46,7 @@ extension CoinCompletedStateExtension on SelectedCoinPage {
               autofocus: context.watch<SelectedPageGeneralCubit>().isSearhOpen
                   ? true
                   : false,
-              decoration: const InputDecoration(border: OutlineInputBorder()),
+              //  decoration: const InputDecoration(border: OutlineInputBorder()),
             ),
           ),
         ),

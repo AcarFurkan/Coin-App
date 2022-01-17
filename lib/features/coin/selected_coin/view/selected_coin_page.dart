@@ -30,10 +30,7 @@ class SelectedCoinPage extends StatelessWidget {
         _searchTextEditingController;
     return Scaffold(
       appBar: appBar(context),
-      body: SizedBox(
-        child: _blocConsumer(),
-        height: MediaQuery.of(context).size.height,
-      ),
+      body: _blocConsumer(),
     );
   }
 
@@ -71,7 +68,10 @@ class SelectedCoinPage extends StatelessWidget {
 
   IconButton buildSettingsIcon(BuildContext context) {
     return IconButton(
-        onPressed: () => Navigator.pushNamed(context, "/settingsGeneral"),
+        onPressed: () {
+          //  context.read<HomeViewModel>().openDrawer();
+          Navigator.pushNamed(context, "/settingsGeneral");
+        },
         icon: const Icon(Icons.settings));
   }
 
