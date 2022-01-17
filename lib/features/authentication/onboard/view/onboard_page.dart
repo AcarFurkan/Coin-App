@@ -12,7 +12,7 @@ class OnboardPage extends StatelessWidget {
             const Spacer(),
             Expanded(flex: 6, child: buildWelcomeImage()),
             buildLoginRegisterButton(context),
-            const Spacer(flex: 2)
+            const Spacer(flex: 2) // as
           ],
         ));
   }
