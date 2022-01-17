@@ -1,4 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import '../../../../core/extension/context_extension.dart';
+import '../../../../product/untility/text_form_field_with_animation.dart';
 import '../../../authentication/viewmodel/cubit/user_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,24 +11,21 @@ import '../../../../core/widget/text/locale_text.dart';
 import '../../../../product/language/locale_keys.g.dart';
 import '../../../../product/model/my_coin_model.dart';
 import '../../../../product/widget/component/coin_current_info_card.dart';
-import '../../../settings/view/settings_page.dart';
 import '../viewmodel/cubit/coin_list_cubit.dart';
 import '../viewmodel/page_viewmodel/cubit/list_page_general_cubit.dart';
 
 class CoinListPage extends StatelessWidget {
   CoinListPage({Key? key}) : super(key: key);
 
-  TextEditingController _searchTextEditingController = TextEditingController();
-  GlobalKey<FormState> _searchFormKey = GlobalKey<FormState>();
-  List<MainCurrencyModel> searchresult = [];
+  final List<MainCurrencyModel> searchresult = [];
 
   @override
   Widget build(BuildContext context) {
-    context.read<ListPageGeneralCubit>().textEditingController =
-        _searchTextEditingController;
     return DefaultTabController(
       length: context.read<UserCubit>().user?.level == 2
-          ? CoinCurrencyLevel2.values.length
+          ? CoinCurrencyLevel2
+              .values.length /* 
+          TODO: LEVEL TWO OLAYINI DÜŞÜN */
           : CoinCurrency.values.length,
       child: Scaffold(
         //extendBody: true,
@@ -60,7 +59,7 @@ class CoinListPage extends StatelessWidget {
           context.read<ListPageGeneralCubit>().changeIsSearch();
 
           if (context.read<ListPageGeneralCubit>().isSearhOpen == false) {
-            _searchTextEditingController.clear();
+            context.read<ListPageGeneralCubit>().textEditingController?.clear();
           }
         },
         icon: const Icon(Icons.search));
@@ -68,16 +67,12 @@ class CoinListPage extends StatelessWidget {
 
   TabBar buildTabBar(BuildContext context) {
     return TabBar(
-        //indicatorColor: Theme.of(context).colorScheme.onPrimary,
-        //labelColor: Theme.of(context).colorScheme.onPrimary,
         indicatorWeight: 0,
-        // labelStyle: Theme.of(context).textTheme.bodyText1,
-        unselectedLabelStyle: Theme.of(context).textTheme.bodyText2,
+        unselectedLabelStyle: context.textTheme.bodyText2,
         indicator: BoxDecoration(
             border: Border(
-                bottom: BorderSide(
-                    color: Theme.of(context).colorScheme.onBackground,
-                    width: 3))),
+                bottom:
+                    BorderSide(color: context.colors.onBackground, width: 3))),
         tabs: _tabGenerator(context));
   }
 
@@ -125,13 +120,14 @@ class CoinListPage extends StatelessWidget {
       builder: (context, state) {
         if (state is CoinListInitial) {
           context.read<CoinListCubit>().fetchAllCoins();
-          return _initialStateBody();
+          return _initialStateBody;
         } else if (state is CoinListLoading) {
-          return _loadingStateBody();
+          return _loadingStateBody;
         } else if (state is CoinListCompleted) {
           return completedStateBody(state, currencyName, context);
         } else {
-          return Text("Coin");
+          return const Text("404"); /*
+          TODO: BAŞKA BİR ŞEKİL DÜŞÜN */
         }
       },
       listener: (context, state) {
@@ -143,9 +139,9 @@ class CoinListPage extends StatelessWidget {
     );
   }
 
-  Center _initialStateBody() =>
+  Center get _initialStateBody =>
       const Center(child: CupertinoActivityIndicator());
-  Center _loadingStateBody() =>
+  Center get _loadingStateBody =>
       const Center(child: CupertinoActivityIndicator());
   Widget completedStateBody(
       CoinListCompleted state, String currencyName, BuildContext context) {
@@ -156,43 +152,20 @@ class CoinListPage extends StatelessWidget {
 
     return Column(
       children: [
-        buildTextFormFieldWithAnimation(context),
+        buildTextFormFieldWithAnimation(
+          context,
+          controller:
+              context.read<ListPageGeneralCubit>().textEditingController!,
+          focusNode: context.watch<ListPageGeneralCubit>().myFocusNode,
+          isSearchOpen: context.watch<ListPageGeneralCubit>().isSearhOpen,
+          onChanged:
+              context.read<ListPageGeneralCubit>().textFormFieldChanged(),
+        ),
         Expanded(
-          flex: 10,
+          flex: (context.height * .02).toInt(),
           child: buildListViewBuilder(coinListToShow, currencyName),
         ),
       ],
-    );
-  }
-
-  Widget buildTextFormFieldWithAnimation(BuildContext context) {
-    return AnimatedSize(
-      curve: Curves.decelerate,
-      duration: const Duration(milliseconds: 1000),
-      child: SizedBox(
-        height: context.watch<ListPageGeneralCubit>().isSearhOpen ? 50 : 0,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: AnimatedOpacity(
-            curve: Curves.easeIn,
-            duration: const Duration(milliseconds: 500),
-            opacity: context.watch<ListPageGeneralCubit>().isSearhOpen ? 1 : 0,
-            child: TextFormField(
-              cursorHeight:
-                  context.watch<ListPageGeneralCubit>().isSearhOpen ? 18 : 0,
-              controller: _searchTextEditingController,
-              onChanged: (a) {
-                context.read<ListPageGeneralCubit>().textFormFieldChanged();
-              },
-              focusNode: context.watch<ListPageGeneralCubit>().myFocusNode,
-              autofocus: context.watch<ListPageGeneralCubit>().isSearhOpen
-                  ? true
-                  : false,
-              decoration: const InputDecoration(border: OutlineInputBorder()),
-            ),
-          ),
-        ),
-      ),
     );
   }
 
@@ -206,18 +179,15 @@ class CoinListPage extends StatelessWidget {
           var result = coinListToShow[index];
 
           return GestureDetector(
-            onTap: () {
-              // convertCurrency(context, currencyName, coinListToShow, index);
-              Navigator.pushNamed(context, "/detailPage", arguments: result);
-            },
+            onTap: () =>
+                Navigator.pushNamed(context, "/detailPage", arguments: result),
             child: Hero(
               tag: result.id,
               child: ListCardItem(
                 coin: result,
                 index: index,
-                voidCallback: () {
-                  context.read<CoinListCubit>().updateFromFavorites(result);
-                },
+                voidCallback: () =>
+                    context.read<CoinListCubit>().updateFromFavorites(result),
               ),
             ),
           );
@@ -250,20 +220,24 @@ class CoinListPage extends StatelessWidget {
   List<MainCurrencyModel> searchTransaction(
       BuildContext context, List<MainCurrencyModel> coinListToShow) {
     if (context.read<ListPageGeneralCubit>().isSearhOpen &&
-        _searchTextEditingController.text != "") {
-      coinListToShow = searchResult(coinListToShow);
+        context.read<ListPageGeneralCubit>().textEditingController?.text !=
+            "") {
+      coinListToShow = searchResult(coinListToShow, context);
     }
     return coinListToShow;
   }
 
-  List<MainCurrencyModel> searchResult(List<MainCurrencyModel> coinList) {
+  List<MainCurrencyModel> searchResult(
+      List<MainCurrencyModel> coinList, BuildContext context) {
     searchresult.clear();
 
     for (int i = 0; i < coinList.length; i++) {
       String data = coinList[i].name;
-      if (data
-          .toLowerCase()
-          .contains(_searchTextEditingController.text.toLowerCase())) {
+      if (data.toLowerCase().contains(context
+          .read<ListPageGeneralCubit>()
+          .textEditingController!
+          .text
+          .toLowerCase())) {
         searchresult.add(coinList[i]);
       }
     }

@@ -1,5 +1,3 @@
-import 'package:firebase_core/firebase_core.dart';
-
 class FirebaseCustomExceptions {
   static String convertFirebaseMessage(String exceptionCode) {
     switch (exceptionCode) {

@@ -4,22 +4,31 @@ part of '../user_settings_page.dart';
 extension UserProfileSettingsViewExtension on UserSettings {
   Widget buildUserProfileView(MyUser user, BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      ),
-      body: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-        Expanded(flex: 12, child: buildProfileImage),
-        const Spacer(),
-        Expanded(flex: 2, child: buildName(user)),
-        Expanded(flex: 2, child: buildEmail(user)),
-        const Divider(),
-        Expanded(child: buildBackUpMaterialCard(user, context)),
-        const Divider(),
-        const Spacer(),
-        Expanded(flex: 2, child: buildButtons(context)),
-        const Spacer(flex: 6)
-      ]),
+      appBar: buildAppBar(context),
+      body: buildScaffoldBody(user, context),
+    );
+  }
+
+  Column buildScaffoldBody(MyUser user, BuildContext context) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+      Expanded(flex: (context.height * .018).toInt(), child: buildProfileImage),
+      const Spacer(),
+      Expanded(flex: (context.height * .005).toInt(), child: buildName(user)),
+      Expanded(flex: (context.height * .005).toInt(), child: buildEmail(user)),
+      const Divider(),
+      Expanded(child: buildBackUpMaterialCard(user, context)),
+      const Divider(),
+      const Spacer(),
+      Expanded(
+          flex: (context.height * .005).toInt(), child: buildButtons(context)),
+      Spacer(flex: (context.height * .01).toInt())
+    ]);
+  }
+
+  AppBar buildAppBar(BuildContext context) {
+    return AppBar(
+      elevation: 0,
+      backgroundColor: context.theme.scaffoldBackgroundColor,
     );
   }
 
@@ -35,14 +44,16 @@ extension UserProfileSettingsViewExtension on UserSettings {
       child: Material(
         color: Colors.transparent,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: context.paddingMediumHorizontal,
           child: Row(
             children: [
               const Spacer(),
-              const Expanded(flex: 1, child: Icon(Icons.backup_outlined)),
+              Expanded(
+                  flex: (context.height * .003).toInt(),
+                  child: Icon(Icons.backup_outlined)),
               const Spacer(),
               Expanded(
-                  flex: 6,
+                  flex: (context.height * .01).toInt(),
                   child: Text("Back Up " + (user.backUpType ?? "") + "  😍")),
               const Spacer()
             ],
@@ -96,48 +107,55 @@ extension UserProfileSettingsViewExtension on UserSettings {
       ),
     );
   }
+
+  Container buildShowDialogContent(BuildContext context) {
+    return Container(
+      height: context.height * 0.35,
+      width: context.width * 0.35,
+      color: Colors.transparent,
+      child: BlocConsumer<UserCubit, UserState>(
+        listener: (context, state) {
+          // TODO: implement listener
+        },
+        builder: (context, state) {
+          return buildShowAlertDialogMaterialCard();
+        },
+      ),
+    );
+  }
+
+  Material buildShowAlertDialogMaterialCard() {
+    return Material(
+      //BUNU CARD YAPIP TRANSPARENT YAPINCA FARKLI BİR RENK ALIYOR NEDEN BİR ARAŞTIR
+      color: Colors.transparent,
+      child: ListView.builder(
+        physics: const BouncingScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: BackUpTypes.values.length,
+        itemBuilder: (BuildContext context, int index) {
+          return buildRadioListTile(index, context);
+        },
+      ),
+    );
+  }
+
+  void showScaffoldMessage(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(" Back Up Successful"),
+      duration: context.lowDuration,
+    ));
+  }
 }
 
-Container buildShowDialogContent(BuildContext context) {
-  return Container(
-    height: MediaQuery.of(context).size.height * 0.35,
-    width: MediaQuery.of(context).size.width * 0.35,
-    color: Colors.transparent,
-    child: BlocConsumer<UserCubit, UserState>(
-      listener: (context, state) {
-        // TODO: implement listener
-      },
-      builder: (context, state) {
-        return Material(
-          //BUNU CARD YAPIP TRANSPARENT YAPINCA FARKLI BİR RENK ALIYOR NEDEN BİR ARAŞTIR
-          color: Colors.transparent,
-          child: ListView.builder(
-            physics: const BouncingScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: BackUpTypes.values.length,
-            itemBuilder: (BuildContext context, int index) {
-              return RadioListTile<String>(
-                title: Text(BackUpTypes.values.toList()[index].name),
-                value: BackUpTypes.values.toList()[index].name,
-                groupValue: context.watch<UserCubit>().groupValue,
-                onChanged: (onChanged) async {
-                  context.read<UserCubit>().changeGroupValue(onChanged!);
-                  context.read<UserCubit>().updateUser();
-
-                  Navigator.of(context).pop();
-                },
-              );
-            },
-          ),
-        );
-      },
-    ),
+RadioListTile<String> buildRadioListTile(int index, BuildContext context) {
+  return RadioListTile<String>(
+    title: Text(BackUpTypes.values.toList()[index].name),
+    value: BackUpTypes.values.toList()[index].name,
+    groupValue: context.watch<UserCubit>().groupValue,
+    onChanged: (onChanged) async {
+      context.read<UserCubit>().changeGroupValue(onChanged!);
+      context.read<UserCubit>().updateUser();
+      Navigator.of(context).pop();
+    },
   );
-}
-
-void showScaffoldMessage(BuildContext context) {
-  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-    content: Text(" Back Up Successful"),
-    duration: Duration(milliseconds: 600),
-  ));
 }

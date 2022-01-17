@@ -1,4 +1,6 @@
 {
+    "mainApp":{"appTitle":"Currency App"},
+
     "appBarTitle": "المفضلة",
     "welcomeMessage":"مرحبا بك في أفضل تطبيق تجاري فقط استمتع وكسب المال",
     "changeLanguagePage":{

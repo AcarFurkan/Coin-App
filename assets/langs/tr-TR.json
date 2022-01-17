@@ -1,4 +1,6 @@
 {
+    "mainApp":{"appTitle":"Currency App"},
+
     "appBarTitle": "Favoriler",
     "welcomeMessage":"En iyi ticaret uygulamasına hoş geldiniz sadece zevk ve para kazanın",
     "changeLanguagePage":{

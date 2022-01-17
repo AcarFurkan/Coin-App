@@ -1,4 +1,6 @@
 {
+    "mainApp":{"appTitle":"Currency App"},
+
     "appBarTitle": "즐겨 찾기",
     "welcomeMessage":"최고의 무역 앱에 오신 것을 환영합니다." ,
     "changeLanguagePage":{

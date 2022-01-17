@@ -1,3 +1,5 @@
+import '../../../../core/extension/context_extension.dart';
+import '../../../../product/untility/text_form_field_with_animation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,9 +13,7 @@ import '../viewmodel/page_viewmodel.dart/cubit/truncgil_page_general_cubit.dart'
 
 class TruncgilPage extends StatelessWidget {
   TruncgilPage({Key? key}) : super(key: key);
-  TextEditingController _searchTextEditingController = TextEditingController();
-  GlobalKey<FormState> _searchFormKey = GlobalKey<FormState>();
-  List<MainCurrencyModel> searchresult = [];
+  final List<MainCurrencyModel> searchresult = [];
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,10 @@ class TruncgilPage extends StatelessWidget {
           context.read<TruncgilPageGeneralCubit>().changeIsSearch();
 
           if (context.read<TruncgilPageGeneralCubit>().isSearhOpen == false) {
-            _searchTextEditingController.clear();
+            context
+                .read<TruncgilPageGeneralCubit>()
+                .searchTextEditingController
+                ?.clear();
           }
         },
         icon: const Icon(Icons.search));
@@ -80,51 +83,24 @@ class TruncgilPage extends StatelessWidget {
       const Center(child: CupertinoActivityIndicator());
   Widget completedStateBody(TruncgilCompleted state, BuildContext context) {
     List<MainCurrencyModel> coinListToShow = state.truncgilCoinsList;
-
     coinListToShow = coinListToShowTransactions(coinListToShow, state, context);
-
     return Column(
       children: [
-        buildTextFormFieldWithAnimation(context),
+        buildTextFormFieldWithAnimation(
+          context,
+          controller: context
+              .read<TruncgilPageGeneralCubit>()
+              .searchTextEditingController!,
+          focusNode: context.watch<TruncgilPageGeneralCubit>().myFocusNode,
+          isSearchOpen: context.watch<TruncgilPageGeneralCubit>().isSearhOpen,
+          onChanged:
+              context.read<TruncgilPageGeneralCubit>().textFormFieldChanged(),
+        ),
         Expanded(
-          flex: 10,
+          flex: (context.height * .02).toInt(),
           child: buildListViewBuilder(coinListToShow),
         ),
       ],
-    );
-  }
-
-  Widget buildTextFormFieldWithAnimation(BuildContext context) {
-    return AnimatedSize(
-      curve: Curves.decelerate,
-      duration: const Duration(milliseconds: 1000),
-      child: SizedBox(
-        height: context.watch<TruncgilPageGeneralCubit>().isSearhOpen ? 50 : 0,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: AnimatedOpacity(
-            curve: Curves.easeIn,
-            duration: const Duration(milliseconds: 500),
-            opacity:
-                context.watch<TruncgilPageGeneralCubit>().isSearhOpen ? 1 : 0,
-            child: TextFormField(
-              cursorHeight:
-                  context.watch<TruncgilPageGeneralCubit>().isSearhOpen
-                      ? 18
-                      : 0,
-              controller: _searchTextEditingController,
-              onChanged: (a) {
-                context.read<TruncgilPageGeneralCubit>().textFormFieldChanged();
-              },
-              focusNode: context.watch<TruncgilPageGeneralCubit>().myFocusNode,
-              autofocus: context.watch<TruncgilPageGeneralCubit>().isSearhOpen
-                  ? true
-                  : false,
-              decoration: const InputDecoration(border: OutlineInputBorder()),
-            ),
-          ),
-        ),
-      ),
     );
   }
 
@@ -137,18 +113,15 @@ class TruncgilPage extends StatelessWidget {
           var result = coinListToShow[index];
 
           return GestureDetector(
-            onTap: () {
-              // convertCurrency(context, currencyName, coinListToShow, index);
-              Navigator.pushNamed(context, "/detailPage", arguments: result);
-            },
+            onTap: () =>
+                Navigator.pushNamed(context, "/detailPage", arguments: result),
             child: Hero(
               tag: result.id,
               child: ListCardItem(
                 coin: result,
                 index: index,
-                voidCallback: () {
-                  context.read<TruncgilCubit>().updateFromFavorites(result);
-                },
+                voidCallback: () =>
+                    context.read<TruncgilCubit>().updateFromFavorites(result),
               ),
             ),
           );
@@ -169,20 +142,27 @@ class TruncgilPage extends StatelessWidget {
   List<MainCurrencyModel> searchTransaction(
       BuildContext context, List<MainCurrencyModel> coinListToShow) {
     if (context.read<TruncgilPageGeneralCubit>().isSearhOpen &&
-        _searchTextEditingController.text != "") {
-      coinListToShow = searchResult(coinListToShow);
+        context
+                .read<TruncgilPageGeneralCubit>()
+                .searchTextEditingController
+                ?.text !=
+            "") {
+      coinListToShow = searchResult(coinListToShow, context);
     }
     return coinListToShow;
   }
 
-  List<MainCurrencyModel> searchResult(List<MainCurrencyModel> coinList) {
+  List<MainCurrencyModel> searchResult(
+      List<MainCurrencyModel> coinList, BuildContext context) {
     searchresult.clear();
 
     for (int i = 0; i < coinList.length; i++) {
       String data = coinList[i].name;
-      if (data
-          .toLowerCase()
-          .contains(_searchTextEditingController.text.toLowerCase())) {
+      if (data.toLowerCase().contains(context
+          .read<TruncgilPageGeneralCubit>()
+          .searchTextEditingController!
+          .text
+          .toLowerCase())) {
         searchresult.add(coinList[i]);
       }
     }

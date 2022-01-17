@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 import '../../../../../core/enums/price_control.dart';
 import '../../../../../core/model/response_model/response_model.dart';
 import '../../../../model/my_coin_model.dart';
@@ -11,7 +13,6 @@ import '../gecho/gecho_service.dart';
 import '../genelpara/genelpara_service.dart';
 import '../hurriyet/hurriyet_service.dart';
 import '../truncgil/truncgil_service.dart';
-import 'package:intl/intl.dart';
 
 class CurrencyConverter {
   static CurrencyConverter? _instance;

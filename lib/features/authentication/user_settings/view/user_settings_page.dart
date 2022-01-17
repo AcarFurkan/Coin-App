@@ -1,9 +1,11 @@
+import '../../../../core/extension/context_extension.dart';
+import '../../../../core/extension/string_extension.dart';
+
 import '../../../../core/enums/back_up_enum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:kartal/kartal.dart';
 
 import '../../../../product/model/user/my_user_model.dart';
 import '../../viewmodel/cubit/user_cubit.dart';
@@ -15,6 +17,9 @@ part './subview/user_profile_settings_view.dart';
 class UserSettings extends StatelessWidget {
   UserSettings({Key? key}) : super(key: key);
   MyUser? userInformationForUpdate;
+  /*
+  * 
+  TODO: THİNK İT */
 
   late BuildContext _buildContextForViewInset;
   @override

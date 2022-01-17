@@ -12,9 +12,9 @@ extension LoginRegisterViewExtension on UserSettings {
             buildAnimatedContainer(_buildContextForViewInset),
             buildContainerTabBar(context),
             Expanded(
-                flex: 6,
+                flex: (context.height * .01).toInt(),
                 child: Padding(
-                    padding: context.horizontalPaddingNormal,
+                    padding: context.paddingNormalHorizontal,
                     child: buildForm(context))),
           ],
         ),
@@ -25,7 +25,7 @@ extension LoginRegisterViewExtension on UserSettings {
   Widget buildAnimatedContainer(BuildContext context) {
     return AnimatedContainer(
         duration:
-            Duration(milliseconds: context.durationLow.inMilliseconds ~/ 3),
+            Duration(milliseconds: context.lowDuration.inMilliseconds ~/ 3),
         height: context.mediaQuery.viewInsets.bottom > 0
             ? context.height * 0
             : context.height * 0.3,
@@ -37,7 +37,8 @@ extension LoginRegisterViewExtension on UserSettings {
     return Container(
       decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(50))),
+          borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular((context.height * .07)))),
       child: Padding(
         padding: EdgeInsets.only(
             left: context.width * 0.1,
@@ -54,12 +55,13 @@ extension LoginRegisterViewExtension on UserSettings {
         //unselectedLabelStyle: context.textTheme.headline5,
 
         indicatorWeight: 0,
-        unselectedLabelStyle: Theme.of(context).textTheme.bodyText2,
-        labelColor: Theme.of(context).colorScheme.onPrimary,
+        unselectedLabelStyle: context.textTheme.bodyText2,
+        labelColor: context.colors.onPrimary,
         indicator: BoxDecoration(
             border: Border(
                 bottom: BorderSide(
-                    color: Theme.of(context).colorScheme.onPrimary, width: 3))),
+                    color: context.colors.onPrimary,
+                    width: (context.width * .01)))),
         onTap: (index) => context.read<UserCubit>().changeIsLoginPage(index),
         indicatorSize: TabBarIndicatorSize.label,
         tabs: [
@@ -78,20 +80,24 @@ extension LoginRegisterViewExtension on UserSettings {
         key: context.watch<UserCubit>().formState,
         autovalidateMode: context.watch<UserCubit>().autoValidateMode,
         child: SizedBox(
-          height: MediaQuery.of(_buildContextForViewInset).size.height * 0.5,
+          height: context.height * 0.5,
           child: Column(
             children: [
               loginRegisterControl(context)
-                  ? const Spacer(flex: 4)
-                  : const Spacer(flex: 2),
+                  ? Spacer(flex: (context.width * .012).toInt())
+                  : Spacer(flex: (context.width * .006).toInt()),
               loginRegisterControl(context)
-                  ? Expanded(flex: 10, child: buildLoginFormFields(context))
-                  : Expanded(flex: 30, child: buildRegisterFormFields(context)),
+                  ? Expanded(
+                      flex: (context.height * .015).toInt(),
+                      child: buildLoginFormFields(context))
+                  : Expanded(
+                      flex: (context.height * .03).toInt(),
+                      child: buildRegisterFormFields(context)),
               const Spacer(),
               loginRegisterControl(context) ? buildTextForgot() : Container(),
-              const Spacer(flex: 3),
+              Spacer(flex: (context.width * .01).toInt()),
               buildLoginButtons(context),
-              const Spacer(flex: 2),
+              Spacer(flex: (context.width * .006).toInt()),
               // buildWrapForgot(),
             ],
           ),
@@ -103,10 +109,10 @@ extension LoginRegisterViewExtension on UserSettings {
   Widget buildLoginButtons(BuildContext context) {
     return Row(
       children: [
-        Spacer(
-          flex: 2,
-        ),
-        Expanded(flex: 20, child: buildElevatedButtonLogin(context)),
+        Spacer(flex: (context.width * .006).toInt()),
+        Expanded(
+            flex: (context.width * .05).toInt(),
+            child: buildElevatedButtonLogin(context)),
         const Spacer(),
         context.watch<UserCubit>().isLoginPage
             ? InkWell(
@@ -126,7 +132,7 @@ extension LoginRegisterViewExtension on UserSettings {
           backgroundColor:
               MaterialStateProperty.all(Theme.of(context).colorScheme.onError),
           padding: MaterialStateProperty.all<EdgeInsetsGeometry?>(
-              EdgeInsets.symmetric(vertical: 5)),
+              context.paddingLowVertical),
           shape: MaterialStateProperty.all(StadiumBorder())),
       onPressed: () async {
         await context.read<UserCubit>().tappedLoginRegisterButton();
@@ -141,13 +147,12 @@ extension LoginRegisterViewExtension on UserSettings {
   Text buildLoginButtonText(BuildContext context) {
     return Text(context.read<UserCubit>().isLoginPage ? "Login" : "Register",
         style: context.textTheme.headline5!.copyWith(
-            color: Theme.of(context).colorScheme.primary,
-            fontWeight: FontWeight.w600));
+            color: context.colors.primary, fontWeight: FontWeight.w600));
   }
 
   ClipRRect buildGoogleIcon(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(25),
+      borderRadius: BorderRadius.circular((context.width * .06)),
       child: Image.asset(
         "assets/images/google_icon.png",
         width: context.width * 0.10,

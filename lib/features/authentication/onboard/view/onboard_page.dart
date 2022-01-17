@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/extension/context_extension.dart';
+
 class OnboardPage extends StatelessWidget {
   const OnboardPage({Key? key}) : super(key: key);
 
@@ -10,9 +12,13 @@ class OnboardPage extends StatelessWidget {
         body: Column(
           children: [
             const Spacer(),
-            Expanded(flex: 6, child: buildWelcomeImage()),
+            Expanded(
+                flex: (context.width * 0.015).toInt(),
+                child: buildWelcomeImage()),
             buildLoginRegisterButton(context),
-            const Spacer(flex: 2) // as
+            Spacer(
+              flex: (context.width * 0.006).toInt(),
+            ) // as
           ],
         ));
   }
@@ -48,7 +54,7 @@ class OnboardPage extends StatelessWidget {
   Text buildButtonText(BuildContext context) {
     return Text(
       "LOGIN/REGISTER",
-      style: TextStyle(color: Theme.of(context).colorScheme.background),
+      style: TextStyle(color: context.colors.background),
     );
   }
 }

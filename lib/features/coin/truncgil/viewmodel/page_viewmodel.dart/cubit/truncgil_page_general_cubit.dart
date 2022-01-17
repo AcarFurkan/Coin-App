@@ -7,27 +7,20 @@ class TruncgilPageGeneralCubit extends Cubit<TruncgilPageGeneralState> {
   TruncgilPageGeneralCubit({required this.context})
       : super(TruncgilPageGeneralInitial()) {
     myFocusNode = FocusNode();
+    searchTextEditingController = TextEditingController();
   }
 
   bool isSearhOpen = false;
   late FocusNode myFocusNode;
   BuildContext context;
 
-  TextEditingController? _textEditingController;
-
-  TextEditingController? get textEditingController {
-    return _textEditingController;
-  }
-
-  set textEditingController(TextEditingController? controller) {
-    _textEditingController = controller;
-  }
+  TextEditingController? searchTextEditingController;
 
   void closeKeyBoardAndUnFocus() {
     if (isSearhOpen) {
       isSearhOpen = !isSearhOpen;
-      if (_textEditingController != null) {
-        _textEditingController!.clear();
+      if (searchTextEditingController != null) {
+        searchTextEditingController!.clear();
       }
       myFocusNode.unfocus();
     }
@@ -45,7 +38,7 @@ class TruncgilPageGeneralCubit extends Cubit<TruncgilPageGeneralState> {
     emit(TruncgilPageGeneralInitial());
   }
 
-  void textFormFieldChanged() {
+  textFormFieldChanged() {
     emit(TruncgilPageGeneralInitial());
   }
 }

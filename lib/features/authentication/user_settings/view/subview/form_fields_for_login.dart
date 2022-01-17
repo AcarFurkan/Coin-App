@@ -5,11 +5,11 @@ extension FormFieldsForLoginExtension on UserSettings {
     return Column(
       children: [
         SizedBox(
-            height: MediaQuery.of(context).size.height * 0.07,
+            height: context.height * 0.07,
             child: _buildTextFormFieldEmail(context)),
-        const Spacer(flex: 1),
+        Spacer(flex: (context.height * .002).toInt()),
         SizedBox(
-            height: MediaQuery.of(context).size.height * 0.07,
+            height: context.height * 0.07,
             child: _buildTextFormFieldPassword(context))
       ],
     );
@@ -26,14 +26,12 @@ extension FormFieldsForLoginExtension on UserSettings {
         }
       },
       obscureText: context.watch<UserCubit>().isLockOpen,
-      cursorColor: Theme.of(context).colorScheme.onBackground,
+      cursorColor: context.colors.onBackground,
       decoration: InputDecoration(
           labelText: "password",
           icon: buildContainerIconField(context, Icons.vpn_key),
           suffixIcon: IconButton(
-              onPressed: () {
-                context.read<UserCubit>().changeIsLockOpen();
-              },
+              onPressed: () => context.read<UserCubit>().changeIsLockOpen(),
               icon: Icon(context.watch<UserCubit>().isLockOpen
                   ? Icons.visibility_off_outlined
                   : Icons.visibility))),
@@ -44,10 +42,7 @@ extension FormFieldsForLoginExtension on UserSettings {
     return TextFormField(
       keyboardType: TextInputType.emailAddress,
       controller: context.read<UserCubit>().emailControllerForLogin,
-      onTap: () {
-        print("tapped email");
-      },
-      cursorColor: Theme.of(context).colorScheme.onBackground,
+      cursorColor: context.colors.onBackground,
       validator: (value) => value!.isValidEmail ? null : "invalid email",
       decoration: InputDecoration(
         labelText: "email",
@@ -58,9 +53,9 @@ extension FormFieldsForLoginExtension on UserSettings {
 
   Container buildContainerIconField(BuildContext context, IconData icon) {
     return Container(
-      color: Theme.of(context).canvasColor,
+      color: context.theme.canvasColor,
       padding: context.paddingLow,
-      child: Icon(icon, color: Theme.of(context).colorScheme.primaryVariant),
+      child: Icon(icon, color: context.colors.primaryVariant),
     );
   }
 }

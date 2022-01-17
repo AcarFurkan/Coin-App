@@ -1,4 +1,4 @@
-import 'package:coin_with_architecture/features/settings/view/settings_page_two.dart';
+import '../../../features/settings/view/settings_page_two.dart';
 
 import '../../../features/authentication/user_settings/view/user_settings_page.dart';
 import '../../../features/home/landing_page.dart/landing_page.dart';

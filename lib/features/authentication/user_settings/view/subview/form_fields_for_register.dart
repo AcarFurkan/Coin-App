@@ -4,17 +4,17 @@ extension FormFieldsForRegisterExtension on UserSettings {
   Widget buildRegisterFormFields(BuildContext context) {
     return Column(
       children: [
-        const Spacer(flex: 3),
+        Spacer(flex: (context.height * .004).toInt()),
         SizedBox(
-            height: MediaQuery.of(context).size.height * 0.07,
+            height: context.height * 0.07,
             child: _buildTextFormFieldEmail(context)),
-        const Spacer(flex: 3),
+        Spacer(flex: (context.height * .004).toInt()),
         SizedBox(
-            height: MediaQuery.of(context).size.height * 0.07,
+            height: context.height * 0.07,
             child: _buildTextFormFieldPassword(context)),
-        const Spacer(flex: 3),
+        Spacer(flex: (context.height * .004).toInt()),
         SizedBox(
-            height: MediaQuery.of(context).size.height * 0.07,
+            height: context.height * 0.07,
             child: _buildTextFormFieldName(context)),
       ],
     );
@@ -32,7 +32,6 @@ extension FormFieldsForRegisterExtension on UserSettings {
       },
       obscureText: context.watch<UserCubit>().isLockOpen,
       decoration: InputDecoration(
-          errorStyle: TextStyle(fontSize: 10),
           labelText: "password",
           icon: buildContainerIconField(context, Icons.vpn_key),
           suffixIcon: IconButton(
@@ -49,7 +48,7 @@ extension FormFieldsForRegisterExtension on UserSettings {
     return TextFormField(
       keyboardType: TextInputType.emailAddress,
       controller: context.read<UserCubit>().emailControllerForRegister,
-      validator: (value) => value.isValidEmail ? null : "invalid email",
+      validator: (value) => value!.isValidEmail ? null : "invalid email",
       decoration: InputDecoration(
         labelText: "email",
         icon: buildContainerIconField(context, Icons.email),
@@ -77,9 +76,9 @@ extension FormFieldsForRegisterExtension on UserSettings {
 
   Container buildContainerIconField(BuildContext context, IconData icon) {
     return Container(
-      color: Theme.of(context).canvasColor,
+      color: context.theme.canvasColor,
       padding: context.paddingLow,
-      child: Icon(icon, color: Theme.of(context).colorScheme.primaryVariant),
+      child: Icon(icon, color: context.colors.primaryVariant),
     );
   }
 }

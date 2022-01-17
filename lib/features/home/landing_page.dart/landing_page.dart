@@ -8,6 +8,7 @@ import 'package:libwinmedia/libwinmedia.dart';
 import 'package:provider/src/provider.dart';
 
 import '../../../core/enums/locale_keys_enum.dart';
+import '../../../core/extension/context_extension.dart';
 import '../../../firebase_options.dart';
 import '../../../locator.dart';
 import '../../../product/repository/cache/app_cache_manager.dart';
@@ -72,10 +73,7 @@ class Init {
     context.read<HurriyetCubit>().fetchAllCoins();
     await _appCacheManager.init();
 
-    await Future.delayed(const Duration(seconds: 3));
-    /**
-     * TODO: FİX DURATİON
-     */
+    await Future.delayed(context.highDuration);
   }
 }
 
@@ -101,7 +99,6 @@ class FutureBuilderForIsFirstOpen extends StatelessWidget {
             open();
             return const OnboardPage();
           } else {
-            //return LoginPageTwo();
             return const HomeView();
           }
         }

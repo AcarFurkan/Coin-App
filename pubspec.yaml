@@ -35,8 +35,7 @@ dependencies:
   #state management
   flutter_bloc: ^8.0.0
   provider: ^6.0.1
-  get: ^4.5.0
-
+ 
   #for initialize 
   get_it: ^7.2.0
 
@@ -47,9 +46,7 @@ dependencies:
 
   #utils
   persian_tools: ^1.0.1
-  flutter_svg: any
-  kartal: ^2.3.0
- 
+  flutter_svg: any 
  
   #core utility
   flutter_dotenv: ^5.0.2
@@ -66,8 +63,7 @@ dependencies:
   fl_chart: ^0.40.5
   search_page: ^2.0.0+1
   flutter_tabler_icons: ^1.1.1
-  flutter_zoom_drawer: ^2.1.2
-
+ 
  
   just_audio: ^0.9.18
   just_audio_libwinmedia: ^0.0.4

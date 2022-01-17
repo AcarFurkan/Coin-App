@@ -13,6 +13,8 @@ class Splash extends StatelessWidget {
       body: Center(
           child: lightMode
               ? Image.asset('assets/gif/splash35.gif')
+              /**
+              *TODO: APP consatnlara bunları ekle */
               : Image.asset('assets/gif/splash35.gif')),
     );
   }

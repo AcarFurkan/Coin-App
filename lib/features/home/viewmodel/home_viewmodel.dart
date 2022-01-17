@@ -1,15 +1,12 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 
 class HomeViewModel with ChangeNotifier {
   late int _selectedIndex;
   int get selectedIndex => _selectedIndex;
   late PageController pageController;
-  late final ZoomDrawerController zoomDrawerController;
 
   HomeViewModel() {
     _selectedIndex = 0;
-    zoomDrawerController = ZoomDrawerController();
 
     pageController = pageController = PageController(
       initialPage: selectedIndex,

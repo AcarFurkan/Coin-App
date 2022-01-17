@@ -1,4 +1,6 @@
-import 'package:coin_with_architecture/features/home/viewmodel/home_viewmodel.dart';
+import '../../../../core/extension/context_extension.dart';
+import '../../../home/viewmodel/home_viewmodel.dart';
+import '../../../../product/untility/text_form_field_with_animation.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../../product/widget/component/removable_card_item.dart';
@@ -20,7 +22,7 @@ part './subView/update_coin_selected_page_state_extension.dart';
 class SelectedCoinPage extends StatelessWidget {
   final TextEditingController _searchTextEditingController =
       TextEditingController();
-  List<MainCurrencyModel> searchresult = [];
+  final List<MainCurrencyModel> searchresult = [];
 
   SelectedCoinPage({Key? key}) : super(key: key);
 
@@ -68,10 +70,7 @@ class SelectedCoinPage extends StatelessWidget {
 
   IconButton buildSettingsIcon(BuildContext context) {
     return IconButton(
-        onPressed: () {
-          //  context.read<HomeViewModel>().openDrawer();
-          Navigator.pushNamed(context, "/settingsGeneral");
-        },
+        onPressed: () => Navigator.pushNamed(context, "/settingsGeneral"),
         icon: const Icon(Icons.settings));
   }
 

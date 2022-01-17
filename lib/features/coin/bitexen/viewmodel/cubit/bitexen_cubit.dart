@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:coin_with_architecture/core/model/response_model/IResponse_model.dart';
+import '../../../../../core/model/response_model/IResponse_model.dart';
 import 'package:meta/meta.dart';
 
 import '../../../../../locator.dart';

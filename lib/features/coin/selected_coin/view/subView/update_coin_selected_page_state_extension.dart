@@ -17,33 +17,26 @@ extension UpdateCoinSelectedPageExtension on SelectedCoinPage {
                 : 0,
             child: buildSearchBox(context)),
         Expanded(
-          flex: 13,
+          flex: (context.width * .03).toInt(),
           child: _buildListVieBuilder(coinListToShow, state),
         ),
       ],
     );
   }
 
-  Container buildSelectedAndDeleteContainer(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(top: 10, bottom: 5),
-      decoration: BoxDecoration(
-          borderRadius: const BorderRadius.vertical(
-        bottom: Radius.circular(15),
-      )),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _buildSelectAndDropButton(context),
-          _buildDeleteButton(context),
-          InkWell(
-            onTap: () {
-              closeIconTransactions(context);
-            },
-            child: buildCloseIcon(),
-          )
-        ],
-      ),
+  Row buildSelectedAndDeleteContainer(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        _buildSelectAndDropButton(context),
+        _buildDeleteButton(context),
+        InkWell(
+          onTap: () {
+            closeIconTransactions(context);
+          },
+          child: buildCloseIcon(context),
+        )
+      ],
     );
   }
 
@@ -51,7 +44,7 @@ extension UpdateCoinSelectedPageExtension on SelectedCoinPage {
     return context.watch<SelectedPageGeneralCubit>().isSearhOpen == true
         ? SizedBox(
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: context.paddingLow,
               child: _buildSearchBoxTextFormField(context),
             ),
           )
@@ -108,23 +101,21 @@ extension UpdateCoinSelectedPageExtension on SelectedCoinPage {
     _searchTextEditingController.clear();
   }
 
-  Container buildCloseIcon() {
+  Container buildCloseIcon(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          border: Border.all(color: Colors.black),
+          border: Border.all(color: context.colors.onPrimary),
         ),
         child: Icon(
           Icons.close_sharp,
-          color: Colors.grey[700],
+          color: context.colors.onPrimary,
         ));
   }
 
   void deleteButtonTransactions(BuildContext context) {
     context.read<CoinCubit>().deleteItemsFromDb();
-
     context.read<SelectedPageGeneralCubit>().isSelectedAll = false;
-
     context.read<CoinCubit>().startAgain();
     context.read<SelectedPageGeneralCubit>().isSearhOpen = false;
     _searchTextEditingController.clear();

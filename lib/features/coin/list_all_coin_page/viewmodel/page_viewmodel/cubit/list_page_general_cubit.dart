@@ -7,6 +7,7 @@ class ListPageGeneralCubit extends Cubit<ListPageGeneralState> {
   ListPageGeneralCubit({required this.context})
       : super(ListPageGeneralInitial()) {
     myFocusNode = FocusNode();
+    textEditingController = TextEditingController();
   }
 
   bool isSearhOpen = false;
@@ -45,7 +46,7 @@ class ListPageGeneralCubit extends Cubit<ListPageGeneralState> {
     emit(ListPageGeneralInitial());
   }
 
-  void textFormFieldChanged() {
+  textFormFieldChanged() {
     emit(ListPageGeneralInitial());
   }
 }

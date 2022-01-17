@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:meta/meta.dart';
 
 part 'selected_page_general_state.dart';
 

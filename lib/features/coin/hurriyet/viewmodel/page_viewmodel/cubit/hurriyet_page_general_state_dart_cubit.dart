@@ -8,27 +8,20 @@ class HurriyetPageGeneralStateDartCubit
   HurriyetPageGeneralStateDartCubit({required this.context})
       : super(HurriyetPageGeneralStateDartInitial()) {
     myFocusNode = FocusNode();
+    searchTextEditingController = TextEditingController();
   }
 
   bool isSearhOpen = false;
   late FocusNode myFocusNode;
   BuildContext context;
 
-  TextEditingController? _textEditingController;
-
-  TextEditingController? get textEditingController {
-    return _textEditingController;
-  }
-
-  set textEditingController(TextEditingController? controller) {
-    _textEditingController = controller;
-  }
+  TextEditingController? searchTextEditingController;
 
   void closeKeyBoardAndUnFocus() {
     if (isSearhOpen) {
       isSearhOpen = !isSearhOpen;
-      if (_textEditingController != null) {
-        _textEditingController!.clear();
+      if (searchTextEditingController != null) {
+        searchTextEditingController!.clear();
       }
       myFocusNode.unfocus();
     }
@@ -46,7 +39,7 @@ class HurriyetPageGeneralStateDartCubit
     emit(HurriyetPageGeneralStateDartInitial());
   }
 
-  void textFormFieldChanged() {
+  textFormFieldChanged() {
     emit(HurriyetPageGeneralStateDartInitial());
   }
 }

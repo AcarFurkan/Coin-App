@@ -1,3 +1,5 @@
+import '../../../../core/extension/context_extension.dart';
+import '../../../../product/untility/text_form_field_with_animation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,14 +15,10 @@ import '../viewmodel/page_viewmodel/cubit/hurriyet_page_general_state_dart_cubit
 class HurriyetPage extends StatelessWidget {
   HurriyetPage({Key? key}) : super(key: key);
 
-  TextEditingController _searchTextEditingController = TextEditingController();
-  GlobalKey<FormState> _searchFormKey = GlobalKey<FormState>();
-  List<MainCurrencyModel> searchresult = [];
+  final List<MainCurrencyModel> searchresult = [];
 
   @override
   Widget build(BuildContext context) {
-    context.read<HurriyetPageGeneralStateDartCubit>().textEditingController =
-        _searchTextEditingController;
     return Scaffold(
       //extendBody: true,
       appBar: _appBar(context),
@@ -50,7 +48,10 @@ class HurriyetPage extends StatelessWidget {
 
           if (context.read<HurriyetPageGeneralStateDartCubit>().isSearhOpen ==
               false) {
-            _searchTextEditingController.clear();
+            context
+                .read<HurriyetPageGeneralStateDartCubit>()
+                .searchTextEditingController
+                ?.clear();
           }
         },
         icon: const Icon(Icons.search));
@@ -67,7 +68,7 @@ class HurriyetPage extends StatelessWidget {
         } else if (state is HurriyetCompleted) {
           return completedStateBody(state, context);
         } else {
-          return Text("Coin");
+          return Text("404");
         }
       },
       listener: (context, state) {
@@ -90,55 +91,24 @@ class HurriyetPage extends StatelessWidget {
 
     return Column(
       children: [
-        buildTextFormFieldWithAnimation(context),
+        buildTextFormFieldWithAnimation(
+          context,
+          controller: context
+              .read<HurriyetPageGeneralStateDartCubit>()
+              .searchTextEditingController!,
+          focusNode:
+              context.watch<HurriyetPageGeneralStateDartCubit>().myFocusNode,
+          isSearchOpen:
+              context.watch<HurriyetPageGeneralStateDartCubit>().isSearhOpen,
+          onChanged: context
+              .read<HurriyetPageGeneralStateDartCubit>()
+              .textFormFieldChanged(),
+        ),
         Expanded(
-          flex: 10,
+          flex: (context.height * .02).toInt(),
           child: buildListViewBuilder(coinListToShow),
         ),
       ],
-    );
-  }
-
-  Widget buildTextFormFieldWithAnimation(BuildContext context) {
-    return AnimatedSize(
-      curve: Curves.decelerate,
-      duration: const Duration(milliseconds: 1000),
-      child: SizedBox(
-        height: context.watch<HurriyetPageGeneralStateDartCubit>().isSearhOpen
-            ? 50
-            : 0,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: AnimatedOpacity(
-            curve: Curves.easeIn,
-            duration: const Duration(milliseconds: 500),
-            opacity:
-                context.watch<HurriyetPageGeneralStateDartCubit>().isSearhOpen
-                    ? 1
-                    : 0,
-            child: TextFormField(
-              cursorHeight:
-                  context.watch<HurriyetPageGeneralStateDartCubit>().isSearhOpen
-                      ? 18
-                      : 0,
-              controller: _searchTextEditingController,
-              onChanged: (a) {
-                context
-                    .read<HurriyetPageGeneralStateDartCubit>()
-                    .textFormFieldChanged();
-              },
-              focusNode: context
-                  .watch<HurriyetPageGeneralStateDartCubit>()
-                  .myFocusNode,
-              autofocus:
-                  context.watch<HurriyetPageGeneralStateDartCubit>().isSearhOpen
-                      ? true
-                      : false,
-              decoration: const InputDecoration(border: OutlineInputBorder()),
-            ),
-          ),
-        ),
-      ),
     );
   }
 
@@ -183,20 +153,27 @@ class HurriyetPage extends StatelessWidget {
   List<MainCurrencyModel> searchTransaction(
       BuildContext context, List<MainCurrencyModel> coinListToShow) {
     if (context.read<HurriyetPageGeneralStateDartCubit>().isSearhOpen &&
-        _searchTextEditingController.text != "") {
-      coinListToShow = searchResult(coinListToShow);
+        context
+                .read<HurriyetPageGeneralStateDartCubit>()
+                .searchTextEditingController
+                ?.text !=
+            "") {
+      coinListToShow = searchResult(coinListToShow, context);
     }
     return coinListToShow;
   }
 
-  List<MainCurrencyModel> searchResult(List<MainCurrencyModel> coinList) {
+  List<MainCurrencyModel> searchResult(
+      List<MainCurrencyModel> coinList, BuildContext context) {
     searchresult.clear();
 
     for (int i = 0; i < coinList.length; i++) {
       String data = coinList[i].name;
-      if (data
-          .toLowerCase()
-          .contains(_searchTextEditingController.text.toLowerCase())) {
+      if (data.toLowerCase().contains(context
+          .read<HurriyetPageGeneralStateDartCubit>()
+          .searchTextEditingController!
+          .text
+          .toLowerCase())) {
         searchresult.add(coinList[i]);
       }
     }

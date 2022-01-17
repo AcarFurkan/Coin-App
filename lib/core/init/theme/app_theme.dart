@@ -23,6 +23,9 @@ abstract class ThemeManager {
             selectedItemColor: theme.colors.colors.white,
             unselectedItemColor: theme.colors.colors.mediumdGreyBold,
             selectedIconTheme: IconThemeData(color: theme.colors.colors.white)),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+            backgroundColor: theme.colors.colors.purplish,
+            foregroundColor: theme.colors.colors.white),
         tabBarTheme: TabBarTheme(
           indicator: const BoxDecoration(),
           labelColor: theme.colors.tabbarSelectedColor,
@@ -70,6 +73,9 @@ abstract class ThemeManager {
       );
     } else {
       return ThemeData.light().copyWith(
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+            backgroundColor: theme.colors.colors.purplish,
+            foregroundColor: theme.colors.colors.white),
         cardTheme: CardTheme(elevation: 3),
         appBarTheme: AppBarTheme(backgroundColor: theme.colors.appBarColor),
         iconTheme: IconThemeData(color: theme.colors.colors.darkerGrey),

@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:coin_with_architecture/core/model/response_model/IResponse_model.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
+import '../../../../../core/model/response_model/IResponse_model.dart';
 import '../../../../../locator.dart';
 import '../../../../../product/model/my_coin_model.dart';
 import '../../../../../product/repository/cache/coin_cache_manager.dart';

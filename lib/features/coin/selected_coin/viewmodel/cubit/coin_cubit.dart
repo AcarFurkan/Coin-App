@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
-import 'package:coin_with_architecture/core/model/error_model/base_error_model.dart';
-import 'package:coin_with_architecture/core/model/response_model/IResponse_model.dart';
-import 'package:coin_with_architecture/core/model/response_model/response_model.dart';
+import '../../../../../core/model/error_model/base_error_model.dart';
+import '../../../../../core/model/response_model/IResponse_model.dart';
+import '../../../../../core/model/response_model/response_model.dart';
 import '../../../../../core/enums/back_up_enum.dart';
 import '../../../../authentication/viewmodel/cubit/user_cubit.dart';
 import '../../../../../product/model/user/my_user_model.dart';

@@ -1,6 +1,7 @@
+import 'dart:io';
+
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
-import 'package:get/get_connect/http/src/status/http_status.dart';
 
 import '../../enums/http_request_enum.dart';
 import '../../extension/network_type_extension.dart';

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:coin_with_architecture/core/model/response_model/IResponse_model.dart';
+import '../../../../../core/model/response_model/IResponse_model.dart';
 
 import '../../../../../core/enums/currency_enum.dart';
 import '../../../../../core/enums/price_control.dart';

@@ -1,3 +1,4 @@
+import 'product/language/locale_keys.g.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +22,7 @@ Future<void> main() async {
         child: const FutureBuilderForSplash(),
         supportedLocales: LanguageManager.instance.supportedLocales,
         fallbackLocale: const Locale('en', 'US'),
-        path: AppConstant.LANG_ASSET_PATH),
+        path: AppConstant.instance.LANG_ASSET_PATH),
   ));
 }
 
@@ -43,7 +44,7 @@ class FutureBuilderForSplash extends StatelessWidget {
             supportedLocales: context.supportedLocales,
             locale: context.locale,
             theme: context.watch<ThemeProvider>().theme,
-            title: 'Currency App',
+            title: LocaleKeys.changeLanguagePage_korean,
             onGenerateRoute: RouteGenerator.routeGenerator,
             home:
                 FutureBuilderForIsFirstOpen(), //BUNU NİYE YAZMAMIZ LAZIM ONU ANLAMADIM

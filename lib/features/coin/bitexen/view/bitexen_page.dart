@@ -1,3 +1,5 @@
+import '../../../../core/extension/context_extension.dart';
+import '../../../../product/untility/text_form_field_with_animation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,14 +14,10 @@ import '../viewmodel/page_viewmodel/cubit/bitexen_page_general_cubit.dart';
 class BitexenPage extends StatelessWidget {
   BitexenPage({Key? key}) : super(key: key);
 
-  TextEditingController _searchTextEditingController = TextEditingController();
-  GlobalKey<FormState> _searchFormKey = GlobalKey<FormState>();
-  List<MainCurrencyModel> searchresult = [];
+  final List<MainCurrencyModel> searchresult = [];
 
   @override
   Widget build(BuildContext context) {
-    context.read<BitexenPageGeneralCubit>().textEditingController =
-        _searchTextEditingController;
     return Scaffold(
       //extendBody: true,
       appBar: _appBar(context),
@@ -48,7 +46,10 @@ class BitexenPage extends StatelessWidget {
           context.read<BitexenPageGeneralCubit>().changeIsSearch();
 
           if (context.read<BitexenPageGeneralCubit>().isSearhOpen == false) {
-            _searchTextEditingController.clear();
+            context
+                .read<BitexenPageGeneralCubit>()
+                .searchTextEditingController
+                ?.clear();
           }
         },
         icon: const Icon(Icons.search));
@@ -65,7 +66,7 @@ class BitexenPage extends StatelessWidget {
         } else if (state is BitexenCompleted) {
           return completedStateBody(state, context);
         } else {
-          return Text("Coin");
+          return Text("404");
         }
       },
       listener: (context, state) {
@@ -88,44 +89,21 @@ class BitexenPage extends StatelessWidget {
 
     return Column(
       children: [
-        buildTextFormFieldWithAnimation(context),
+        buildTextFormFieldWithAnimation(
+          context,
+          controller: context
+              .read<BitexenPageGeneralCubit>()
+              .searchTextEditingController!,
+          focusNode: context.watch<BitexenPageGeneralCubit>().myFocusNode,
+          isSearchOpen: context.watch<BitexenPageGeneralCubit>().isSearhOpen,
+          onChanged:
+              context.read<BitexenPageGeneralCubit>().textFormFieldChanged(),
+        ),
         Expanded(
-          flex: 10,
+          flex: (context.height * .02).toInt(),
           child: buildListViewBuilder(coinListToShow),
         ),
       ],
-    );
-  }
-
-  Widget buildTextFormFieldWithAnimation(BuildContext context) {
-    return AnimatedSize(
-      curve: Curves.decelerate,
-      duration: const Duration(milliseconds: 1000),
-      child: SizedBox(
-        height: context.watch<BitexenPageGeneralCubit>().isSearhOpen ? 50 : 0,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: AnimatedOpacity(
-            curve: Curves.easeIn,
-            duration: const Duration(milliseconds: 500),
-            opacity:
-                context.watch<BitexenPageGeneralCubit>().isSearhOpen ? 1 : 0,
-            child: TextFormField(
-              cursorHeight:
-                  context.watch<BitexenPageGeneralCubit>().isSearhOpen ? 18 : 0,
-              controller: _searchTextEditingController,
-              onChanged: (a) {
-                context.read<BitexenPageGeneralCubit>().textFormFieldChanged();
-              },
-              focusNode: context.watch<BitexenPageGeneralCubit>().myFocusNode,
-              autofocus: context.watch<BitexenPageGeneralCubit>().isSearhOpen
-                  ? true
-                  : false,
-              decoration: const InputDecoration(border: OutlineInputBorder()),
-            ),
-          ),
-        ),
-      ),
     );
   }
 
@@ -170,20 +148,27 @@ class BitexenPage extends StatelessWidget {
   List<MainCurrencyModel> searchTransaction(
       BuildContext context, List<MainCurrencyModel> coinListToShow) {
     if (context.read<BitexenPageGeneralCubit>().isSearhOpen &&
-        _searchTextEditingController.text != "") {
-      coinListToShow = searchResult(coinListToShow);
+        context
+                .read<BitexenPageGeneralCubit>()
+                .searchTextEditingController
+                ?.text !=
+            "") {
+      coinListToShow = searchResult(coinListToShow, context);
     }
     return coinListToShow;
   }
 
-  List<MainCurrencyModel> searchResult(List<MainCurrencyModel> coinList) {
+  List<MainCurrencyModel> searchResult(
+      List<MainCurrencyModel> coinList, BuildContext context) {
     searchresult.clear();
 
     for (int i = 0; i < coinList.length; i++) {
       String data = coinList[i].name;
-      if (data
-          .toLowerCase()
-          .contains(_searchTextEditingController.text.toLowerCase())) {
+      if (data.toLowerCase().contains(context
+          .read<BitexenPageGeneralCubit>()
+          .searchTextEditingController!
+          .text
+          .toLowerCase())) {
         searchresult.add(coinList[i]);
       }
     }

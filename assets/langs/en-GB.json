@@ -1,4 +1,6 @@
 {
+    "mainApp":{"appTitle":"Currency App"},
+
     "appBarTitle": "Favorites",
     "welcomeMessage":"Welcome to the best trading app just enjoy and make money",
     "changeLanguagePage":{
