@@ -16,10 +16,12 @@ class _AppColors {
   final Color darkGrey = const Color(0xff4e5d6a);
   final Color red = const Color(0xffd32f2f);
   final Color green = const Color(0xff4CAF50);
-  final Color green2 = Color(0xff43A047);
-  final Color purplish = Color(0xff6c63ff);
-  final Color darkColorForTrial = Color(0xff2e2e2e);
-  final Color appBarBlack = Color(0xff424242);
+  final Color green2 = const Color(0xff43A047);
+  final Color purplish = const Color(0xff6c63ff);
+  final Color darkColorForTrial = const Color(0xff2e2e2e);
+  final Color appBarBlack = const Color(0xff424242);
+  final Color yellow = const Color(0xfffdd835);
+  final Color splashBlack = const Color(0xff1D1D1D);
 
   final Color black = Color(0xff000000);
 }

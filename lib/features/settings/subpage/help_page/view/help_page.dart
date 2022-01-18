@@ -1,3 +1,4 @@
+import 'package:coin_with_architecture/core/constant/app/app_constant.dart';
 import 'package:flutter/material.dart';
 
 class HelpPage extends StatelessWidget {
@@ -7,7 +8,7 @@ class HelpPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Center(child: Image.asset("assets/images/help.png")),
+        body: Center(child: Image.asset(AppConstant.instance.HELP_IMAGE_PATH)),
       ),
     );
   }

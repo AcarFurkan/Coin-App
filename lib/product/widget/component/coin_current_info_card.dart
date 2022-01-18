@@ -4,6 +4,7 @@ import 'package:persian_tools/src/core/commas/commas.dart';
 
 import '../../../core/enums/currency_enum.dart';
 import '../../../core/enums/price_control.dart';
+import '../../../core/extension/context_extension.dart';
 import '../../model/my_coin_model.dart';
 
 class ListCardItem extends StatefulWidget {
@@ -23,61 +24,24 @@ class ListCardItem extends StatefulWidget {
 }
 
 class _ListCardItemState extends State<ListCardItem> {
-  Color getColorForPercentage() {
-    if (widget.coin.percentageControl == PriceLevelControl.INCREASING.name) {
-      return Colors.green;
-    } else if (widget.coin.percentageControl ==
-        PriceLevelControl.DESCREASING.name) {
-      return Colors.red;
-    } else {
-      return Theme.of(context).colorScheme.onBackground;
-    }
-  }
-  /* DateTime now = DateTime.now();
-  Text(
-          (now.hour.toString() +
-              ":" +
-              now.minute.toString() +
-              ":" +
-              now.second.toString()),
-          style: TextStyle(fontSize: 10),
-        ),*/
-
-  Color getColorForPrice() {
-    if (widget.coin.priceControl == PriceLevelControl.INCREASING.name) {
-      return Colors.green;
-    } else if (widget.coin.priceControl == PriceLevelControl.DESCREASING.name) {
-      return Colors.red;
-    } else {
-      return Theme.of(context).colorScheme.onBackground;
-    }
-  }
-
-  String get currencyIcon {
-    return widget.coin.counterCurrencyCode == CoinCurrency.USD.name
-        ? "\$"
-        : widget.coin.counterCurrencyCode == CoinCurrency.TRY.name
-            ? "₺"
-            : widget.coin.counterCurrencyCode == CoinCurrency.ETH.name
-                ? "♦"
-                : widget.coin.counterCurrencyCode == CoinCurrency.BTC.name
-                    ? "₿"
-                    : "\$";
-  }
-
   @override
   Widget build(BuildContext context) {
-    widget.coin.lastPrice?.length;
     return Card(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+        padding: EdgeInsets.symmetric(
+            horizontal: context.lowValue * 1.3, vertical: context.lowValue),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             buildFavoriteButton(),
-            Expanded(flex: 4, child: buildCurrencyName()),
-            Expanded(flex: 10, child: buildCurrencyPrice()),
-            Expanded(flex: 5, child: buildPercentageBox()),
+            Expanded(
+                flex: (context.lowValue * 0.7).toInt(),
+                child: buildCurrencyName()),
+            Expanded(
+                flex: context.lowValue.toInt() * 2,
+                child: buildCurrencyPrice()),
+            Expanded(
+                flex: context.lowValue.toInt(), child: buildPercentageBox()),
           ],
         ),
       ),
@@ -86,27 +50,21 @@ class _ListCardItemState extends State<ListCardItem> {
 
   IconButton buildFavoriteButton() {
     return IconButton(
-        padding: EdgeInsets.only(
-            left: 0,
-            right: 8), //EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        constraints: BoxConstraints.tightForFinite(),
+        padding: EdgeInsets.only(right: context.lowValue),
+        constraints: const BoxConstraints.tightForFinite(),
         onPressed: () {
           widget.coin.isFavorite = !widget.coin.isFavorite;
-
           widget.voidCallback();
-          // context.read<CoinListCubit>().saveDeleteFromFavorites(widget.result);///for list
           setState(() {});
         },
         icon: widget.coin.isFavorite
             ? Icon(
                 Icons.star_rounded,
-                // color: Theme.of(context).ic,
-                size: MediaQuery.of(context).size.height / 33,
+                size: context.height / 33,
               )
             : Icon(
                 Icons.star_border_rounded,
-                //color: Colors.yellow[600],
-                size: MediaQuery.of(context).size.height / 33,
+                size: context.height / 33,
               ));
   }
 
@@ -120,32 +78,25 @@ class _ListCardItemState extends State<ListCardItem> {
 
             Text(
               widget.coin.name.toUpperCase(),
-              style:
-                  Theme.of(context).textTheme.headline6!.copyWith(fontSize: 16),
+              style: context.textTheme.subtitle1,
             ),
             SizedBox(
-              width: MediaQuery.of(context).size.width / 150,
+              width: context.width / 150,
             ),
             widget.coin.isAlarmActive == true
                 ? Icon(
                     Icons.alarm,
-                    size: MediaQuery.of(context).size.width / 25,
+                    size: context.width / 25,
                   )
-                : Text(
-                    "",
-                    style: TextStyle(fontSize: 0),
-                  ),
+                : Container(),
           ],
         ),
         widget.coin.lastUpdate != null
             ? Text(
                 widget.coin.lastUpdate!,
-                style: TextStyle(fontSize: 10),
+                style: context.textTheme.overline,
               )
-            : Text(
-                "",
-                style: TextStyle(fontSize: 0),
-              ),
+            : Container()
       ],
     );
   }
@@ -166,8 +117,8 @@ class _ListCardItemState extends State<ListCardItem> {
       child: Container(
           alignment: Alignment.center,
           padding: EdgeInsets.symmetric(
-            vertical: MediaQuery.of(context).size.height / 90,
-            horizontal: MediaQuery.of(context).size.width / 100,
+            vertical: context.height / 90,
+            horizontal: context.width / 100,
           ),
           child: buildCurrenctPercentageText(),
           color: getColorForPercentage()),
@@ -183,7 +134,7 @@ class _ListCardItemState extends State<ListCardItem> {
         maxLines: 1,
         minFontSize: 10,
         style: TextStyle(
-          color: Theme.of(context).colorScheme.onError,
+          color: context.colors.onError,
         ),
       );
     } catch (e) {
@@ -192,9 +143,42 @@ class _ListCardItemState extends State<ListCardItem> {
         maxLines: 1,
         minFontSize: 10,
         style: TextStyle(
-          color: Theme.of(context).colorScheme.background,
+          color: context.colors.background,
         ),
       );
     }
+  }
+
+  Color getColorForPercentage() {
+    if (widget.coin.percentageControl == PriceLevelControl.INCREASING.name) {
+      return context.theme.indicatorColor;
+    } else if (widget.coin.percentageControl ==
+        PriceLevelControl.DESCREASING.name) {
+      return context.colors.error;
+    } else {
+      return context.colors.onBackground;
+    }
+  }
+
+  Color getColorForPrice() {
+    if (widget.coin.priceControl == PriceLevelControl.INCREASING.name) {
+      return context.theme.indicatorColor;
+    } else if (widget.coin.priceControl == PriceLevelControl.DESCREASING.name) {
+      return context.colors.error;
+    } else {
+      return context.colors.onBackground;
+    }
+  }
+
+  String get currencyIcon {
+    return widget.coin.counterCurrencyCode == CoinCurrency.USD.name
+        ? "\$"
+        : widget.coin.counterCurrencyCode == CoinCurrency.TRY.name
+            ? "₺"
+            : widget.coin.counterCurrencyCode == CoinCurrency.ETH.name
+                ? "♦"
+                : widget.coin.counterCurrencyCode == CoinCurrency.BTC.name
+                    ? "₿"
+                    : "\$";
   }
 }

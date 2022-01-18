@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 
 import '../../../../../../locator.dart';
 import '../../../../../../product/model/my_coin_model.dart';
@@ -17,9 +16,13 @@ class CoinDetailCubit extends Cubit<CoinDetailState> {
     isMaxAlarmActive = false;
     isMinLoop = false;
     isMaxLoop = false;
+    minTextEditingController = TextEditingController();
+    maxTextEditingController = TextEditingController();
 
     initilizeCacheManger();
   }
+  late final TextEditingController minTextEditingController;
+  late final TextEditingController maxTextEditingController;
   AudioModel? _minSelectedAudio;
   AudioModel? _maxSelectedAudio;
 
@@ -47,7 +50,7 @@ class CoinDetailCubit extends Cubit<CoinDetailState> {
     saveDeleteForFavorite(coin);
   }
 
-  get minSelectedAudio {
+  AudioModel? get minSelectedAudio {
     return _minSelectedAudio;
   }
 

@@ -23,10 +23,7 @@ class HomeView extends StatefulWidget {
   State<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView>
-    with SingleTickerProviderStateMixin {
-  GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
-
+class _HomeViewState extends State<HomeView> {
   List<Widget> listPage = [
     SelectedCoinPage(),
     CoinListPage(),
@@ -58,7 +55,6 @@ class _HomeViewState extends State<HomeView>
 
   CurvedNavigationBar buildCurvedNavigationBar(BuildContext context) {
     return CurvedNavigationBar(
-        key: _bottomNavigationKey,
         color: context.theme.bottomNavigationBarTheme.backgroundColor ??
             context.theme.colorScheme.onError,
         buttonBackgroundColor:
@@ -66,7 +62,6 @@ class _HomeViewState extends State<HomeView>
                 context.theme.colorScheme.onError,
         backgroundColor: Colors.transparent,
         animationDuration: context.lowDuration,
-        //color: Theme.of(context).colorScheme.secondaryVariant,
         onTap: _onItemTapped,
         index: context.watch<HomeViewModel>().selectedIndex,
         items: buildCurvedBarItems);
@@ -84,7 +79,7 @@ class _HomeViewState extends State<HomeView>
           color: tabbarLabelColorGenerator(0),
         ),
         SizedBox(
-          height: 35,
+          height: context.height * .045,
           child: Image.asset(
             "assets/icon/btcIcon.png",
             color: tabbarLabelColorGenerator(1),

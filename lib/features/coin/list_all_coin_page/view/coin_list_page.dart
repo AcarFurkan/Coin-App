@@ -71,8 +71,9 @@ class CoinListPage extends StatelessWidget {
         unselectedLabelStyle: context.textTheme.bodyText2,
         indicator: BoxDecoration(
             border: Border(
-                bottom:
-                    BorderSide(color: context.colors.onBackground, width: 3))),
+                bottom: BorderSide(
+                    color: context.colors.onBackground,
+                    width: context.width * .008))),
         tabs: _tabGenerator(context));
   }
 

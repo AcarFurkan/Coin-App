@@ -13,16 +13,6 @@ class HomeViewModel with ChangeNotifier {
       keepPage: true,
     );
   }
-  //closeDrawer() {
-  //  print("close");
-  //  zoomDrawerController.toggle!();
-  //}
-
-  //openDrawer() {
-  //  print("open");
-
-  //  zoomDrawerController.toggle!();
-  //}
 
   set selectedIndex(int value) {
     int temp = _selectedIndex;

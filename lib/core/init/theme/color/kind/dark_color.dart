@@ -42,6 +42,7 @@ class DarkColors implements IColors {
       background: colors.darkColorForTrial,
       onBackground: colors.white,
       onError: colors.white,
+      error: colors.red,
     );
     brightness = Brightness.dark;
   }

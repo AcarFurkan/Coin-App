@@ -55,33 +55,17 @@ class UserCubit extends Cubit<UserState> {
 
   changeAutoValidateMode() {
     autoValidateMode = AutovalidateMode.always;
-
-    //if (autoValidateMode == AutovalidateMode.disabled) {
-    //} else {
-    //  autoValidateMode = AutovalidateMode.disabled;
-    //}
   }
 
   tappedLoginRegisterButton() async {
     changeAutoValidateMode();
     if (formState.currentState!.validate()) {
-      try {
-        if (isLoginPage) {
-          await signInWithEmailandPassword(
-              emailControllerForLogin!.text, passwordControllerForLogin!.text);
-        } else {
-          await createUserWithEmailandPassword(emailControllerForRegister!.text,
-              passwordControllerForRegister!.text, nameController!.text);
-        }
-      } on FirebaseAuthException catch (e) {
-        String errorMessage =
-            FirebaseCustomExceptions.convertFirebaseMessage(e.code);
-        print(FirebaseCustomExceptions.convertFirebaseMessage(errorMessage));
-
-        emit(UserError(message: errorMessage));
-        emit(UserNull());
-      } catch (e) {
-        print(e);
+      if (isLoginPage) {
+        await signInWithEmailandPassword(
+            emailControllerForLogin!.text, passwordControllerForLogin!.text);
+      } else {
+        await createUserWithEmailandPassword(emailControllerForRegister!.text,
+            passwordControllerForRegister!.text, nameController!.text);
       }
     } else {
       emit(UserNull());
@@ -106,7 +90,6 @@ class UserCubit extends Cubit<UserState> {
   }
 
   Future<MyUser?> updateUser() async {
-    print(groupValue == BackUpTypes.tapped.name);
     if (BackUpTypes.never.name != groupValue) {
       user?.isBackUpActive = true;
     } else {
@@ -117,7 +100,6 @@ class UserCubit extends Cubit<UserState> {
     emit(UserFull(user: user!));
 
     if (user != null) {
-      //user = await _userServiceController.updateUser(user!);
       try {
         print(user?.updatedAt);
         user = await _userServiceController.updateUser(user!);

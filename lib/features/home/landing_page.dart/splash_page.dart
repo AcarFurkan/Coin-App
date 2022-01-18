@@ -1,3 +1,5 @@
+import 'package:coin_with_architecture/core/constant/app/app_constant.dart';
+import 'package:coin_with_architecture/core/extension/context_extension.dart';
 import 'package:flutter/material.dart';
 
 class Splash extends StatelessWidget {
@@ -5,17 +7,9 @@ class Splash extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool lightMode =
-        MediaQuery.of(context).platformBrightness == Brightness.light;
     return Scaffold(
-      backgroundColor:
-          lightMode ? const Color(0xff1D1D1D) : const Color(0xff1D1D1D),
-      body: Center(
-          child: lightMode
-              ? Image.asset('assets/gif/splash35.gif')
-              /**
-              *TODO: APP consatnlara bunları ekle */
-              : Image.asset('assets/gif/splash35.gif')),
+      backgroundColor: context.theme.splashColor,
+      body: Center(child: Image.asset(AppConstant.instance.SPLASH_GIF_PATH)),
     );
   }
 }

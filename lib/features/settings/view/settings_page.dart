@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../../core/extension/context_extension.dart';
 
 import '../../../core/extension/string_extension.dart';
 import '../../../product/language/locale_keys.g.dart';
@@ -18,157 +19,105 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  bool status = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        title: Text(
-          LocaleKeys.SettingsPage_appBarTitle.locale,
-        ),
-      ),
+      appBar: buildAppBar(),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 25),
-        child: ListView(
-          children: [
-            SettingsCardItem(
-              prefix: Icon(
-                Icons.person,
-                size: MediaQuery.of(context).size.height / 33,
-              ),
-              text: context.watch<UserCubit>().user == null
-                  ? "User Settings"
-                  : context.read<UserCubit>().user?.email ?? "",
-              suffix: Icon(
-                Icons.arrow_forward_ios,
-                size: MediaQuery.of(context).size.height / 40,
-              ),
-              ontap: () {
-                print("aaa");
-                Navigator.pushNamed(context, "/userSettings");
-              },
-            ),
-            SettingsCardItem(
-              prefix: Icon(
-                Icons.language,
-                size: MediaQuery.of(context).size.height / 33,
-              ),
-              text: LocaleKeys.SettingsPage_appTheme.locale,
-              suffix: SizedBox(
-                height: MediaQuery.of(context).size.height / 30,
-                child: CupertinoSwitch(
-                    value: context.watch<ThemeProvider>().isdark,
-                    activeColor: Colors.red,
-                    onChanged: (onChanged) {
-                      context.read<ThemeProvider>().changeTheme();
-                    }),
-              ),
-              ontap: () {
-                context.read<ThemeProvider>().changeTheme();
-              },
-            ),
-            SettingsCardItem(
-              prefix: Icon(
-                Icons.language,
-                size: MediaQuery.of(context).size.height / 33,
-              ),
-              text: LocaleKeys.SettingsPage_changeLanguage.locale,
-              suffix: Icon(
-                Icons.arrow_forward_ios,
-                size: MediaQuery.of(context).size.height / 40,
-              ),
-              ontap: () {
-                Navigator.of(context)
-                    .push(
-                        MaterialPageRoute(builder: (context) => LanguagePage()))
-                    .whenComplete(() => {setState(() {})});
-              },
-            ),
-            SettingsCardItem(
-              prefix: Icon(
-                Icons.language,
-                size: MediaQuery.of(context).size.height / 33,
-              ),
-              text: "Yardım",
-              suffix: Icon(
-                Icons.arrow_forward_ios,
-                size: MediaQuery.of(context).size.height / 40,
-              ),
-              ontap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => HelpPage()));
-              },
-            ),
-          ],
-        ),
+        padding: context.paddingLowHorizontal * 3,
+        child: buildListView(context),
       ),
     );
   }
+
+  AppBar buildAppBar() {
+    return AppBar(
+      elevation: 0,
+      title: Text(
+        LocaleKeys.SettingsPage_appBarTitle.locale,
+      ),
+    );
+  }
+
+  ListView buildListView(BuildContext context) {
+    return ListView(
+      children: [
+        buildUserSettingsCard(context),
+        buildDarkModeCard(context),
+        buildChangeLanguageCard(context),
+        buildHelpPageCard(context),
+      ],
+    );
+  }
+
+  SettingsCardItem buildUserSettingsCard(BuildContext context) {
+    return SettingsCardItem(
+      prefix: Icon(
+        Icons.person,
+        size: context.lowValue * 3,
+      ),
+      text: context.watch<UserCubit>().user == null
+          ? "User Settings"
+          : context.read<UserCubit>().user?.email ?? "",
+      suffix: Icon(
+        Icons.arrow_forward_ios,
+        size: context.lowValue * 3,
+      ),
+      ontap: () => Navigator.pushNamed(context, "/userSettings"),
+    );
+  }
+
+  SettingsCardItem buildDarkModeCard(BuildContext context) {
+    return SettingsCardItem(
+      prefix: Icon(
+        Icons.language,
+        size: context.lowValue * 3,
+      ),
+      text: LocaleKeys.SettingsPage_appTheme.locale,
+      suffix: SizedBox(
+        height: context.lowValue * 3,
+        child: CupertinoSwitch(
+            value: context.watch<ThemeProvider>().isdark,
+            activeColor: Colors.red,
+            onChanged: (onChanged) =>
+                context.read<ThemeProvider>().changeTheme()),
+      ),
+      ontap: () => context.read<ThemeProvider>().changeTheme(),
+    );
+  }
+
+  SettingsCardItem buildChangeLanguageCard(BuildContext context) {
+    return SettingsCardItem(
+      prefix: Icon(
+        Icons.language,
+        size: context.lowValue * 3,
+      ),
+      text: LocaleKeys.SettingsPage_changeLanguage.locale,
+      suffix: Icon(
+        Icons.arrow_forward_ios,
+        size: context.lowValue * 3,
+      ),
+      ontap: () {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => LanguagePage()))
+            .whenComplete(() => {setState(() {})});
+      },
+    );
+  }
+
+  SettingsCardItem buildHelpPageCard(BuildContext context) {
+    return SettingsCardItem(
+      prefix: Icon(
+        Icons.language,
+        size: context.lowValue * 3,
+      ),
+      text: "Yardım",
+      suffix: Icon(
+        Icons.arrow_forward_ios,
+        size: context.lowValue * 3,
+      ),
+      ontap: () => Navigator.push(
+          context, MaterialPageRoute(builder: (context) => const HelpPage())),
+    );
+  }
 }
-/*
-
- InkWell(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              splashColor: Colors.grey[200],
-              child: Padding(
-                padding: const EdgeInsets.all(2.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.background,
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        topRight: Radius.circular(10),
-                        bottomLeft: Radius.circular(10),
-                        bottomRight: Radius.circular(10)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.3),
-                        spreadRadius: 1,
-                        blurRadius: 25,
-                        offset:
-                            const Offset(2, 8), // changes position of shadow
-                      ),
-                    ],
-                  ),
-                  padding: EdgeInsets.all(15),
-                  child: Row(
-                    children: [
-                      const Expanded(
-                        flex: 1,
-                        child: Icon(
-                          Icons.language,
-                        ),
-                      ),
-                      Spacer(
-                        flex: 1,
-                      ),
-                      Expanded(
-                        flex: 5,
-                        child: Text(
-                          LocaleKeys.SettingsPage_appTheme.locale,
-                          style: Theme.of(context).textTheme.bodyText1,
-                        ),
-                      ),
-                      Spacer(
-                        flex: 3,
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: SizedBox(
-                          height: MediaQuery.of(context).size.height / 30,
-                          child: CupertinoSwitch(
-                              value: context.watch<ThemeProvider>().isdark,
-                              activeColor: Colors.red,
-                              onChanged: (onChanged) {
-                                context.read<ThemeProvider>().changeTheme();
-                              }),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
-
- */

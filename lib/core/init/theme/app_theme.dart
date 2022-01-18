@@ -14,6 +14,7 @@ abstract class ThemeManager {
   static ThemeData craeteTheme(ITheme theme) {
     if (theme is AppThemeDark) {
       return ThemeData.dark().copyWith(
+        splashColor: theme.colors.colors.splashBlack,
         textTheme: theme.textTheme.data,
         colorScheme: theme.colors.colorScheme,
         appBarTheme: AppBarTheme(color: theme.colors.colors.appBarBlack),
@@ -31,8 +32,9 @@ abstract class ThemeManager {
           labelColor: theme.colors.tabbarSelectedColor,
           unselectedLabelColor: theme.colors.tabbarNormalColor,
         ),
+        accentColor: theme.colors.colors.yellow,
+        indicatorColor: theme.colors.colors.green,
         canvasColor: theme.colors.colors.purplish,
-        backgroundColor: Colors.red,
         inputDecorationTheme: InputDecorationTheme(
           contentPadding: EdgeInsets.symmetric(
             vertical: 22,
@@ -73,10 +75,13 @@ abstract class ThemeManager {
       );
     } else {
       return ThemeData.light().copyWith(
+        splashColor: theme.colors.colors.splashBlack,
         floatingActionButtonTheme: FloatingActionButtonThemeData(
             backgroundColor: theme.colors.colors.purplish,
             foregroundColor: theme.colors.colors.white),
         cardTheme: CardTheme(elevation: 3),
+        indicatorColor: theme.colors.colors.green,
+        accentColor: theme.colors.colors.yellow,
         appBarTheme: AppBarTheme(backgroundColor: theme.colors.appBarColor),
         iconTheme: IconThemeData(color: theme.colors.colors.darkerGrey),
         primaryIconTheme: IconThemeData(color: theme.colors.colors.darkGrey),

@@ -37,43 +37,46 @@ class _AudioPageState extends State<AudioPage> {
                 await player.pause();
                 await player.seek(Duration.zero);
               },
-              icon: Icon(Icons.music_off))
+              icon: const Icon(Icons.music_off))
         ],
         title: Text("Alarmını seç"),
         leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context,
-                  context.read<AudioCubit>().audioPaths[selectedIndex]);
-            },
+            onPressed: () => Navigator.pop(
+                context, context.read<AudioCubit>().audioPaths[selectedIndex]),
             icon: const Icon(Icons.arrow_back_ios)),
       ),
       body: BlocConsumer<AudioCubit, AudioState>(
-        listener: (context, state) {
-          // TODO: implement listener
-        },
+        listener: (context, state) {},
         builder: (context, state) {
           return Scaffold(
-            body: ListView.builder(
-              physics: const BouncingScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: context.read<AudioCubit>().audioPaths.length,
-              itemBuilder: (BuildContext context, int index) {
-                return RadioListTile<String>(
-                  title:
-                      Text(context.read<AudioCubit>().audioPaths[index].name),
-                  value: context.read<AudioCubit>().audioPaths[index].path,
-                  groupValue: context.watch<AudioCubit>().groupValue,
-                  onChanged: (onChanged) async {
-                    selectedIndex = index;
-                    context.read<AudioCubit>().changeGroupValue(onChanged!);
-                    await context.read<AudioCubit>().playAudio(index, player);
-                  },
-                );
-              },
-            ),
+            body: buildListViewBuilder(context),
           );
         },
       ),
+    );
+  }
+
+  ListView buildListViewBuilder(BuildContext context) {
+    return ListView.builder(
+      physics: const BouncingScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: context.read<AudioCubit>().audioPaths.length,
+      itemBuilder: (BuildContext context, int index) {
+        return buildRadioListTile(context, index);
+      },
+    );
+  }
+
+  RadioListTile<String> buildRadioListTile(BuildContext context, int index) {
+    return RadioListTile<String>(
+      title: Text(context.read<AudioCubit>().audioPaths[index].name),
+      value: context.read<AudioCubit>().audioPaths[index].path,
+      groupValue: context.watch<AudioCubit>().groupValue,
+      onChanged: (onChanged) async {
+        selectedIndex = index;
+        context.read<AudioCubit>().changeGroupValue(onChanged!);
+        await context.read<AudioCubit>().playAudio(index, player);
+      },
     );
   }
 }

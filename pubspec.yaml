@@ -33,7 +33,7 @@ dependencies:
   cupertino_icons: ^1.0.2
 
   #state management
-  flutter_bloc: ^8.0.0
+  flutter_bloc: ^8.0.1
   provider: ^6.0.1
  
   #for initialize 
