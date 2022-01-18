@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
 import '../../../../core/extension/context_extension.dart';
-import '../../../../product/untility/text_form_field_with_animation.dart';
+import '../../../../product/widget/component/text_form_field_with_animation.dart';
 import '../../../authentication/viewmodel/cubit/user_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/enums/currency_enum.dart';
 import '../../../../core/widget/text/locale_text.dart';
 import '../../../../product/language/locale_keys.g.dart';
-import '../../../../product/model/my_coin_model.dart';
 import '../../../../product/widget/component/coin_current_info_card.dart';
 import '../viewmodel/cubit/coin_list_cubit.dart';
 import '../viewmodel/page_viewmodel/cubit/list_page_general_cubit.dart';

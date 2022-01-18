@@ -1,8 +1,8 @@
+import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../core/enums/price_control.dart';
 import '../../../../../core/model/response_model/response_model.dart';
-import '../../../../model/my_coin_model.dart';
 import '../../../../response_models/bitexen/bitexen_response_model.dart';
 import '../../../../response_models/gecho/gecho_service_model.dart';
 import '../../../../response_models/genelpara/genelpara_service_model.dart';

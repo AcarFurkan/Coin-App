@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
+import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../../locator.dart';
-import '../../../../../../product/model/my_coin_model.dart';
 import '../../../../../../product/repository/cache/coin_cache_manager.dart';
 import '../../../../../settings/subpage/audio_settings/model/audio_model.dart';
 

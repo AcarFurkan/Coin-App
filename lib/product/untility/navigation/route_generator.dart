@@ -1,4 +1,4 @@
-import '../../../features/settings/view/settings_page_two.dart';
+import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
 
 import '../../../features/authentication/user_settings/view/user_settings_page.dart';
 import '../../../features/home/landing_page.dart/landing_page.dart';
@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import '../../../features/coin/coin_detail_page/view/coin_detail_page.dart';
 import '../../../features/home/home_view.dart';
 import '../../../features/settings/view/settings_page.dart';
-import '../../model/my_coin_model.dart';
 
 class RouteGenerator {
   static Route<dynamic>? _routeOlustur(

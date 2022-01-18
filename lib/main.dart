@@ -35,8 +35,10 @@ class FutureBuilderForSplash extends StatelessWidget {
       future: Init.instance.initialize(context),
       builder: (context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const MaterialApp(
-              debugShowCheckedModeBanner: false, home: Splash());
+          return MaterialApp(
+              theme: context.watch<ThemeProvider>().theme,
+              debugShowCheckedModeBanner: false,
+              home: const Splash());
         } else {
           return MaterialApp(
             debugShowCheckedModeBanner: false,

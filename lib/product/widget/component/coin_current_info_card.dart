@@ -1,11 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
 import 'package:flutter/material.dart';
 import 'package:persian_tools/src/core/commas/commas.dart';
 
 import '../../../core/enums/currency_enum.dart';
 import '../../../core/enums/price_control.dart';
 import '../../../core/extension/context_extension.dart';
-import '../../model/my_coin_model.dart';
 
 class ListCardItem extends StatefulWidget {
   const ListCardItem({
@@ -74,11 +74,9 @@ class _ListCardItemState extends State<ListCardItem> {
       children: [
         Row(
           children: [
-            // Text((widget.index ?? "").toString()),
-
-            Text(
+            AutoSizeText(
               widget.coin.name.toUpperCase(),
-              style: context.textTheme.subtitle1,
+              minFontSize: 5,
             ),
             SizedBox(
               width: context.width / 150,
@@ -156,7 +154,7 @@ class _ListCardItemState extends State<ListCardItem> {
         PriceLevelControl.DESCREASING.name) {
       return context.colors.error;
     } else {
-      return context.colors.onBackground;
+      return context.theme.indicatorColor;
     }
   }
 

@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persian_tools/persian_tools.dart';
@@ -6,7 +7,6 @@ import 'package:persian_tools/persian_tools.dart';
 import '../../../../core/extension/context_extension.dart';
 import '../../../../core/extension/string_extension.dart';
 import '../../../../product/language/locale_keys.g.dart';
-import '../../../../product/model/my_coin_model.dart';
 import '../../../settings/subpage/audio_settings/model/audio_model.dart';
 import '../../../settings/subpage/audio_settings/view/audio2.dart';
 import '../viewmodel/cubit/cubit/coin_detail_cubit.dart';

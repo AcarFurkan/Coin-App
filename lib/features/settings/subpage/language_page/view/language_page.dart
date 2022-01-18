@@ -1,4 +1,5 @@
 import 'package:coin_with_architecture/core/extension/context_extension.dart';
+import 'package:coin_with_architecture/product/widget/component/language_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -52,7 +53,7 @@ class LanguagePage extends StatelessWidget {
         .map(
           (e) => Padding(
             padding: context.paddingLow,
-            child: ListTileItem(
+            child: LanguageListTileItem(
               leading: SizedBox(height: context.lowValue * 3, child: e.flag),
               text: e.name,
               countryCode: e.code,
@@ -60,63 +61,5 @@ class LanguagePage extends StatelessWidget {
           ),
         )
         .toList();
-  }
-}
-
-class ListTileItem extends StatelessWidget {
-  const ListTileItem(
-      {Key? key,
-      required this.leading,
-      required this.text,
-      required this.countryCode})
-      : super(key: key);
-  final Widget leading;
-  final String text;
-  final String countryCode;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => context.read<LanguageViewModel>().setLanguage(countryCode),
-      child: Container(
-        height: context.lowValue * 7,
-        decoration: BoxDecoration(
-          color: context.theme.appBarTheme.backgroundColor,
-          borderRadius:
-              BorderRadius.all(Radius.circular(context.lowValue * 1.5)),
-          boxShadow: [
-            BoxShadow(
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
-              spreadRadius: 1,
-              blurRadius: 5,
-              offset: const Offset(5, 10), // changes position of shadow
-            ),
-          ],
-        ),
-        padding: EdgeInsets.all(context.lowValue * 2),
-        child: buildCardContent(context),
-      ),
-    );
-  }
-
-  Row buildCardContent(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          flex: 1,
-          child: leading,
-        ),
-        const Spacer(
-          flex: 1,
-        ),
-        Expanded(
-          flex: 6,
-          child: Text(text, style: context.theme.textTheme.bodyText1),
-        ),
-        const Spacer(
-          flex: 3,
-        ),
-      ],
-    );
   }
 }

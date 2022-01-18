@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
 
-import '../../../../model/my_coin_model.dart';
 import '../../../../model/user/my_user_model.dart';
 import 'base/store_base.dart';
 
@@ -52,9 +52,6 @@ class FirestoreService implements StoreBase {
         ).toLocal();
       }
     }
-    print("66666666666666666");
-    print(userFromMap!.backUpType);
-    return userFromMap;
   }
 
   @override

@@ -1,3 +1,4 @@
+import 'package:coin_with_architecture/core/extension/context_extension.dart';
 import 'package:flutter/material.dart';
 
 class SettingsCardItem extends StatelessWidget {
@@ -16,61 +17,73 @@ class SettingsCardItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      borderRadius: BorderRadius.all(Radius.circular(10)),
+      borderRadius: BorderRadius.all(Radius.circular(context.lowValue * 1.5)),
       overlayColor: MaterialStateProperty.all(Colors.transparent),
-      splashColor: Colors.grey[200],
       onTap: ontap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 2),
+        padding: EdgeInsets.symmetric(
+            vertical: context.lowValue * 2, horizontal: context.lowValue * 0.3),
         child: Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.background,
-            borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(10),
-                topRight: Radius.circular(10),
-                bottomLeft: Radius.circular(10),
-                bottomRight: Radius.circular(10)),
-            boxShadow: [
-              BoxShadow(
-                color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.4),
-                spreadRadius: 1,
-                blurRadius: 1,
-                offset: Offset(2, 3), // changes position of shadow
-              ),
-            ],
-          ),
-          padding: EdgeInsets.symmetric(vertical: 17, horizontal: 12),
-          child: Row(
-            children: [
-              Expanded(
-                flex: 1,
-                child: prefix,
-              ),
-              Spacer(
-                flex: 3,
-              ),
-              Expanded(
-                flex: 25,
-                child: Text(
-                  text,
-                  style: Theme.of(context).textTheme.bodyText1,
-                ),
-              ),
-              suffix != null
-                  ? Expanded(
-                      flex: 2,
-                      child: suffix!,
-                    )
-                  : Container(),
-              suffix != null
-                  ? Spacer(
-                      flex: 2,
-                    )
-                  : Container()
-            ],
-          ),
+          decoration: buildBoxDecoration(context),
+          padding: EdgeInsets.symmetric(
+              vertical: context.lowValue * 2.5,
+              horizontal: context.lowValue * 2),
+          child: buildCardContent(context),
         ),
       ),
+    );
+  }
+
+  BoxDecoration buildBoxDecoration(BuildContext context) {
+    return BoxDecoration(
+      color: context.colors.background,
+      borderRadius: BorderRadius.all(
+        Radius.circular(context.lowValue * 1.5),
+      ),
+      boxShadow: buildBoxShadow(context),
+    );
+  }
+
+  List<BoxShadow> buildBoxShadow(BuildContext context) {
+    return [
+      BoxShadow(
+        color: context.colors.onPrimary.withOpacity(0.4),
+        spreadRadius: 1,
+        blurRadius: 1,
+        offset: const Offset(2, 3), // changes position of shadow
+      ),
+    ];
+  }
+
+  Row buildCardContent(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          flex: 1,
+          child: prefix,
+        ),
+        const Spacer(
+          flex: 3,
+        ),
+        Expanded(
+          flex: 25,
+          child: Text(
+            text,
+            style: context.textTheme.bodyText1,
+          ),
+        ),
+        suffix != null
+            ? Expanded(
+                flex: 2,
+                child: suffix!,
+              )
+            : Container(),
+        suffix != null
+            ? const Spacer(
+                flex: 2,
+              )
+            : Container()
+      ],
     );
   }
 }

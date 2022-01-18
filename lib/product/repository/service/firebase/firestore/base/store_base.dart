@@ -1,4 +1,5 @@
-import '../../../../../model/my_coin_model.dart';
+import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
+
 import '../../../../../model/user/my_user_model.dart';
 
 abstract class StoreBase {

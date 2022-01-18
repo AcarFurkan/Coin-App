@@ -1,11 +1,10 @@
 import 'package:bloc/bloc.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/enums/back_up_enum.dart';
 import '../../../../core/exception/custom_exception_firebase.dart';
 import '../../../../locator.dart';
-import '../../../../product/model/my_coin_model.dart';
 import '../../../../product/model/user/my_user_model.dart';
 import '../../../../product/repository/cache/coin_cache_manager.dart';
 import '../../../../product/repository/service/user_service_controller/user_service_controller.dart';

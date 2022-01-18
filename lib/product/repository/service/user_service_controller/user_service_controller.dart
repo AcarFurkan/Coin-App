@@ -1,7 +1,8 @@
+import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
+
 import '../../../../core/enums/back_up_enum.dart';
 import '../../../../core/model/response_model/IResponse_model.dart';
 
-import '../../../model/my_coin_model.dart';
 import '../../../model/user/my_user_model.dart';
 import '../../cache/coin_cache_manager.dart';
 import '../firebase/auth/fireabase_auth_service.dart';
@@ -42,10 +43,12 @@ class UserServiceController {
       //print(response.data!.backUpType);
       //print(response.data!.isBackUpActive);
       //print(response.data!.updatedAt);
+      if (user != null) {
+        response.data!.backUpType = user.backUpType!;
+        response.data!.isBackUpActive = user.isBackUpActive!;
+        response.data!.updatedAt = user.updatedAt!;
+      }
 
-      response.data!.backUpType = user!.backUpType!;
-      response.data!.isBackUpActive = user.isBackUpActive!;
-      response.data!.updatedAt = user.updatedAt!;
       /**
       * TODO : BURDA NASIL OLURDA  response.data = user; ÇALIŞMAZZZ
       */

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
+import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
 import '../../../../../core/model/error_model/base_error_model.dart';
 import '../../../../../core/model/response_model/IResponse_model.dart';
 import '../../../../../core/model/response_model/response_model.dart';
@@ -17,7 +18,6 @@ import 'package:just_audio/just_audio.dart';
 import 'package:provider/src/provider.dart';
 
 import '../../../../../locator.dart';
-import '../../../../../product/model/my_coin_model.dart';
 import '../../../../../product/repository/cache/coin_cache_manager.dart';
 import '../../../../../product/repository/service/market/bitexen/bitexen_service_controller.dart';
 import '../../../../../product/repository/service/market/gecho/gecho_service_controller.dart';

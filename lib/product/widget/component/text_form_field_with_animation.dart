@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../core/extension/context_extension.dart';
+import '../../../core/extension/context_extension.dart';
 
 Widget buildTextFormFieldWithAnimation(BuildContext context,
     {required bool isSearchOpen,

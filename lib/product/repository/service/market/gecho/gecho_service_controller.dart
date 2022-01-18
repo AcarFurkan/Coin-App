@@ -1,11 +1,12 @@
 import 'dart:async';
 
+import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
+
 import '../../../../../core/model/response_model/IResponse_model.dart';
 
 import '../../../../../core/enums/currency_enum.dart';
 import '../../../../../core/enums/price_control.dart';
 import '../../../../../core/model/response_model/response_model.dart';
-import '../../../../model/my_coin_model.dart';
 import '../helper/convert_incoming_currency.dart';
 
 class GechoServiceController {
@@ -238,15 +239,17 @@ class GechoServiceController {
 
   void lastPriceControl(
       List<MainCurrencyModel> previousList, List<MainCurrencyModel> lastList) {
-    for (var i = 0; i < lastList.length; i++) {
-      double lastPrice = double.parse(lastList[i].lastPrice ?? "0");
-      double previousPrice = double.parse(previousList[i].lastPrice ?? "0");
-      if (lastPrice > previousPrice) {
-        lastList[i].priceControl = PriceLevelControl.INCREASING.name;
-      } else if (previousPrice > lastPrice) {
-        lastList[i].priceControl = PriceLevelControl.DESCREASING.name;
-      } else {
-        lastList[i].priceControl = PriceLevelControl.CONSTANT.name;
+    if (lastList.length == previousList.length) {
+      for (var i = 0; i < lastList.length; i++) {
+        double lastPrice = double.parse(lastList[i].lastPrice ?? "0");
+        double previousPrice = double.parse(previousList[i].lastPrice ?? "0");
+        if (lastPrice > previousPrice) {
+          lastList[i].priceControl = PriceLevelControl.INCREASING.name;
+        } else if (previousPrice > lastPrice) {
+          lastList[i].priceControl = PriceLevelControl.DESCREASING.name;
+        } else {
+          lastList[i].priceControl = PriceLevelControl.CONSTANT.name;
+        }
       }
     }
   }
