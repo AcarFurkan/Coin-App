@@ -8,7 +8,7 @@ class _AppColors {
   final Color mediumGrey = const Color(0xffa6bcd0);
   final Color mediumGreyBold = const Color(0xff748a9d);
   final Color mediumdGreyBold = const Color(0xff9E9E9E);
-  final Color? smallGrey = Colors.grey[200];
+  final Color? smallGrey = const Color(0xffeeeeee);
   final Color mediumderGreyBold = const Color(0xff616161);
   final Color lighterGrey = const Color(0xfff0f4f8);
   final Color lightGrey = const Color(0xffdbe2ed);
@@ -23,7 +23,7 @@ class _AppColors {
   final Color yellow = const Color(0xfffdd835);
   final Color splashBlack = const Color(0xff1D1D1D);
 
-  final Color black = Color(0xff000000);
+  final Color black = const Color(0xff000000);
 }
 
 abstract class IColors {

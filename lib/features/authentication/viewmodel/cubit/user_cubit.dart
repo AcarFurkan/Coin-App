@@ -189,6 +189,9 @@ class UserCubit extends Cubit<UserState> {
       emit(UserNull());
     } else if (result.data != null) {
       user = result.data;
+      print("***********************************");
+
+      print(user!.backUpType.toString());
       fetchCurrenciesByEmail(user!);
       emit(UserFull(user: user!));
     } else {

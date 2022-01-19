@@ -31,8 +31,10 @@ class UserServiceController {
         await _firebaseAuthService.getCurrentUser();
     if (response.data != null) {
       print("111111111111");
-      MyUser? user = await _firestoreService
+      IResponseModel responseModel = await _firestoreService
           .readUserInformations(response.data!.email ?? "");
+      MyUser? userFromService = responseModel.data;
+      MyUser? user = responseModel.data;
       //print("-------------------------");
       //print(user!.backUpType);
       //print(user.isBackUpActive);
@@ -89,8 +91,9 @@ class UserServiceController {
     if (response.error != null) {
       return response;
     } else if (response.data != null) {
-      MyUser? userFromService = await _firestoreService
+      IResponseModel responseModel = await _firestoreService
           .readUserInformations(response.data!.email ?? "");
+      MyUser? userFromService = responseModel.data;
       if (userFromService != null) {
         await _firestoreService.saveUserInformations(userFromService);
         response.data = userFromService;
@@ -100,23 +103,27 @@ class UserServiceController {
     return response;
   }
 
-  Future<IResponseModel<MyUser>> signInWithGoogle() async {
-    IResponseModel<MyUser> response =
+  Future<IResponseModel<MyUser?>> signInWithGoogle() async {
+    IResponseModel<MyUser?> response =
         await _firebaseAuthService.signInWithGoogle();
     if (response.error != null) {
       return response;
     } else if (response.data != null) {
       List<MainCurrencyModel>? coins = _fetchAllAddedCoinsFromDatabase();
-
-      MyUser? userFromService = await _firestoreService
+      IResponseModel<MyUser?> responseModel = await _firestoreService
           .readUserInformations(response.data!.email ?? "");
+      MyUser? userFromService = responseModel.data;
+
       if (userFromService == null) {
         response.data!.backUpType = BackUpTypes.never.name;
         response.data!.isBackUpActive = false;
         response.data!.name = response.data!.email!.split("@")[0];
-        userFromService =
+        IResponseModel<MyUser?> responseModel =
             await _firestoreService.saveUserInformations(response.data!);
+        userFromService = responseModel.data;
         return response;
+      } else {
+        response = responseModel;
       }
       return response;
     }
@@ -129,7 +136,9 @@ class UserServiceController {
 
   Future<MyUser?> updateUser(MyUser user) async {
     await _firestoreService.updateUserInformations(user);
-    MyUser? myUser = await _firestoreService.readUserInformations(user.email!);
+    IResponseModel responseModel =
+        await _firestoreService.readUserInformations(user.email!);
+    MyUser? myUser = responseModel.data;
     if (myUser != null) {
       return myUser;
     }
@@ -148,8 +157,10 @@ class UserServiceController {
   }
 
   Future<List<MainCurrencyModel>?> fetchCoinInfoByEmail(String email) async {
-    List<MainCurrencyModel>? currenciesList =
+    IResponseModel<List<MainCurrencyModel>?> responseModel =
         await _firestoreService.fetchCurrenciesByEmail(email);
+
+    List<MainCurrencyModel>? currenciesList = responseModel.data;
     return currenciesList;
   }
 }

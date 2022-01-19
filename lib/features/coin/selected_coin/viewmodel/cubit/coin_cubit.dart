@@ -2,26 +2,25 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
-import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
-import '../../../../../core/model/error_model/base_error_model.dart';
-import '../../../../../core/model/response_model/IResponse_model.dart';
-import '../../../../../core/model/response_model/response_model.dart';
-import '../../../../../core/enums/back_up_enum.dart';
-import '../../../../authentication/viewmodel/cubit/user_cubit.dart';
-import '../../../../../product/model/user/my_user_model.dart';
-import '../../../../../product/repository/service/market/genelpara/genepara_service_controller.dart';
-import '../../../../../product/repository/service/user_service_controller/user_service_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-
 import 'package:provider/src/provider.dart';
 
+import '../../../../../core/enums/back_up_enum.dart';
+import '../../../../../core/model/error_model/base_error_model.dart';
+import '../../../../../core/model/response_model/IResponse_model.dart';
+import '../../../../../core/model/response_model/response_model.dart';
 import '../../../../../locator.dart';
+import '../../../../../product/model/coin/my_coin_model.dart';
+import '../../../../../product/model/user/my_user_model.dart';
 import '../../../../../product/repository/cache/coin_cache_manager.dart';
 import '../../../../../product/repository/service/market/bitexen/bitexen_service_controller.dart';
 import '../../../../../product/repository/service/market/gecho/gecho_service_controller.dart';
+import '../../../../../product/repository/service/market/genelpara/genepara_service_controller.dart';
 import '../../../../../product/repository/service/market/truncgil/truncgil_service_controller.dart';
+import '../../../../../product/repository/service/user_service_controller/user_service_controller.dart';
+import '../../../../authentication/viewmodel/cubit/user_cubit.dart';
 import '../../../../settings/subpage/audio_settings/model/audio_model.dart';
 
 part 'coin_state.dart';

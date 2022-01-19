@@ -1,4 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:coin_with_architecture/core/model/error_model/base_error_model.dart';
+import 'package:coin_with_architecture/core/model/response_model/IResponse_model.dart';
+import 'package:coin_with_architecture/core/model/response_model/response_model.dart';
 import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
 
 import '../../../../model/user/my_user_model.dart';
@@ -18,26 +21,31 @@ class FirestoreService implements StoreBase {
   }
 
   @override
-  Future<List<MainCurrencyModel>?> fetchCurrenciesByEmail(String email) async {
-    List<MainCurrencyModel>? listMainCurrency;
-    QuerySnapshot collectionref = await _firestore
-        .collection("users")
-        .doc(email)
-        .collection("currency")
-        .get();
+  Future<IResponseModel<List<MainCurrencyModel>?>> fetchCurrenciesByEmail(
+      String email) async {
+    List<MainCurrencyModel>?
+        listMainCurrency; //burda colectionref in için boşsa listmain currenct eski datayı dönebilir
+    try {
+      QuerySnapshot collectionref = await _firestore
+          .collection("users")
+          .doc(email)
+          .collection("currency")
+          .get();
 
-    if (collectionref.docs.isNotEmpty) {
-      List<QueryDocumentSnapshot<Object?>> listCurrency = collectionref.docs;
-      List<MainCurrencyModel> listMainCurrency = collectionref.docs
-          .map((e) =>
-              MainCurrencyModel.fromJson((e.data() as Map<String, dynamic>)))
-          .toList();
-      return listMainCurrency;
+      if (collectionref.docs.isNotEmpty) {
+        listMainCurrency = collectionref.docs
+            .map((e) =>
+                MainCurrencyModel.fromJson((e.data() as Map<String, dynamic>)))
+            .toList();
+      }
+      return ResponseModel(data: listMainCurrency);
+    } catch (e) {
+      return ResponseModel(error: BaseError(message: e.toString()));
     }
   }
 
   @override
-  Future<MyUser?> readUserInformations(String email) async {
+  Future<ResponseModel<MyUser?>> readUserInformations(String email) async {
     DocumentSnapshot _user =
         await _firestore.collection("users").doc(email).get();
     if (_user.data() is Map) {} // altakini bunun içine al
@@ -52,35 +60,42 @@ class FirestoreService implements StoreBase {
         ).toLocal();
       }
     }
+    return ResponseModel(data: userFromMap);
   }
 
   @override
-  Future<MyUser?> saveUserInformations(MyUser user,
+  Future<IResponseModel<MyUser?>> saveUserInformations(MyUser user,
       {List<MainCurrencyModel>? listCurrency}) async {
-    var map = user.toJson();
+    try {
+      var map = user.toJson();
 
-    if (user.updatedAt == null) {
-      user.level = 1;
+      if (user.updatedAt == null) {
+        user.level = 1;
 
-      map["updatedAt"] = FieldValue.serverTimestamp();
-    } else {
-      map["updatedAt"] = Timestamp.fromMillisecondsSinceEpoch(
-          user.updatedAt!.millisecondsSinceEpoch);
-    }
-
-    await _firestore.collection("users").doc(user.email).set(map);
-    if (listCurrency != null && listCurrency.isNotEmpty) {
-      for (var item in listCurrency) {
-        await _firestore
-            .collection("users")
-            .doc(user.email)
-            .collection("currency")
-            .doc(item.id)
-            .set(item.toMap());
+        map["updatedAt"] = FieldValue.serverTimestamp();
+      } else {
+        map["updatedAt"] = Timestamp.fromMillisecondsSinceEpoch(
+            user.updatedAt!.millisecondsSinceEpoch);
       }
+
+      await _firestore.collection("users").doc(user.email).set(map);
+      if (listCurrency != null && listCurrency.isNotEmpty) {
+        for (var item in listCurrency) {
+          await _firestore
+              .collection("users")
+              .doc(user.email)
+              .collection("currency")
+              .doc(item.id)
+              .set(item.toMap());
+        }
+      }
+      IResponseModel responseModel =
+          await readUserInformations(user.email!); //Todo
+      MyUser? myUser = responseModel.data;
+      return ResponseModel(data: myUser);
+    } catch (e) {
+      return ResponseModel(error: BaseError(message: e.toString()));
     }
-    MyUser? myUser = await readUserInformations(user.email!);
-    return myUser;
   }
 
   @override
@@ -92,8 +107,10 @@ class FirestoreService implements StoreBase {
 
     await _firestore.collection("users").doc(user.email).set(map);
     if (listCurrencyFromDb != null) {
-      List<MainCurrencyModel>? listFromService =
+      IResponseModel<List<MainCurrencyModel>?> responseModel =
           await fetchCurrenciesByEmail(user.email!);
+
+      List<MainCurrencyModel>? listFromService = responseModel.data;
 
       print(listFromService?.length);
 
@@ -128,7 +145,9 @@ class FirestoreService implements StoreBase {
         }
       }
     }
-    MyUser? myUser = await readUserInformations(user.email!);
+    IResponseModel responseModel =
+        await readUserInformations(user.email!); //Todo
+    MyUser? myUser = responseModel.data;
 
     return myUser;
   }
