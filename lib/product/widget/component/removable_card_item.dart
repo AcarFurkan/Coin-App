@@ -1,4 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:coin_with_architecture/core/enums/price_control.dart';
+import 'package:coin_with_architecture/core/extension/context_extension.dart';
 import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
 import '../../../core/enums/currency_enum.dart';
 import '../../../features/coin/selected_coin/viewmodel/cubit/coin_cubit.dart';
@@ -22,23 +24,26 @@ class RemovableCardItem extends StatefulWidget {
 }
 
 class _RemovableCardItemState extends State<RemovableCardItem> {
-  getColorForPrice() {
-    if (widget.currency.priceControl == "INCREASING") {
-      return Colors.green;
-    } else if (widget.currency.priceControl == "DESCREASING") {
-      return Colors.red;
+  Color getColorForPrice() {
+    if (widget.currency.priceControl == PriceLevelControl.INCREASING.name) {
+      return context.theme.indicatorColor;
+    } else if (widget.currency.priceControl ==
+        PriceLevelControl.DESCREASING.name) {
+      return context.colors.error;
     } else {
-      return Colors.black;
+      return context.colors.onBackground;
     }
   }
 
-  getColorForPercentage() {
-    if (widget.currency.percentageControl == "INCREASING") {
-      return Colors.green;
-    } else if (widget.currency.percentageControl == "DESCREASING") {
-      return Colors.red;
+  Color getColorForPercentage() {
+    if (widget.currency.percentageControl ==
+        PriceLevelControl.INCREASING.name) {
+      return context.theme.indicatorColor;
+    } else if (widget.currency.percentageControl ==
+        PriceLevelControl.DESCREASING.name) {
+      return context.colors.error;
     } else {
-      return Colors.black;
+      return context.theme.indicatorColor;
     }
   }
 
@@ -95,7 +100,7 @@ class _RemovableCardItemState extends State<RemovableCardItem> {
       children: [
         buildNameText,
         SizedBox(
-          width: MediaQuery.of(context).size.width / 150,
+          width: context.width / 150,
         ),
         buildAlarmIcon
       ],
@@ -105,13 +110,13 @@ class _RemovableCardItemState extends State<RemovableCardItem> {
   Widget get buildAlarmIcon => widget.currency.isAlarmActive == true
       ? Icon(
           Icons.alarm,
-          size: MediaQuery.of(context).size.width / 25,
+          size: context.width / 25,
         )
       : Container();
 
   Text get buildNameText => Text(
         widget.currency.name.toUpperCase(),
-        style: Theme.of(context).textTheme.headline6!.copyWith(fontSize: 16),
+        style: context.textTheme.headline6!.copyWith(fontSize: 16),
       );
 
   AutoSizeText buildCurrenctPercentageText() {
@@ -122,7 +127,7 @@ class _RemovableCardItemState extends State<RemovableCardItem> {
       maxLines: 1,
       minFontSize: 10,
       style: TextStyle(
-        color: Theme.of(context).colorScheme.background,
+        color: context.colors.onError,
       ),
     );
   }
@@ -132,8 +137,8 @@ class _RemovableCardItemState extends State<RemovableCardItem> {
         child: Container(
             alignment: Alignment.center,
             padding: EdgeInsets.symmetric(
-              vertical: MediaQuery.of(context).size.height / 90,
-              horizontal: MediaQuery.of(context).size.width / 100,
+              vertical: context.height / 90,
+              horizontal: context.width / 100,
             ),
             child: buildCurrenctPercentageText(),
             color: getColorForPercentage()),
@@ -142,8 +147,8 @@ class _RemovableCardItemState extends State<RemovableCardItem> {
   Container get buildRemoveCircle => Container(
         decoration: BoxDecoration(
             border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.all(Radius.circular(15))),
-        child: Opacity(opacity: rr(), child: Icon(Icons.close)),
+            borderRadius: const BorderRadius.all(Radius.circular(15))),
+        child: Opacity(opacity: rr(), child: const Icon(Icons.close)),
       );
 
   double rr() {
