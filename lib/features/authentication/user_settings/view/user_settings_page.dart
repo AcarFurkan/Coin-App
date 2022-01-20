@@ -1,3 +1,6 @@
+import 'package:coin_with_architecture/core/constant/app/app_constant.dart';
+import 'package:coin_with_architecture/product/language/locale_keys.g.dart';
+
 import '../../../../core/extension/context_extension.dart';
 import '../../../../core/extension/string_extension.dart';
 
@@ -25,10 +28,7 @@ class UserSettings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _buildContextForViewInset = context;
-    return Scaffold(
-        //  appBar: AppBar(),
-        // floatingActionButton: buildFloatingActionButton(context),
-        body: buildBlocConsumer);
+    return Scaffold(body: buildBlocConsumer);
   }
 
   BlocConsumer<UserCubit, UserState> get buildBlocConsumer =>
@@ -68,9 +68,8 @@ class UserSettings extends StatelessWidget {
     await showDialog(
       context: context,
       builder: (context) => CupertinoAlertDialog(
-        title: const Text('😎 OMG 😎'),
-        content: const Text(
-            "Kayıtlı veriler bulundu bunları telefonuna yüklemek istermisin ?"),
+        title: Text('😎 ${LocaleKeys.foundAlertDiolog_title.locale} 😎'),
+        content: Text(LocaleKeys.foundAlertDiolog_content.locale),
         actions: buildFoundDialogActionButtons(context),
       ),
     );
@@ -92,17 +91,18 @@ class UserSettings extends StatelessWidget {
     return TextButton(
       onPressed: () {
         context.read<UserCubit>().overwriteDataToDb();
-        Navigator.pushNamedAndRemoveUntil(
-            context, "/home", (ModalRoute.withName("/home")));
+        Navigator.popUntil(context, (ModalRoute.withName("/home")));
       },
-      child: Text('Yes', style: Theme.of(context).textTheme.bodyText1),
+      child: Text(LocaleKeys.foundAlertDiolog_yes.locale,
+          style: context.textTheme.bodyText1),
     );
   }
 
   TextButton buildNoButton(BuildContext context) {
     return TextButton(
       onPressed: () => Navigator.of(context).pop(false),
-      child: Text('No', style: Theme.of(context).textTheme.bodyText1),
+      child: Text(LocaleKeys.foundAlertDiolog_no.locale,
+          style: context.textTheme.bodyText1),
     );
   }
 }

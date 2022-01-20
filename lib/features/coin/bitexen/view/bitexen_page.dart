@@ -1,3 +1,4 @@
+import 'package:coin_with_architecture/core/constant/app/app_constant.dart';
 import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
 
 import '../../../../core/extension/context_extension.dart';
@@ -28,6 +29,7 @@ class BitexenPage extends StatelessWidget {
 
   AppBar _appBar(BuildContext context) {
     return AppBar(
+      centerTitle: true,
       leading: IconButton(
           onPressed: () {
             Navigator.pushNamed(context, "/settingsGeneral");
@@ -67,7 +69,7 @@ class BitexenPage extends StatelessWidget {
         } else if (state is BitexenCompleted) {
           return completedStateBody(state, context);
         } else {
-          return Text("404");
+          return Center(child: Image.asset(AppConstant.instance.IMAGE_404));
         }
       },
       listener: (context, state) {

@@ -1,3 +1,4 @@
+import 'package:coin_with_architecture/features/home/viewmodel/home_viewmodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -32,6 +33,15 @@ class _SettingsPageState extends State<SettingsPage> {
 
   AppBar buildAppBar() {
     return AppBar(
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back_ios_new_sharp),
+        onPressed: () {
+          context.read<HomeViewModel>().animateToPage = 0;
+
+          Navigator.pop(context);
+        },
+      ),
+      centerTitle: true,
       elevation: 0,
       title: Text(
         LocaleKeys.SettingsPage_appBarTitle.locale,
@@ -41,6 +51,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   ListView buildListView(BuildContext context) {
     return ListView(
+      physics: const BouncingScrollPhysics(),
       children: [
         buildUserSettingsCard(context),
         buildDarkModeCard(context),
@@ -57,7 +68,7 @@ class _SettingsPageState extends State<SettingsPage> {
         size: context.lowValue * 3,
       ),
       text: context.watch<UserCubit>().user == null
-          ? "User Settings"
+          ? LocaleKeys.SettingsPage_userSettings.locale
           : context.read<UserCubit>().user?.email ?? "",
       suffix: Icon(
         Icons.arrow_forward_ios,
@@ -78,7 +89,7 @@ class _SettingsPageState extends State<SettingsPage> {
         height: context.lowValue * 3,
         child: CupertinoSwitch(
             value: context.watch<ThemeProvider>().isdark,
-            activeColor: Colors.red,
+            activeColor: context.theme.toggleableActiveColor,
             onChanged: (onChanged) =>
                 context.read<ThemeProvider>().changeTheme()),
       ),
@@ -111,7 +122,7 @@ class _SettingsPageState extends State<SettingsPage> {
         Icons.language,
         size: context.lowValue * 3,
       ),
-      text: "Yardım",
+      text: LocaleKeys.SettingsPage_help.locale,
       suffix: Icon(
         Icons.arrow_forward_ios,
         size: context.lowValue * 3,

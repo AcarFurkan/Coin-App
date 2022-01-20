@@ -1,3 +1,5 @@
+import 'package:coin_with_architecture/core/extension/string_extension.dart';
+import 'package:coin_with_architecture/product/language/locale_keys.g.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
@@ -39,7 +41,7 @@ class _AudioPageState extends State<AudioPage> {
               },
               icon: const Icon(Icons.music_off))
         ],
-        title: Text("Alarmını seç"),
+        title: Text(LocaleKeys.alarmPage_appBarTitle.locale),
         leading: IconButton(
             onPressed: () => Navigator.pop(
                 context, context.read<AudioCubit>().audioPaths[selectedIndex]),
@@ -75,7 +77,7 @@ class _AudioPageState extends State<AudioPage> {
       onChanged: (onChanged) async {
         selectedIndex = index;
         context.read<AudioCubit>().changeGroupValue(onChanged!);
-        await context.read<AudioCubit>().playAudio(index, player);
+        await context.read<AudioCubit>().playAudio(index, player, context);
       },
     );
   }

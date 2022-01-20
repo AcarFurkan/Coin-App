@@ -29,7 +29,7 @@ class GechoService implements BaseRepository<Gecho> {
   @override
   Future<IResponseModel<List<Gecho>>> getAllCoins() async {
     return await coreDio!.fetchData<List<Gecho>, Gecho>(
-        "coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=false",
+        "coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false",
         types: HttpTypes.GET,
         parseModel: Gecho());
   }
@@ -47,7 +47,7 @@ class GechoService implements BaseRepository<Gecho> {
       }
     }
     return await coreDio!.fetchData<List<Gecho>, Gecho>(
-        "coins/markets?vs_currency=$currency$idUrl&order=market_cap_desc&per_page=250&page=1&sparkline=false",
+        "coins/markets?vs_currency=$currency$idUrl&order=market_cap_desc&per_page=100&page=1&sparkline=false",
         types: HttpTypes.GET,
         parseModel: Gecho());
   }

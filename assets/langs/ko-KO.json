@@ -12,27 +12,125 @@
         "arabic":"아라비아 말"
     },
     "coinListPage":{
-        "appBarTitle":"동전 목록"
+        "appBarTitle":"동전"
     },
     "SettingsPage":{
-        "appBarTitle":"설정",
+        "appBarTitle":"Settings",
+        "userSettings":"User Settings",
+        "appTheme":"Dark mode",
+        "changeLanguage":"Change Language",
+        "help":"Help"
+    },
+    "userSettings":{
+        "hey":"야",
+        "registeredMail":"등기 우편",
+        "backUpAlertDialog":"백업 유형을 선택하십시오",
+        "backUpType":{
+            "never":"절대",
+            "tapped":"탭핑",
+            "daily":"일일",
+            "weekly":"주간",
+            "monthly":"월간 간행물"
+        },
+        "backUpButton":"백업",
+        "signOutButton":"로그 아웃하십시오",
+        "appTheme":"어두운 모드",
         "changeLanguage":"언어 변경",
-        "appTheme":"어두운 모드"  
-    },"home":{"tab1":"집",
+        "help":"돕다"
+    },
+    "home":{"tab1":"집",
         "tab2":"동전",
         "tab3":"동전 세부 사항",
         "tab4":"설정"}
         ,
+        "loginRegisterPage":{
+            "tab1":"로그인",
+            "tab2":"등록하다",
+            "email":"이메일",
+            "password":"비밀번호",
+            "name":"이름",
+            "emailError":"잘못된 이메일",
+            "passwordError":"암호는 6자를 초과해야합니다",
+            "nameError":"이름은 3자를 초과해야합니다",
+            "login":"로그인",
+            "Register":"등록하다",
+            "forgotPassword":"비밀번호를 잊으 셨나요"
+        },
+        "alarmPage":{
+            "appBarTitle":"알람을 선택하십시오"
+        },
+        "foundAlertDiolog":{
+            "title":"어머나",
+            "content":"저장된 데이터가 발견되었습니다.전화로 업로드 하시겠습니까?",
+            "yes":"네",
+            "no":"아니"
+        },
+        "exitAlertDiolog":{
+            "title":"확실합니까?",
+            "content":"나가고 싶니?",
+            "yes":"네",
+            "no":"아니"
+        },
+        "alarmAlertDialog":{
+            "min":" 세트 가격 이하로 떨어졌습니다.",
+            "max":" 그 세트 가격을 초과했습니다.",
+            "stop":"중지"
+        },
+        "landingPage":{
+            "loginRegisterButton":"로그인 / 등록r",
+            "passButton":"통과하다" 
+    
+        },
+        
+        "alarmNames":{
+            "sweetAlarm":"달콤한 알람",
+            "warSiren":"전쟁 사이렌",
+            "carAlarm":"자동차 알람",
+            "carAlarmTwo":"자동차 알람 버전 2.",
+            "carAlarmThree":"자동차 알람 버전 3.",
+            "policeSiren":"경찰 사이렌",
+            "annoyingAlarm":"성가신 알람",
+            "annoyingAlarmTwo":"성가신 알람 TW.o",
+            "annoyingAlarmThree":"성가신 알람 3."  ,
+            "annoyingAlarmFour":"짜증나는 알람 4."   
+        },
+        "exceptionMessages":{
+            "emailAlreadyExist":"이 전자 메일 주소는 이미 사용 중이며 다른 전자 메일 주소를 사용하십시오.🤪.",
+            "userNotFound": "이 사용자는 시스템에 존재하지 않습니다.먼저 로그인하시기 바랍니다.🤪.",
+            "tooManyRequest":"너무 많은 요청 🤪",
+            "wrongPassword":"이메일 또는 비밀번호가 잘못되었습니다"
+        },
+        
         "CoinDetailPage":{
-            "addToFavoriteClose":"즐겨 찾기에 추가",
-            "addedToFavoriteOpen":"즐겨 찾기에 추가되었습니다",
+            "lowOf24Hour":"24 시간의 낮음",
+            "highLowOf24Hour":"24 시간 이상",
+            "addToFavoriteClose":"즐겨 찾기에 추가하십시오s",
             "setAlarmClose":"알람을 설정하다",
             "setAlarmOpen":"알람 설정",
-            "minSwitchTileClose":"최소 가격으로 알람을 설정하십시오",
-            "minSwitchTileOpen": "동전의 인스턴트 가격이 입력 된 가격 이하로 떨어지면 알람이 울립니다.",
+            "minSwitchTileClose":"최소 가격으로 알람을 설정하십시오e",
+            "minSwitchTileOpen": "통화의 인스턴트 가격이 입력 된 가격 이하로 떨어지면 알람이 울립니다.",
             "maxSwitchTileClose":"최대 가격으로 알람을 설정하십시오",
-            "maxSwitchTileOpen":"동전의 인스턴트 가격이 입력 된 가격 이하로 떨어지면 알람이 울립니다.",
+            "maxSwitchTileOpen":  "통화의 인스턴트 가격이 입력 된 가격을 초과하면 알람이 울립니다.",
+            "loopSwitchTileOpen":"루프를 엽니 다",
+            "loopSwitchTileClose":"루프 닫기",
             "minTextFormField":"나",
             "maxTextFormField":"최대",
-            "buttonText":"알람을 설정하다"}
+            "alarmVoice":"알람 음성",
+            "buttonText":"알람을 설정하다",
+            "alarmSetScaffoldMessage":"알람이 설정되었습니다 😜",
+            "addedFavorites":"즐겨 찾기에 추가되었습니다 😜",
+            "deletedFromFavorites":"즐겨 찾기에서 삭제되었습니다 😜",
+            "backUpSuccess":"백업 성공 😜"
+
+            },
+    
+            "selectedPage":{
+                "appBarTitle":"즐겨 찾기"
+            },
+            "currencyPage":{
+                "appBarTitle":"통화"
+            },
+            "sharePage":{
+                "appBarTitle":"주식"
+            }
 }

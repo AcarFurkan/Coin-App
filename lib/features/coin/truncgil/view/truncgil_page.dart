@@ -1,3 +1,4 @@
+import 'package:coin_with_architecture/core/constant/app/app_constant.dart';
 import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
 
 import '../../../../core/extension/context_extension.dart';
@@ -27,6 +28,7 @@ class TruncgilPage extends StatelessWidget {
 
   AppBar _appBar(BuildContext context) {
     return AppBar(
+      centerTitle: true,
       leading: IconButton(
           onPressed: () {
             Navigator.pushNamed(context, "/settingsGeneral");
@@ -36,7 +38,7 @@ class TruncgilPage extends StatelessWidget {
       actions: [
         buildAppBarActions(context),
       ],
-      title: const LocaleText(text: LocaleKeys.coinListPage_appBarTitle),
+      title: const LocaleText(text: LocaleKeys.currencyPage_appBarTitle),
     );
   }
 
@@ -66,7 +68,7 @@ class TruncgilPage extends StatelessWidget {
         } else if (state is TruncgilCompleted) {
           return completedStateBody(state, context);
         } else {
-          return Text("Coin");
+          return Center(child: Image.asset(AppConstant.instance.IMAGE_404));
         }
       },
       listener: (context, state) {

@@ -34,6 +34,7 @@ class LanguagePage extends StatelessWidget {
 
   AppBar buildAppBar(BuildContext context) {
     return AppBar(
+      centerTitle: true,
       elevation: 0,
       title: Text(
         LocaleKeys.changeLanguagePage_appBarTitle.locale,

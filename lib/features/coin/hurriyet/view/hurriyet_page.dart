@@ -1,3 +1,5 @@
+import 'package:coin_with_architecture/core/constant/app/app_constant.dart';
+import 'package:coin_with_architecture/product/language/locale_keys.g.dart';
 import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
 
 import '../../../../core/extension/context_extension.dart';
@@ -8,7 +10,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/src/provider.dart';
 
 import '../../../../core/widget/text/locale_text.dart';
-import '../../../../product/language/locale_keys.g.dart';
 import '../../../../product/widget/component/coin_current_info_card.dart';
 import '../viewmodel/cubit/hurriyet_cubit.dart';
 import '../viewmodel/page_viewmodel/cubit/hurriyet_page_general_state_dart_cubit.dart';
@@ -29,6 +30,7 @@ class HurriyetPage extends StatelessWidget {
 
   AppBar _appBar(BuildContext context) {
     return AppBar(
+      centerTitle: true,
       leading: IconButton(
           onPressed: () {
             Navigator.pushNamed(context, "/settingsGeneral");
@@ -38,7 +40,7 @@ class HurriyetPage extends StatelessWidget {
       actions: [
         buildAppBarActions(context),
       ],
-      title: const LocaleText(text: LocaleKeys.coinListPage_appBarTitle),
+      title: const LocaleText(text: LocaleKeys.sharePage_appBarTitle),
     );
   }
 
@@ -69,7 +71,7 @@ class HurriyetPage extends StatelessWidget {
         } else if (state is HurriyetCompleted) {
           return completedStateBody(state, context);
         } else {
-          return Text("404");
+          return Center(child: Image.asset(AppConstant.instance.IMAGE_404));
         }
       },
       listener: (context, state) {

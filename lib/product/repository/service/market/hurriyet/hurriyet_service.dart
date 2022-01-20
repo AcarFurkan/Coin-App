@@ -96,7 +96,6 @@ class HurriyetService {
           } else {}
         } catch (e) {}
       }
-      print(stockList.length);
 
       return ResponseModel<List<Hurriyet>>(
           data: stockList, error: responseList.error);

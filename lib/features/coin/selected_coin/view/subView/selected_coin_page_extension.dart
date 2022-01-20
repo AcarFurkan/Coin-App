@@ -7,6 +7,8 @@ extension SelectedCoinBlocConsumerView on SelectedCoinPage {
         if (state is CoinError) {
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text(state.message)));
+        } else if (state is CoinAlarm) {
+          showAlertDialog(state.itemFromDataBase, state.message, context);
         }
       },
       builder: (context, state) {
@@ -22,7 +24,7 @@ extension SelectedCoinBlocConsumerView on SelectedCoinPage {
         } else if (state is UpdateSelectedCoinPage) {
           return _updateCoinSelectedPageExtensionStateView(context, state);
         } else {
-          return const Text("Coin");
+          return Center(child: Image.asset(AppConstant.instance.IMAGE_404));
         }
       },
     );
@@ -40,5 +42,25 @@ extension SelectedCoinBlocConsumerView on SelectedCoinPage {
       }
     }
     return searchresult;
+  }
+
+  showAlertDialog(
+      MainCurrencyModel coin, String message, BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return CupertinoAlertDialog(
+            title: Text(coin.name.toUpperCase() + message),
+            actions: [
+              CupertinoDialogAction(
+                child: const Text("Stop"),
+                onPressed: () async {
+                  context.read<CoinCubit>().stopMusic();
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        });
   }
 }

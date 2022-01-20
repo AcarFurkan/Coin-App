@@ -14,6 +14,7 @@ abstract class ThemeManager {
   static ThemeData craeteTheme(ITheme theme) {
     if (theme is AppThemeDark) {
       return ThemeData.dark().copyWith(
+        toggleableActiveColor: theme.colors.colors.purplish,
         splashColor: theme.colors.colors.splashBlack,
         textTheme: theme.textTheme.data,
         colorScheme: theme.colors.colorScheme,
@@ -36,31 +37,30 @@ abstract class ThemeManager {
         indicatorColor: theme.colors.colors.green,
         canvasColor: theme.colors.colors.purplish,
         inputDecorationTheme: InputDecorationTheme(
-          contentPadding: EdgeInsets.symmetric(
-            vertical: 22,
-            horizontal: 26,
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(25.0),
-            borderSide: BorderSide(
-              color: theme.colors.colorScheme!.onError,
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(25.0),
+              borderSide: BorderSide(
+                color: theme.colors.colorScheme!.onError,
+              ),
             ),
-          ),
-          labelStyle: TextStyle(color: theme.colors.colorScheme?.onBackground),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(25.0),
-            borderSide: BorderSide(
-              color: theme.colors.colorScheme!.onError,
+            labelStyle:
+                TextStyle(color: theme.colors.colorScheme?.onBackground),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(25.0),
+              borderSide: BorderSide(
+                color: theme.colors.colorScheme!.onError,
+              ),
             ),
-          ),
-          iconColor: theme.colors.colorScheme?.onError,
+            iconColor: theme.colors.colorScheme?.onError,
+            fillColor: theme.colors.colors.white
 
-          /*labelStyle: TextStyle(
+            /*labelStyle: TextStyle(
           fontSize: 15,
           decorationColor: Colors.red,
         ),*/
-        ),
-        cardTheme: CardTheme(elevation: 10),
+            ),
+        cardTheme: const CardTheme(elevation: 10),
+
         outlinedButtonTheme: OutlinedButtonThemeData(
             style: ButtonStyle(
                 textStyle: MaterialStateProperty.all<TextStyle>(
@@ -75,11 +75,12 @@ abstract class ThemeManager {
       );
     } else {
       return ThemeData.light().copyWith(
+        toggleableActiveColor: theme.colors.colors.purplish,
         splashColor: theme.colors.colors.splashBlack,
         floatingActionButtonTheme: FloatingActionButtonThemeData(
             backgroundColor: theme.colors.colors.purplish,
             foregroundColor: theme.colors.colors.white),
-        cardTheme: CardTheme(elevation: 3),
+        cardTheme: const CardTheme(elevation: 3),
         indicatorColor: theme.colors.colors.green,
         accentColor: theme.colors.colors.yellow,
         appBarTheme: AppBarTheme(backgroundColor: theme.colors.appBarColor),
@@ -92,39 +93,36 @@ abstract class ThemeManager {
             backgroundColor: theme.colors.colors.darkerGrey,
             selectedItemColor: theme.colors.colors.white,
             unselectedItemColor: theme.colors.colors.mediumdGreyBold,
-            selectedIconTheme: IconThemeData(color: Colors.white)),
+            selectedIconTheme: IconThemeData(color: theme.colors.colors.white)),
         tabBarTheme: TabBarTheme(
           indicator: const BoxDecoration(),
           labelColor: theme.colors.tabbarSelectedColor,
           unselectedLabelColor: theme.colors.tabbarNormalColor,
         ),
         inputDecorationTheme: InputDecorationTheme(
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(25.0),
-            borderSide: BorderSide(
-              color: theme.colors.colorScheme!.primary,
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(25.0),
+              borderSide: BorderSide(
+                color: theme.colors.colorScheme!.primary,
+              ),
             ),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(25.0),
-            borderSide: BorderSide(
-              color: theme.colors.colorScheme!.primary,
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(25.0),
+              borderSide: BorderSide(
+                color: theme.colors.colorScheme!.primary,
+              ),
             ),
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(25.0),
-            borderSide: BorderSide(color: Colors.black),
-          ),
-          contentPadding: EdgeInsets.symmetric(
-            vertical: 22,
-            horizontal: 26,
-          ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(25.0),
+              borderSide: BorderSide(color: Colors.black),
+            ),
+            fillColor: theme.colors.colors.white
 
-          /*labelStyle: TextStyle(
+            /*labelStyle: TextStyle(
           fontSize: 15,
           decorationColor: Colors.red,
         ),*/
-        ),
+            ),
         outlinedButtonTheme: OutlinedButtonThemeData(
             style: ButtonStyle(
                 textStyle: MaterialStateProperty.all<TextStyle>(

@@ -88,3 +88,7 @@ MaterialPageRoute({--maintainstate e bak dene
        super(settings: settings, fullscreenDialog: fullscreenDialog) {
     assert(opaque);
   }
+
+  --- curved barın siyah ekranını düzelt
+  --yıldız orrange
+  -- switch pruple

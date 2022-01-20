@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:provider/src/provider.dart';
@@ -28,7 +27,7 @@ part 'coin_state.dart';
 enum levelControl { INCREASING, DESCREASING, CONSTANT }
 
 class CoinCubit extends Cubit<CoinState> {
-  CoinCubit({required this.context}) : super(CoinInitial()) {}
+  CoinCubit({required this.context}) : super(CoinInitial());
   BuildContext context;
   final CoinCacheManager _cacheManager = locator<CoinCacheManager>();
   List<String>? _itemsToBeDelete;
@@ -55,12 +54,15 @@ class CoinCubit extends Cubit<CoinState> {
 
     List<MainCurrencyModel>? coinListFromDataBase =
         _fetchAllAddedCoinsFromDatabase();
+
     MyUser? myUser = context.read<UserCubit>().user;
 
     if (coinListFromDataBase == null) {
       return [];
     }
+
     await backUpCheck(myUser, coinListFromDataBase); // YOU CAN DELETE THESE
+
     if (currencyServiceResponse.error != null) {
       emit(CoinError("general error"));
     } else if (currencyServiceResponse.data != null) {
@@ -94,8 +96,9 @@ class CoinCubit extends Cubit<CoinState> {
           itemFromDataBase.isMinLoop!);
       itemFromDataBase.isMinAlarmActive = false;
       addToDb(itemFromDataBase);
-
-      showAlertDialog(itemFromDataBase, " fiyat minimum fiyatın altına indi.");
+      emit(CoinAlarm(
+          itemFromDataBase: itemFromDataBase,
+          message: " fiyat minimum fiyatın altına indi."));
     }
     if (lastPrice > itemFromDataBase.max &&
         itemFromDataBase.isMaxAlarmActive &&
@@ -106,16 +109,14 @@ class CoinCubit extends Cubit<CoinState> {
           itemFromDataBase.isMaxLoop!);
       itemFromDataBase.isMaxAlarmActive = false;
       addToDb(itemFromDataBase);
-      showAlertDialog(itemFromDataBase, " fiyat maximum fiyatın üzerine çıktı");
-
-      //playMusic();
+      emit(CoinAlarm(
+          itemFromDataBase: itemFromDataBase,
+          message: " fiyat maximum fiyatın üzerine çıkt."));
     }
   }
 
   void arrangeCurrencyByInComingValue(
-    MainCurrencyModel itemFromDataBase,
-    MainCurrencyModel currentSeviceItem,
-  ) {
+      MainCurrencyModel itemFromDataBase, MainCurrencyModel currentSeviceItem) {
     itemFromDataBase.changeOf24H = currentSeviceItem.changeOf24H ?? "0";
 
     itemFromDataBase.lastUpdate = currentSeviceItem.lastUpdate;
@@ -131,9 +132,6 @@ class CoinCubit extends Cubit<CoinState> {
     if (context.read<UserCubit>().user != null &&
         context.read<UserCubit>().user?.isBackUpActive == true) {
       if (context.read<UserCubit>().user!.updatedAt != null) {
-        print(context.read<UserCubit>().user!.updatedAt!);
-        print(DateTime.now());
-
         int day = ((DateTime.now().millisecondsSinceEpoch) -
                 context
                     .read<UserCubit>()
@@ -141,10 +139,7 @@ class CoinCubit extends Cubit<CoinState> {
                     .updatedAt!
                     .millisecondsSinceEpoch) ~/
             (1000 * 60 * 60 * 24);
-        print(day);
         if (myUser!.backUpType == BackUpTypes.daily.name) {
-          print(context.read<UserCubit>().user!.backUpType!);
-
           if (day >= 1) {
             await _userServiceController.updateUserCurrenciesInformation(
                 context.read<UserCubit>().user!,
@@ -152,7 +147,6 @@ class CoinCubit extends Cubit<CoinState> {
             await context.read<UserCubit>().getCurrentUser();
           }
         } else if (myUser.backUpType == BackUpTypes.weekly.name) {
-          print(context.read<UserCubit>().user!.backUpType!);
           if (day >= 7) {
             await _userServiceController.updateUserCurrenciesInformation(
                 context.read<UserCubit>().user!,
@@ -160,8 +154,6 @@ class CoinCubit extends Cubit<CoinState> {
             await context.read<UserCubit>().getCurrentUser();
           }
         } else if (myUser.backUpType == BackUpTypes.monthly.name) {
-          print(context.read<UserCubit>().user!.backUpType!);
-
           if (day >= 30) {
             await _userServiceController.updateUserCurrenciesInformation(
                 context.read<UserCubit>().user!,
@@ -173,31 +165,9 @@ class CoinCubit extends Cubit<CoinState> {
     } else if (context.read<UserCubit>().user !=
             null && // YOU CAN DELETE THESE"1
         context.read<UserCubit>().user?.isBackUpActive == false) {
-      print("back up active değil");
-
       // YOU CAN DELETE THESE
-    } else if (context.read<UserCubit>().user == null) {
-      print("user null");
-    } // YOU CAN DELETE THESE
-  }
-
-  showAlertDialog(MainCurrencyModel coin, String message) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return CupertinoAlertDialog(
-            title: Text(coin.name + message),
-            actions: [
-              CupertinoDialogAction(
-                child: const Text("Stop"),
-                onPressed: () async {
-                  stopMusic();
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          );
-        });
+    } else if (context.read<UserCubit>().user ==
+        null) {} // YOU CAN DELETE THESE
   }
 
   saveDeleteFromFavorites(MainCurrencyModel coin) {
@@ -376,16 +346,8 @@ class CoinCubit extends Cubit<CoinState> {
         player!.play();
       }
     } on PlayerException catch (e) {
-      print("Error code: ${e.code}");
-
-      print("Error message: ${e.message}");
     } on PlayerInterruptedException catch (e) {
-      print("Connection aborted: ${e.message}");
-    } catch (e) {
-      print("--------------------------");
-
-      print(e);
-    }
+    } catch (e) {}
   }
 
   Future<void> demo() async {

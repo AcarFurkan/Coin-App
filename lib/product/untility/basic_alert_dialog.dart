@@ -1,3 +1,6 @@
+import 'package:coin_with_architecture/core/extension/context_extension.dart';
+import 'package:coin_with_architecture/core/extension/string_extension.dart';
+import 'package:coin_with_architecture/product/language/locale_keys.g.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -19,13 +22,15 @@ Future<dynamic> showBasicAlertDialog(BuildContext context,
 TextButton secondTextButton(BuildContext context) {
   return TextButton(
     onPressed: () => Navigator.of(context).pop(true),
-    child: Text('Yes', style: Theme.of(context).textTheme.bodyText1),
+    child: Text(LocaleKeys.exitAlertDiolog_yes.locale,
+        style: context.textTheme.bodyText1),
   );
 }
 
 TextButton firstTextButton(BuildContext context) {
   return TextButton(
     onPressed: () => Navigator.of(context).pop(false),
-    child: Text('No', style: Theme.of(context).textTheme.bodyText1),
+    child: Text(LocaleKeys.exitAlertDiolog_no.locale,
+        style: context.textTheme.bodyText1),
   );
 }

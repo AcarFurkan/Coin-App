@@ -30,7 +30,8 @@ extension LoginRegisterViewExtension on UserSettings {
             ? context.height * 0
             : context.height * 0.3,
         color: Colors.white,
-        child: Center(child: SvgPicture.asset("assets/svg/login2.svg")));
+        child: Center(
+            child: SvgPicture.asset(AppConstant.instance.LOGIN_IMAGE_PATH)));
   }
 
   Container buildContainerTabBar(BuildContext context) {
@@ -65,8 +66,8 @@ extension LoginRegisterViewExtension on UserSettings {
         onTap: (index) => context.read<UserCubit>().changeIsLoginPage(index),
         indicatorSize: TabBarIndicatorSize.label,
         tabs: [
-          Tab(text: '   Login   '),
-          Tab(text: "   Register   "),
+          Tab(text: '   ${LocaleKeys.loginRegisterPage_tab1.locale}   '),
+          Tab(text: "   ${LocaleKeys.loginRegisterPage_tab2.locale}   "),
         ]);
   }
 
@@ -143,11 +144,15 @@ extension LoginRegisterViewExtension on UserSettings {
 
   Widget buildTextForgot() => Align(
       alignment: Alignment.centerRight,
-      child: Text("forgot password", textAlign: TextAlign.end));
+      child: Text(LocaleKeys.loginRegisterPage_forgotPassword.locale,
+          textAlign: TextAlign.end));
   Text buildLoginButtonText(BuildContext context) {
-    return Text(context.read<UserCubit>().isLoginPage ? "Login" : "Register",
+    return Text(
+        context.read<UserCubit>().isLoginPage
+            ? LocaleKeys.loginRegisterPage_login.locale
+            : LocaleKeys.loginRegisterPage_Register.locale,
         style: context.textTheme.headline5!.copyWith(
-            color: context.colors.primary, fontWeight: FontWeight.w600));
+            color: context.colors.primary, fontWeight: FontWeight.w500));
   }
 
   ClipRRect buildGoogleIcon(BuildContext context) {

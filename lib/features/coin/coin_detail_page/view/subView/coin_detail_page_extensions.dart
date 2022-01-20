@@ -2,7 +2,13 @@ part of '../coin_detail_page.dart';
 
 extension CoinDetailBlocConsumerView on _CoinDetailPageState {
   Widget get alarmDetails => Column(
-        children: [buildAlarmDetailSwitchTile, buildSetAlarmButton],
+        children: [
+          buildAlarmDetailSwitchTile,
+          SizedBox(
+            height: context.lowValue * 2,
+          ),
+          buildSetAlarmButton
+        ],
       );
 
   Widget get buildAlarmDetailSwitchTile =>
@@ -10,9 +16,11 @@ extension CoinDetailBlocConsumerView on _CoinDetailPageState {
           ? Row(
               children: [
                 Expanded(
+                  flex: 1,
                   child: alarmMinDetail,
                 ),
                 Expanded(
+                  flex: 1,
                   child: alarmMaxDetail,
                 ),
               ],
@@ -41,7 +49,7 @@ extension CoinDetailBlocConsumerView on _CoinDetailPageState {
                 minLoopSwitchTile,
                 inputRow(LocaleKeys.CoinDetailPage_minTextFormField.locale,
                     context.read<CoinDetailCubit>().minTextEditingController),
-                Text("Alarm Voice"),
+                Text(LocaleKeys.CoinDetailPage_alarmVoice.locale),
                 buildMinAlarmCard,
               ],
             );
@@ -49,10 +57,11 @@ extension CoinDetailBlocConsumerView on _CoinDetailPageState {
   SwitchListTile get minLoopSwitchTile => SwitchListTile(
       title: context.watch<CoinDetailCubit>().isMinLoop == false
           ? Text(
-              "LOOP INACTIVE",
+              LocaleKeys.CoinDetailPage_loopSwitchTileClose.locale,
               style: context.textTheme.overline,
             )
-          : Text("LOOP ACTIVE", style: context.textTheme.overline),
+          : Text(LocaleKeys.CoinDetailPage_loopSwitchTileOpen.locale,
+              style: context.textTheme.overline),
       value: context.watch<CoinDetailCubit>().isMinLoop,
       onChanged: (value) => context.read<CoinDetailCubit>().changeIsMinLoop());
 
@@ -60,18 +69,27 @@ extension CoinDetailBlocConsumerView on _CoinDetailPageState {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Text((context.watch<CoinDetailCubit>().minSelectedAudio != null
-                ? context.read<CoinDetailCubit>().minSelectedAudio!.name
-                : "Alarm 1")),
-            IconButton(
-                onPressed: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const AudioPage()))
-                        .then((value) {
-                      context.read<CoinDetailCubit>().minSelectedAudio = value;
-                    }),
-                icon: const Icon(Icons.settings))
+            Expanded(
+              flex: 8,
+              child: AutoSizeText(
+                  (context.watch<CoinDetailCubit>().minSelectedAudio != null
+                      ? context.read<CoinDetailCubit>().minSelectedAudio!.name
+                      : "Alarm "),
+                  textAlign: TextAlign.center),
+            ),
+            Expanded(
+              flex: 3,
+              child: IconButton(
+                  onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const AudioPage()))
+                          .then((value) {
+                        context.read<CoinDetailCubit>().minSelectedAudio =
+                            value;
+                      }),
+                  icon: const Icon(Icons.settings)),
+            )
           ],
         ),
       );
@@ -98,17 +116,18 @@ extension CoinDetailBlocConsumerView on _CoinDetailPageState {
                 maxLoopSwitchTile,
                 inputRow(LocaleKeys.CoinDetailPage_maxTextFormField.locale,
                     context.read<CoinDetailCubit>().maxTextEditingController),
-                Text("Alarm Voice"),
+                Text(LocaleKeys.CoinDetailPage_alarmVoice.locale),
                 buildMaxAlarmCard,
               ],
             );
   SwitchListTile get maxLoopSwitchTile => SwitchListTile(
       title: context.watch<CoinDetailCubit>().isMaxLoop == false
           ? Text(
-              "LOOP INACTIVE",
+              LocaleKeys.CoinDetailPage_loopSwitchTileClose.locale,
               style: context.textTheme.overline,
             )
-          : Text("LOOP ACTIVE", style: context.textTheme.overline),
+          : Text(LocaleKeys.CoinDetailPage_loopSwitchTileOpen.locale,
+              style: context.textTheme.overline),
       value: context.watch<CoinDetailCubit>().isMaxLoop,
       onChanged: (value) => context.read<CoinDetailCubit>().changeIsMaxLoop());
 
@@ -116,27 +135,38 @@ extension CoinDetailBlocConsumerView on _CoinDetailPageState {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Text((context.watch<CoinDetailCubit>().maxSelectedAudio != null
-                ? context.read<CoinDetailCubit>().maxSelectedAudio.name
-                : "Alarm 1")),
-            IconButton(
-                onPressed: () => Navigator.push(
-                        /**
-                TODO: MAKE İT WİTH PUSH NAMED */
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const AudioPage())).then(
-                        (value) {
-                      context.read<CoinDetailCubit>().maxSelectedAudio = value;
-                    }),
-                icon: const Icon(Icons.settings))
+            Expanded(
+              flex: 8,
+              child: AutoSizeText(
+                (context.watch<CoinDetailCubit>().maxSelectedAudio != null
+                    ? context.read<CoinDetailCubit>().maxSelectedAudio.name
+                    : "Alarm 1"),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            Expanded(
+              flex: 3,
+              child: IconButton(
+                  onPressed: () => Navigator.push(
+                          /**
+                  TODO: MAKE İT WİTH PUSH NAMED */
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const AudioPage())).then(
+                          (value) {
+                        context.read<CoinDetailCubit>().maxSelectedAudio =
+                            value;
+                      }),
+                  icon: const Icon(Icons.settings)),
+            )
           ],
         ),
       );
 
   Widget get buildSetAlarmButton =>
-      (context.watch<CoinDetailCubit>().isMinAlarmActive == true ||
-              context.watch<CoinDetailCubit>().isMaxAlarmActive == true)
+      ((context.watch<CoinDetailCubit>().isMinAlarmActive == true ||
+                  context.watch<CoinDetailCubit>().isMaxAlarmActive == true) &&
+              context.watch<CoinDetailCubit>().isAlarm == true)
           ? OutlinedButton(
               onPressed: setAlarmOnpressed,
               child: Text(
@@ -166,18 +196,20 @@ extension CoinDetailBlocConsumerView on _CoinDetailPageState {
             : 0;
     context.read<CoinDetailCubit>().saveDeleteForAlarm(widget.coin);
 
-    showSnackBar("Alarm Kuruldu :)))))");
+    showSnackBar(LocaleKeys.CoinDetailPage_alarmSetScaffoldMessage.locale);
   }
 
   Padding inputRow(String buttonText, TextEditingController controller) {
     return Padding(
       padding: context.paddingLow,
-      child: TextFormField(
-        controller: controller,
-        keyboardType: TextInputType.number,
-        decoration: InputDecoration(
-          border: const OutlineInputBorder(),
-          label: Text(buttonText),
+      child: SizedBox(
+        child: TextFormField(
+          controller: controller,
+          keyboardType: TextInputType.number,
+          textAlign: TextAlign.center,
+          decoration: InputDecoration(
+              label: Text(buttonText),
+              contentPadding: context.paddingLowHorizontal * 2),
         ),
       ),
     );

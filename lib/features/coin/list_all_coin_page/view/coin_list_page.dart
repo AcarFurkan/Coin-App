@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:coin_with_architecture/core/constant/app/app_constant.dart';
 import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
 import '../../../../core/extension/context_extension.dart';
 import '../../../../product/widget/component/text_form_field_with_animation.dart';
@@ -37,15 +38,15 @@ class CoinListPage extends StatelessWidget {
 
   AppBar _appBar(BuildContext context) {
     return AppBar(
+      centerTitle: true,
       leading: IconButton(
           onPressed: () {
             Navigator.pushNamed(context, "/settingsGeneral");
           },
           icon: const Icon(Icons.settings)),
       titleSpacing: 0,
-      actions: [
-        buildAppBarActions(context),
-      ],
+      actions: buildAppBarActions(context),
+
       //pinned: true,
       //floating: true,
       bottom: buildTabBar(context),
@@ -53,16 +54,22 @@ class CoinListPage extends StatelessWidget {
     );
   }
 
-  IconButton buildAppBarActions(BuildContext context) {
-    return IconButton(
-        onPressed: () {
-          context.read<ListPageGeneralCubit>().changeIsSearch();
+  List<Widget> buildAppBarActions(BuildContext context) {
+    return [
+      //IconButton(onPressed: () {}, icon: const Icon(Icons.add)),
+      IconButton(
+          onPressed: () {
+            context.read<ListPageGeneralCubit>().changeIsSearch();
 
-          if (context.read<ListPageGeneralCubit>().isSearhOpen == false) {
-            context.read<ListPageGeneralCubit>().textEditingController?.clear();
-          }
-        },
-        icon: const Icon(Icons.search));
+            if (context.read<ListPageGeneralCubit>().isSearhOpen == false) {
+              context
+                  .read<ListPageGeneralCubit>()
+                  .textEditingController
+                  ?.clear();
+            }
+          },
+          icon: const Icon(Icons.search))
+    ];
   }
 
   TabBar buildTabBar(BuildContext context) {
@@ -127,8 +134,7 @@ class CoinListPage extends StatelessWidget {
         } else if (state is CoinListCompleted) {
           return completedStateBody(state, currencyName, context);
         } else {
-          return const Text("404"); /*
-          TODO: BAŞKA BİR ŞEKİL DÜŞÜN */
+          return Center(child: Image.asset(AppConstant.instance.IMAGE_404));
         }
       },
       listener: (context, state) {

@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
+import 'package:coin_with_architecture/product/widget/chart/chart_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persian_tools/persian_tools.dart';
@@ -8,7 +9,7 @@ import '../../../../core/extension/context_extension.dart';
 import '../../../../core/extension/string_extension.dart';
 import '../../../../product/language/locale_keys.g.dart';
 import '../../../settings/subpage/audio_settings/model/audio_model.dart';
-import '../../../settings/subpage/audio_settings/view/audio2.dart';
+import '../../../settings/subpage/audio_settings/view/audio_page.dart';
 import '../viewmodel/cubit/cubit/coin_detail_cubit.dart';
 
 part './subView/coin_detail_page_extensions.dart';
@@ -56,20 +57,14 @@ class _CoinDetailPageState extends State<CoinDetailPage> {
 
   AppBar buildAppBar(BuildContext context) {
     return AppBar(
+      centerTitle: true,
       title: Text(widget.coin.name.toUpperCase()),
       actions: [
-        favoriteButton(
-            context,
-            Icon(
-              Icons.favorite,
-              color: context.colors.error,
-            ),
-            Icon(Icons.favorite_border, color: context.colors.error)),
         favoriteButton(
           context,
           Icon(
             Icons.star_rounded,
-            color: context.theme.accentColor,
+            color: Colors.orange,
           ),
           Icon(
             Icons.star_border_rounded,
@@ -86,8 +81,9 @@ class _CoinDetailPageState extends State<CoinDetailPage> {
         onPressed: () {
           context.read<CoinDetailCubit>().coinFavoriteActionUI(widget.coin);
           context.read<CoinDetailCubit>().isFavorite == true
-              ? showSnackBar("Favorilere eklendi :)))))")
-              : showSnackBar("Favorilerden kaldırıldı :)))))");
+              ? showSnackBar(LocaleKeys.CoinDetailPage_addedFavorites.locale)
+              : showSnackBar(
+                  LocaleKeys.CoinDetailPage_deletedFromFavorites.locale);
         },
         icon: context.watch<CoinDetailCubit>().isFavorite == true
             ? firstWidget
@@ -96,18 +92,26 @@ class _CoinDetailPageState extends State<CoinDetailPage> {
 
   Center buildScaffoldBody(BuildContext context) {
     return Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: ListView(
+        padding: context.paddingLow,
+        physics: const BouncingScrollPhysics(),
         children: [
           // LineChartSample2(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              currencyPriceCardItem(
-                  context, "High of 24 hour: ", widget.coin.highOf24h ?? ""),
-              currencyPriceCardItem(
-                  context, "Low of 24 hour: ", widget.coin.lowOf24h ?? ""),
+              Expanded(
+                child: currencyPriceCardItem(
+                    context,
+                    LocaleKeys.CoinDetailPage_lowOf24Hour.locale,
+                    widget.coin.lowOf24h ?? ""),
+              ),
+              Expanded(
+                child: currencyPriceCardItem(
+                    context,
+                    LocaleKeys.CoinDetailPage_highLowOf24Hour.locale,
+                    widget.coin.highOf24h ?? ""),
+              ),
             ],
           ),
           alarmCoin,
@@ -130,24 +134,19 @@ class _CoinDetailPageState extends State<CoinDetailPage> {
     return Card(
       child: Padding(
         padding: context.paddingLow,
-        child: Column(
-          children: [
-            Text(
-              title,
-              style: context.textTheme.headline6,
-            ),
-            AutoSizeText(
-              price.addComma,
-              style: context.textTheme.subtitle1,
-              //style: Theme.of(context).textTheme.headline6,
-            ),
-          ],
+        child: RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(children: [
+            TextSpan(text: title + ": ", style: context.textTheme.headline6),
+            TextSpan(text: price, style: context.textTheme.subtitle1)
+          ]),
         ),
       ),
     );
   }
 
   Widget get alarmCoin => SwitchListTile(
+      activeColor: context.theme.canvasColor,
       title: context.watch<CoinDetailCubit>().isAlarm == false
           ? Text(LocaleKeys.CoinDetailPage_setAlarmClose.locale)
           : Text(LocaleKeys.CoinDetailPage_setAlarmOpen.locale),

@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:coin_with_architecture/features/home/onboard/view/onboard_page.dart';
+import 'package:coin_with_architecture/product/theme/theme_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -17,7 +19,6 @@ import '../../../product/repository/service/market/bitexen/bitexen_service_contr
 import '../../../product/repository/service/market/gecho/gecho_service_controller.dart';
 import '../../../product/repository/service/market/genelpara/genepara_service_controller.dart';
 import '../../../product/repository/service/market/truncgil/truncgil_service_controller.dart';
-import '../../authentication/onboard/view/onboard_page.dart';
 import '../../coin/bitexen/viewmodel/cubit/bitexen_cubit.dart';
 import '../../coin/hurriyet/viewmodel/cubit/hurriyet_cubit.dart';
 import '../../coin/list_all_coin_page/viewmodel/cubit/coin_list_cubit.dart';
@@ -65,13 +66,12 @@ class Init {
     TruncgilServiceController.instance.fetchTruncgilListEveryTwoSecond();
     //HurriyetServiceController.instance.fetchHurriyetStocksEveryTwoSecond();
     GenelParaServiceController.instance.fetchGenelParaStocksEveryTwoSecond();
-
-    context.read<CoinCubit>().startCompare();
-    context.read<CoinListCubit>().fetchAllCoins();
-    context.read<BitexenCubit>().fetchAllCoins();
-    context.read<TruncgilCubit>().fetchAllCoins();
-    context.read<HurriyetCubit>().fetchAllCoins();
-    await _appCacheManager.init();
+    await context.read<CoinCubit>().startCompare();
+    await context.read<CoinListCubit>().fetchAllCoins();
+    await context.read<BitexenCubit>().fetchAllCoins();
+    await context.read<TruncgilCubit>().fetchAllCoins();
+    await context.read<HurriyetCubit>().fetchAllCoins();
+    context.read<ThemeProvider>().getThemeFromLocale();
 
     await Future.delayed(context.highDuration);
   }
@@ -85,11 +85,16 @@ class FutureBuilderForIsFirstOpen extends StatelessWidget {
     await _cacheManager.putBoolItem(PreferencesKeys.IS_FIRST_APP.name, true);
   }
 
+  Future futureAction(BuildContext context) async {
+    await _cacheManager.init();
+    //  context.read<ThemeProvider>().getThemeFromLocale();
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _cacheManager
-          .init(), // SOMETİMES BOX RETURN NULL L USED AWAİT BUT NOTHİNG CHANGED SO NOW L AM USİNG FUTURE BUİLDER FOR THİS İT'S WORKİNG.
+      future: futureAction(
+          context), // SOMETİMES BOX RETURN NULL L USED AWAİT BUT NOTHİNG CHANGED SO NOW L AM USİNG FUTURE BUİLDER FOR THİS İT'S WORKİNG.
       builder: (context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Splash(); // BU BÖYLE OLMAZ DÜZELT BUNU 2 FUTURE BUİLDER SAÇMALIK DÜZELT

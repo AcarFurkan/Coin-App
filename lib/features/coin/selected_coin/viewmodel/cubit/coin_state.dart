@@ -23,6 +23,15 @@ class CoinCompleted extends CoinState {
   int get hashCode => myCoinList.hashCode;
 }
 
+class CoinAlarm extends CoinState {
+  MainCurrencyModel itemFromDataBase;
+  String message;
+  CoinAlarm({
+    required this.itemFromDataBase,
+    required this.message,
+  });
+}
+
 class UpdateSelectedCoinPage extends CoinState {
   bool isSelectedAll;
   final List<MainCurrencyModel>? myCoinList;

@@ -5,17 +5,11 @@ extension FormFieldsForRegisterExtension on UserSettings {
     return Column(
       children: [
         Spacer(flex: (context.height * .004).toInt()),
-        SizedBox(
-            height: context.height * 0.07,
-            child: _buildTextFormFieldEmail(context)),
+        _buildTextFormFieldEmail(context),
         Spacer(flex: (context.height * .004).toInt()),
-        SizedBox(
-            height: context.height * 0.07,
-            child: _buildTextFormFieldPassword(context)),
+        _buildTextFormFieldPassword(context),
         Spacer(flex: (context.height * .004).toInt()),
-        SizedBox(
-            height: context.height * 0.07,
-            child: _buildTextFormFieldName(context)),
+        _buildTextFormFieldName(context),
       ],
     );
   }
@@ -27,17 +21,20 @@ extension FormFieldsForRegisterExtension on UserSettings {
         if (value!.length > 3) {
           return null;
         } else {
-          return "Must be longer than 3 characters";
+          return LocaleKeys.loginRegisterPage_passwordError.locale;
         }
       },
       obscureText: context.watch<UserCubit>().isLockOpen,
       decoration: InputDecoration(
-          labelText: "password",
+          contentPadding:
+              EdgeInsets.symmetric(horizontal: context.lowValue * 2),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25.0),
+          ),
+          labelText: LocaleKeys.loginRegisterPage_password.locale,
           icon: buildContainerIconField(context, Icons.vpn_key),
           suffixIcon: IconButton(
-              onPressed: () {
-                context.read<UserCubit>().changeIsLockOpen();
-              },
+              onPressed: () => context.read<UserCubit>().changeIsLockOpen(),
               icon: Icon(context.watch<UserCubit>().isLockOpen
                   ? Icons.visibility_off_outlined
                   : Icons.visibility))),
@@ -48,9 +45,15 @@ extension FormFieldsForRegisterExtension on UserSettings {
     return TextFormField(
       keyboardType: TextInputType.emailAddress,
       controller: context.read<UserCubit>().emailControllerForRegister,
-      validator: (value) => value!.isValidEmail ? null : "invalid email",
+      validator: (value) => value!.isValidEmail
+          ? null
+          : LocaleKeys.loginRegisterPage_emailError.locale,
       decoration: InputDecoration(
-        labelText: "email",
+        contentPadding: EdgeInsets.symmetric(horizontal: context.lowValue * 2),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(25.0),
+        ),
+        labelText: LocaleKeys.loginRegisterPage_email.locale,
         icon: buildContainerIconField(context, Icons.email),
       ),
     );
@@ -63,11 +66,15 @@ extension FormFieldsForRegisterExtension on UserSettings {
         if (value!.length > 3) {
           return null;
         } else {
-          return "Must be longer than 3 characters";
+          return LocaleKeys.loginRegisterPage_nameError.locale;
         }
       },
       decoration: InputDecoration(
-        labelText: "name",
+        contentPadding: EdgeInsets.symmetric(horizontal: context.lowValue * 2),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(25.0),
+        ),
+        labelText: LocaleKeys.loginRegisterPage_name.locale,
         labelStyle: context.textTheme.subtitle1,
         icon: buildContainerIconField(context, Icons.person),
       ),

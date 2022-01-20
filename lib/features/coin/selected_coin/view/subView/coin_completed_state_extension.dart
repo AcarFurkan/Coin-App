@@ -60,7 +60,7 @@ extension CoinCompletedStateExtension on SelectedCoinPage {
       padding: EdgeInsets.symmetric(horizontal: context.width * .05),
       children: [
         SizedBox(
-          height: context.height * 0.04,
+          height: context.height * 0.12,
         ),
         SizedBox(
             height: context.height * 0.5,

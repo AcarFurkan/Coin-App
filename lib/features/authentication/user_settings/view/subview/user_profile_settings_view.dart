@@ -16,7 +16,7 @@ extension UserProfileSettingsViewExtension on UserSettings {
       Expanded(flex: (context.height * .005).toInt(), child: buildName(user)),
       Expanded(flex: (context.height * .005).toInt(), child: buildEmail(user)),
       const Divider(),
-      Expanded(child: buildBackUpMaterialCard(user, context)),
+      Expanded(flex: 2, child: buildBackUpMaterialCard(user, context)),
       const Divider(),
       const Spacer(),
       Expanded(
@@ -27,17 +27,22 @@ extension UserProfileSettingsViewExtension on UserSettings {
 
   AppBar buildAppBar(BuildContext context) {
     return AppBar(
+      leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back_ios_new_sharp)),
       elevation: 0,
       backgroundColor: context.theme.scaffoldBackgroundColor,
     );
   }
 
-  Text buildEmail(MyUser user) => Text((" Registered Email: " + user.email!));
+  Text buildEmail(MyUser user) => Text(
+      (LocaleKeys.userSettings_registeredMail.locale + ": " + user.email!));
 
-  Text buildName(MyUser user) => Text("Hey   " + (user.name ?? "") + "  😍");
+  Text buildName(MyUser user) =>
+      Text(LocaleKeys.userSettings_hey.locale + (user.name ?? "") + "  😍");
 
-  SvgPicture get buildProfileImage =>
-      SvgPicture.asset("assets/svg/bighead.svg");
+  Widget get buildProfileImage =>
+      Image.asset(AppConstant.instance.PROFILE_IMAGE_PATH);
 
   InkWell buildBackUpMaterialCard(MyUser user, BuildContext context) {
     return InkWell(
@@ -47,14 +52,15 @@ extension UserProfileSettingsViewExtension on UserSettings {
           padding: context.paddingMediumHorizontal,
           child: Row(
             children: [
+              const Spacer(flex: 2),
+              const Expanded(flex: 1, child: const Icon(Icons.backup_outlined)),
               const Spacer(),
               Expanded(
-                  flex: (context.height * .003).toInt(),
-                  child: Icon(Icons.backup_outlined)),
-              const Spacer(),
-              Expanded(
-                  flex: (context.height * .01).toInt(),
-                  child: Text("Back Up " + (user.backUpType ?? "") + "  😍")),
+                  flex: 7,
+                  child: Text(LocaleKeys.userSettings_backUpButton.locale +
+                      ": " +
+                      (buildBackUpTypeText(user.backUpType ?? "")) +
+                      "  😍")),
               const Spacer()
             ],
           ),
@@ -64,6 +70,20 @@ extension UserProfileSettingsViewExtension on UserSettings {
         showBackUpTypeAlertDialog(context);
       },
     );
+  }
+
+  String buildBackUpTypeText(String type) {
+    if (type == "monthly") {
+      return LocaleKeys.userSettings_backUpType_monthly.locale;
+    } else if (type == "tapped") {
+      return LocaleKeys.userSettings_backUpType_tapped.locale;
+    } else if (type == "daily") {
+      return LocaleKeys.userSettings_backUpType_daily.locale;
+    } else if (type == "weekly") {
+      return LocaleKeys.userSettings_backUpType_weekly.locale;
+    } else {
+      return LocaleKeys.userSettings_backUpType_never.locale;
+    }
   }
 
   Row buildButtons(BuildContext context) {
@@ -86,7 +106,7 @@ extension UserProfileSettingsViewExtension on UserSettings {
         onPressed: () {
           context.read<UserCubit>().signOut();
         },
-        child: Text("Sign Out"));
+        child: Text(LocaleKeys.userSettings_signOutButton.locale));
   }
 
   Widget buildBackUpButton(BuildContext context) {
@@ -95,14 +115,15 @@ extension UserProfileSettingsViewExtension on UserSettings {
           await context.read<UserCubit>().backUpWhenTapped();
           showScaffoldMessage(context);
         },
-        child: Text("Back Up"));
+        child: Text(LocaleKeys.userSettings_backUpButton.locale));
   }
 
   showBackUpTypeAlertDialog(BuildContext context) async {
     await showDialog(
       context: context,
       builder: (context) => CupertinoAlertDialog(
-        title: const Text('🗂️  Back Up To Cloud  🗂️'), //🗃️
+        title:
+            Text('${LocaleKeys.userSettings_backUpAlertDialog.locale}'), //🗃️
         content: buildShowDialogContent(context),
       ),
     );
@@ -141,21 +162,21 @@ extension UserProfileSettingsViewExtension on UserSettings {
 
   void showScaffoldMessage(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(" Back Up Successful"),
-      duration: context.lowDuration,
+      content: Text(LocaleKeys.CoinDetailPage_backUpSuccess.locale),
+      duration: context.midDuration,
     ));
   }
-}
 
-RadioListTile<String> buildRadioListTile(int index, BuildContext context) {
-  return RadioListTile<String>(
-    title: Text(BackUpTypes.values.toList()[index].name),
-    value: BackUpTypes.values.toList()[index].name,
-    groupValue: context.watch<UserCubit>().groupValue,
-    onChanged: (onChanged) async {
-      context.read<UserCubit>().changeGroupValue(onChanged!);
-      context.read<UserCubit>().updateUser();
-      Navigator.of(context).pop();
-    },
-  );
+  RadioListTile<String> buildRadioListTile(int index, BuildContext context) {
+    return RadioListTile<String>(
+      title: Text(buildBackUpTypeText(BackUpTypes.values.toList()[index].name)),
+      value: BackUpTypes.values.toList()[index].name,
+      groupValue: context.watch<UserCubit>().groupValue,
+      onChanged: (onChanged) async {
+        context.read<UserCubit>().changeGroupValue(onChanged!);
+        context.read<UserCubit>().updateUser();
+        Navigator.of(context).pop();
+      },
+    );
+  }
 }

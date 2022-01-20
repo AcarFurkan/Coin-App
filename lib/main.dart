@@ -1,4 +1,3 @@
-import 'product/language/locale_keys.g.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +7,7 @@ import 'core/init/notifer/notifer_list.dart';
 import 'features/home/landing_page.dart/landing_page.dart';
 import 'features/home/landing_page.dart/splash_page.dart';
 import 'product/language/language_manager.dart';
+import 'product/language/locale_keys.g.dart';
 import 'product/theme/theme_provider.dart';
 import 'product/untility/navigation/route_generator.dart';
 
@@ -16,8 +16,7 @@ Future<void> main() async {
   await EasyLocalization.ensureInitialized();
 
   runApp(MultiProvider(
-    providers: ApplicationProvider.instance
-        .providers, //[...ApplicationProvider.instance.dependItems], /*TODO: O ÜÇ NOKTANIN SEBEBİNİ ÖĞREN */// AMACI LİSTEYİ ALMA AYNI ZAMANDA BURDAKİ PROVİDERLEARA BAŞKA ELEMANLAR EKLMESİNİ DE BIRAKMAK.z
+    providers: ApplicationProvider.instance.providers,
     child: EasyLocalization(
         child: const FutureBuilderForSplash(),
         supportedLocales: LanguageManager.instance.supportedLocales,

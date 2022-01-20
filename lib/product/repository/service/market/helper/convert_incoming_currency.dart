@@ -164,16 +164,22 @@ class CurrencyConverter {
         counterCurrencyCode: coin.market?.counterCurrencyCode,
         lowOf24h: coin.low24H,
         highOf24h: coin.high24H,
-        lastUpdate: dateConvert(
-            date)); //DateFormat.jms().format(date)/// DateFormat.jms().format(date)
+        lastUpdate: dateConvert(date
+            .toLocal())); //DateFormat.jms().format(date)/// DateFormat.jms().format(date)
   }
 
   String dateConvert(DateTime date) {
-    var h = date.hour;
-    var m = date.minute;
+    var h = date.hour.toString();
+    var m = date.minute.toString();
     var s = date.second.toString();
     if (s.length == 1) {
       s = "0" + s;
+    }
+    if (m.length == 1) {
+      m = "0" + m;
+    }
+    if (h.length == 1) {
+      h = "0" + h;
     }
     return "$h:$m:$s";
   }
@@ -188,8 +194,8 @@ class CurrencyConverter {
         changeOf24H: (coin.priceChangePercentage24H ?? 0).toString(),
         lowOf24h: (coin.low24H ?? 0).toString(),
         highOf24h: (coin.high24H ?? 0).toString(),
-        lastUpdate: dateConvert(
-            coin.lastUpdated!)); //DateFormat.jms().format(coin.lastUpdated!)
+        lastUpdate: dateConvert(coin.lastUpdated!
+            .toLocal())); //DateFormat.jms().format(coin.lastUpdated!)
   }
 
   MainCurrencyModel mainCurrencyGeneratorFromTrungilModel(Truncgil e) {

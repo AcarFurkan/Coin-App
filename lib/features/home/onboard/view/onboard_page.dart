@@ -1,3 +1,6 @@
+import 'package:coin_with_architecture/core/constant/app/app_constant.dart';
+import 'package:coin_with_architecture/core/extension/string_extension.dart';
+import 'package:coin_with_architecture/product/language/locale_keys.g.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/extension/context_extension.dart';
@@ -33,11 +36,14 @@ class OnboardPage extends StatelessWidget {
   Row buildFloatingActionButtonContent() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: const [Text("Geç"), Icon(Icons.arrow_forward_ios)],
+      children: [
+        Text(LocaleKeys.landingPage_passButton.locale),
+        const Icon(Icons.arrow_forward_ios)
+      ],
     );
   }
 
-  Image buildWelcomeImage() => Image.asset("assets/images/welcome_two.png");
+  Image buildWelcomeImage() => Image.asset(AppConstant.instance.WELCOME_PAGE);
 
   OutlinedButton buildLoginRegisterButton(BuildContext context) {
     return OutlinedButton(
@@ -51,10 +57,6 @@ class OnboardPage extends StatelessWidget {
     );
   }
 
-  Text buildButtonText(BuildContext context) {
-    return Text(
-      "LOGIN/REGISTER",
-      style: TextStyle(color: context.colors.background),
-    );
-  }
+  Text buildButtonText(BuildContext context) =>
+      Text(LocaleKeys.landingPage_loginRegisterButton.locale);
 }

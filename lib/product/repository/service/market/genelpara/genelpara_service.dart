@@ -28,7 +28,6 @@ class GenelParaService {
         List keys = [];
         List<GenelPara> genelParaList = [];
         response.data = jsonDecode(response.data);
-        print(response.data.runtimeType);
         if (response.data is Map) {
           keys = (response.data as Map).keys.toList();
           for (var i = 0; i < keys.length; i++) {

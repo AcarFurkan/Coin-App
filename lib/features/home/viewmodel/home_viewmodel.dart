@@ -4,6 +4,7 @@ class HomeViewModel with ChangeNotifier {
   late int _selectedIndex;
   int get selectedIndex => _selectedIndex;
   late PageController pageController;
+  int curvedNavigationBarAnimationDuration = 700;
 
   HomeViewModel() {
     _selectedIndex = 0;
@@ -25,7 +26,8 @@ class HomeViewModel with ChangeNotifier {
 
   set animateToPage(int index) {
     pageController.animateToPage(index,
-        duration: const Duration(milliseconds: 700), curve: Curves.ease);
+        duration: Duration(milliseconds: curvedNavigationBarAnimationDuration),
+        curve: Curves.ease);
     notifyListeners();
   }
 }

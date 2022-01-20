@@ -32,12 +32,15 @@ TextFormField _buildTextFormField(
     VoidCallback? onChanged,
     FocusNode focusNode) {
   return TextFormField(
-    cursorHeight: isSearchOpen ? context.height * 0.02 : 0,
+    cursorHeight: isSearchOpen ? context.height * 0.028 : 0,
     controller: controller,
+
     cursorColor: Theme.of(context).colorScheme.onBackground,
     onChanged: (a) {
       onChanged;
     },
+    decoration:
+        InputDecoration(contentPadding: context.paddingLowHorizontal * 2.5),
     focusNode: focusNode,
     autofocus: isSearchOpen ? true : false,
     //  decoration: const InputDecoration(border: OutlineInputBorder()),

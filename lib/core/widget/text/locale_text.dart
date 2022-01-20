@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:coin_with_architecture/core/extension/context_extension.dart';
 import 'package:flutter/material.dart';
 
 import '../../extension/string_extension.dart';
@@ -12,7 +13,7 @@ class LocaleText extends StatelessWidget {
   Widget build(BuildContext context) {
     return AutoSizeText(
       text.locale,
-      style: Theme.of(context).textTheme.headline6,
+      style: context.textTheme.headline6,
     );
   }
 }

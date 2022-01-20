@@ -12,29 +12,126 @@
         "arabic":"Arabic"
     },
     "coinListPage":{
-        "appBarTitle":"Coin List"
+        "appBarTitle":"Coins"
     },
     "SettingsPage":{
         "appBarTitle":"Settings",
-        "changeLanguage":"Change Language" ,
-        "appTheme":"Dark mode" 
-    } ,
-    "home":{"tab1":"home",
+        "userSettings":"User Settings",
+        "appTheme":"Dark mode",
+        "changeLanguage":"Change Language",
+        "help":"Help"
+    },
+    "userSettings":{
+        "hey":"Hey",
+        "registeredMail":"Registered Mail",
+        "backUpAlertDialog":"Select Back Up Type",
+        "backUpType":{
+            "never":"Never",
+            "tapped":"Tapped",
+            "daily":"Daily",
+            "weekly":"Weekly",
+            "monthly":"monthly"
+        },
+        "backUpButton":"Back Up",
+        "signOutButton":"Sign Out",
+        "appTheme":"Dark mode",
+        "changeLanguage":"Change Language",
+        "help":"Help"
+    },
+    "loginRegisterPage":{
+        "tab1":"Login",
+        "tab2":"Register",
+        "email":"email",
+        "password":"password",
+        "name":"name",
+        "emailError":"Invalid email",
+        "passwordError":"Password must be longer than 6 characters",
+        "nameError":"Name must be longer than 3 characters",
+        "login":"Login",
+        "Register":"Register",
+        "forgotPassword":"Forgot Password"
+    },
+    "alarmPage":{
+        "appBarTitle":"Choose Alarm"
+    },
+    "foundAlertDiolog":{
+        "title":"OMG",
+        "content":"Saved data found. Do you want to upload to phone?",
+        "yes":"Yes",
+        "no":"No"
+    },
+    "exitAlertDiolog":{
+        "title":"Are you sure?",
+        "content":"Do you want to exit?",
+        "yes":"Yes",
+        "no":"No"
+    },
+    "alarmAlertDialog":{
+        "min":" fell below the set price.",
+        "max":" has exceeded its set price.",
+        "stop":"Stop"
+    },
+    "landingPage":{
+        "loginRegisterButton":"Login/Register",
+        "passButton":"Pass" 
+
+    },
+    "home":{
+        "tab1":"home",
         "tab2":"coin",
         "tab3":"coin detail",
-        "tab4":"settings"},
+        "tab4":"settings"
+    },
+    "alarmNames":{
+        "sweetAlarm":"Sweet Alarm",
+        "warSiren":"War Siren",
+        "carAlarm":"Car Alarm",
+        "carAlarmTwo":"Car Alarm Version 2",
+        "carAlarmThree":"Car Alarm Version 3",
+        "policeSiren":"Police Siren",
+        "annoyingAlarm":"Annoying Alarm",
+        "annoyingAlarmTwo":"Annoying Alarm two",
+        "annoyingAlarmThree":"Annoying Alarm three"  ,
+        "annoyingAlarmFour":"Annoying Alarm four"   
+    },
+    "exceptionMessages":{
+        "emailAlreadyExist":"This e-mail address is already in use, please use a different e-mail address. 🤪",
+        "userNotFound": "This user does not exist in the system. Please login first. 🤪",
+        "tooManyRequest":"Too Many Request 🤪",
+        "wrongPassword":"Email or password is incorrect.🤪"
+    },
+    
     "CoinDetailPage":{
+        "lowOf24Hour":"Low of 24 \nHour",
+        "highLowOf24Hour":"High of 24 \nHour",
         "addToFavoriteClose":"Add to Favorites",
-        "addedToFavoriteOpen":"Added to Favorites",
         "setAlarmClose":"Set Alarm",
         "setAlarmOpen":"Alarm Settings",
         "minSwitchTileClose":"Set alarm with min price",
-        "minSwitchTileOpen": "If the instant price of the coin falls below the entered price, an alarm will sound.",
+        "minSwitchTileOpen": "If the instant price of the currency falls below the entered price, an alarm will sound.",
         "maxSwitchTileClose":"Set alarm with max price",
-        "maxSwitchTileOpen":"If the instant price of the coin falls below the entered price, an alarm will sound.",
+        "maxSwitchTileOpen":  "If the instant price of the currency exceeds the entered price, an alarm will sound.",
+        "loopSwitchTileOpen":"Loop open",
+        "loopSwitchTileClose":"Loop close",
         "minTextFormField":"min",
         "maxTextFormField":"max",
-        "buttonText":"Set Alarm"}
-    
+        "alarmVoice":"Alarm Voice",
+        "buttonText":"Set Alarm",
+        "alarmSetScaffoldMessage":"Alarm has been set 😜",
+        "addedFavorites":"Added To Favorites 😜",
+        "deletedFromFavorites":"Deleted From Favorites 😜",
+        "backUpSuccess":"Back Up Success 😜"
+
+        },
+
+        "selectedPage":{
+            "appBarTitle":"Favorites"
+        },
+        "currencyPage":{
+            "appBarTitle":"Currencies"
+        },
+        "sharePage":{
+            "appBarTitle":"Shares"
+        }
 }
 

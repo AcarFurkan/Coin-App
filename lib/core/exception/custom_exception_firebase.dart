@@ -1,14 +1,17 @@
+import 'package:coin_with_architecture/core/extension/string_extension.dart';
+import 'package:coin_with_architecture/product/language/locale_keys.g.dart';
+
 class FirebaseCustomExceptions {
   static String convertFirebaseMessage(String exceptionCode) {
     switch (exceptionCode) {
       case 'email-already-in-use':
-        return "Bu mail adresi zaten kullanımda, lütfen farklı bir mail kullanınız";
+        return LocaleKeys.exceptionMessages_emailAlreadyExist.locale;
       case 'user-not-found':
-        return "Bu kullanıcı sistemde bulunmamaktadır. Lütfen önce oturum açınız";
+        return LocaleKeys.exceptionMessages_userNotFound.locale;
       case 'too-many-requests':
-        return "bi yavaş gardaş";
+        return LocaleKeys.exceptionMessages_tooManyRequest.locale;
       case 'wrong-password':
-        return "Email veya şifre yanlış";
+        return LocaleKeys.exceptionMessages_wrongPassword.locale;
       default:
         return exceptionCode;
     }

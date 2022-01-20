@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
-import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/enums/back_up_enum.dart';
-import '../../../../core/exception/custom_exception_firebase.dart';
+import '../../../../core/model/response_model/IResponse_model.dart';
 import '../../../../locator.dart';
+import '../../../../product/model/coin/my_coin_model.dart';
 import '../../../../product/model/user/my_user_model.dart';
 import '../../../../product/repository/cache/coin_cache_manager.dart';
 import '../../../../product/repository/service/user_service_controller/user_service_controller.dart';
@@ -47,6 +47,7 @@ class UserCubit extends Cubit<UserState> {
 
   final CoinCacheManager _cacheManager = locator<CoinCacheManager>();
   late String groupValue;
+
   changeGroupValue(String path) {
     groupValue = path;
     emit(UserFull(user: user!));
@@ -94,24 +95,23 @@ class UserCubit extends Cubit<UserState> {
     } else {
       user?.isBackUpActive = false;
     }
-
     user?.backUpType = groupValue;
     emit(UserFull(user: user!));
-
     if (user != null) {
-      try {
-        print(user?.updatedAt);
-        user = await _userServiceController.updateUser(user!);
-      } catch (e) {
-        print("viewmodel creat updateUser" + e.toString());
+      IResponseModel<MyUser?> responseModel =
+          await _userServiceController.updateUser(user!);
+      if (responseModel.error != null) {
+        emit(UserError(message: responseModel.error!.message));
+      } else if (responseModel.data != null) {
+        emit(UserFull(user: responseModel.data!));
+      } else {
+        emit(UserNull());
       }
     }
   }
 
-  List<MainCurrencyModel>? _fetchAllAddedCoinsFromDatabase() {
-    print(_cacheManager.getValues()?.length);
-    return _cacheManager.getValues();
-  }
+  List<MainCurrencyModel>? _fetchAllAddedCoinsFromDatabase() =>
+      _cacheManager.getValues();
 
   Future<void> createUserWithEmailandPassword(
       String email, String password, String name) async {
@@ -143,7 +143,6 @@ class UserCubit extends Cubit<UserState> {
     var result = await _userServiceController.getCurrentUser();
     if (result.error != null) {
       user = result.data;
-
       emit(UserError(message: result.error!.message));
       emit(UserNull());
     } else if (result.data != null) {
@@ -151,7 +150,6 @@ class UserCubit extends Cubit<UserState> {
       emit(UserFull(user: user!));
     } else {
       user = result.data;
-
       emit(UserNull());
     }
   }
@@ -168,6 +166,8 @@ class UserCubit extends Cubit<UserState> {
       emit(UserNull());
     } else if (result.data != null) {
       user = result.data;
+      await fetchCurrenciesByEmail(user!);
+
       emit(UserFull(user: user!));
     } else {
       user = result.data;
@@ -176,10 +176,6 @@ class UserCubit extends Cubit<UserState> {
     }
   }
 
-  //on PlatformException catch (e) {
-  //   return ResponseModel<MyUser>(error: BaseError(message: e.toString()));
-  // }
-  //PlatformException (PlatformException(sign_in_canceled, com.google.android.gms.common.api.ApiException: 12501: , null, null))
   Future<MyUser?> signInWithGoogle() async {
     emit(UserLoading());
     var result = await _userServiceController.signInWithGoogle();
@@ -189,14 +185,10 @@ class UserCubit extends Cubit<UserState> {
       emit(UserNull());
     } else if (result.data != null) {
       user = result.data;
-      print("***********************************");
-
-      print(user!.backUpType.toString());
-      fetchCurrenciesByEmail(user!);
+      await fetchCurrenciesByEmail(user!);
       emit(UserFull(user: user!));
     } else {
       user = result.data;
-
       emit(UserNull());
     }
   }
@@ -215,7 +207,6 @@ class UserCubit extends Cubit<UserState> {
 
   void overwriteDataToDb() {
     //  _cacheManager.addItems(differentCurrensies);bunuda bir dene***************************************
-
     differentCurrensies.forEach((element) {
       _cacheManager.putItem(element.id, element);
     });
@@ -226,41 +217,36 @@ class UserCubit extends Cubit<UserState> {
     List<MainCurrencyModel>? listCurrenciesFromService;
     List<MainCurrencyModel>? listCurrenciesFromDb;
 
-    try {
-      if (true) {
-        listCurrenciesFromService =
-            await _userServiceController.fetchCoinInfoByEmail(user.email ?? "");
-        listCurrenciesFromDb = _fetchAllAddedCoinsFromDatabase();
+    IResponseModel<List<MainCurrencyModel>?> serviceResponse =
+        await _userServiceController.fetchCoinInfoByEmail(user.email ?? "");
 
-        if (listCurrenciesFromService != null) {
-          if (listCurrenciesFromDb != null) {
-            // db de dont send null list it send empty list
-            // DB BOŞ OLABİLİR BUNU DEĞİŞTİR
-            for (var itemFromService in listCurrenciesFromService) {
-              if (!(listCurrenciesFromDb.contains(itemFromService))) {
-                differentCurrensies.add(itemFromService);
-              }
-            }
-            if (differentCurrensies.isNotEmpty) {
-              emit(UserUpdate());
-              emit(UserFull(user: user));
+    if (serviceResponse.error != null) {
+      emit(UserError(message: serviceResponse.error!.message));
+    } else if (serviceResponse.data != null) {
+      listCurrenciesFromDb = _fetchAllAddedCoinsFromDatabase();
+
+      listCurrenciesFromService = serviceResponse.data;
+      if (listCurrenciesFromService != null) {
+        if (listCurrenciesFromDb != null) {
+          for (var itemFromService in listCurrenciesFromService) {
+            if (!(listCurrenciesFromDb.contains(itemFromService))) {
+              differentCurrensies.add(itemFromService);
             }
           }
+          if (differentCurrensies.isNotEmpty) {
+            emit(UserUpdate());
+            emit(UserFull(user: user));
+          }
         }
-        return listCurrenciesFromService;
       }
-    } catch (e) {
-      print("viewmodel fetch currencies error" + e.toString());
-
-      emit(UserError(message: "errorMessage"));
-      emit(UserNull());
     }
+    return listCurrenciesFromService;
   }
 
   bool _emailPasswordControl(String email, String password) {
     var result = true;
-    if (password.length <= 4) {
-      passwordErrorMessage = "Password must be at least 4 characters ";
+    if (password.length <= 6) {
+      passwordErrorMessage = "Password must be at least 6 characters ";
       result = false;
     } else {
       passwordErrorMessage = null;

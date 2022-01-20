@@ -7,7 +7,7 @@ import '../../../product/language/locale_keys.g.dart';
 import '../../../product/theme/theme_provider.dart';
 import '../../../product/widget/component/settings_page_card_item.dart';
 import '../../authentication/viewmodel/cubit/user_cubit.dart';
-import '../subpage/audio_settings/view/audio2.dart';
+import '../subpage/audio_settings/view/audio_page.dart';
 import '../subpage/help_page/view/help_page.dart';
 import '../subpage/language_page/view/language_page.dart';
 import '../subpage/language_page/viewmodel/language_page_viewmodel.dart';
@@ -34,7 +34,6 @@ class _SettingsPageState extends State<SettingsPageTwo> {
         padding: const EdgeInsets.symmetric(horizontal: 25),
         child: SizedBox(
           child: ListView(
-            
             children: [
               SettingsCardItem(
                 prefix: Icon(
@@ -48,10 +47,7 @@ class _SettingsPageState extends State<SettingsPageTwo> {
                   Icons.arrow_forward_ios,
                   size: MediaQuery.of(context).size.height / 40,
                 ),
-                ontap: () {
-                  print("aaa");
-                  Navigator.pushNamed(context, "/userSettings");
-                },
+                ontap: () => Navigator.pushNamed(context, "/userSettings"),
               ),
               SettingsCardItem(
                 prefix: Icon(
@@ -81,8 +77,8 @@ class _SettingsPageState extends State<SettingsPageTwo> {
                   size: MediaQuery.of(context).size.height / 40,
                 ),
                 ontap: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => AudioPage()));
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => AudioPage()));
                 },
               ),
               SettingsCardItem(

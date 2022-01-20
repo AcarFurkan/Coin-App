@@ -20,14 +20,15 @@ class SettingsCardItem extends StatelessWidget {
       borderRadius: BorderRadius.all(Radius.circular(context.lowValue * 1.5)),
       overlayColor: MaterialStateProperty.all(Colors.transparent),
       onTap: ontap,
+      highlightColor: Colors.transparent,
       child: Padding(
         padding: EdgeInsets.symmetric(
             vertical: context.lowValue * 2, horizontal: context.lowValue * 0.3),
         child: Container(
-          decoration: buildBoxDecoration(context),
-          padding: EdgeInsets.symmetric(
-              vertical: context.lowValue * 2.5,
-              horizontal: context.lowValue * 2),
+          //decoration: buildBoxDecoration(context),
+          //padding: EdgeInsets.symmetric(
+          //    vertical: context.lowValue * 2.5,
+          //    horizontal: context.lowValue * 2),
           child: buildCardContent(context),
         ),
       ),
@@ -47,43 +48,52 @@ class SettingsCardItem extends StatelessWidget {
   List<BoxShadow> buildBoxShadow(BuildContext context) {
     return [
       BoxShadow(
-        color: context.colors.onPrimary.withOpacity(0.4),
+        color: Colors.black.withOpacity(0.1),
         spreadRadius: 1,
         blurRadius: 1,
-        offset: const Offset(2, 3), // changes position of shadow
+        offset: const Offset(2, 1.5), // changes position of shadow
       ),
     ];
   }
 
-  Row buildCardContent(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          flex: 1,
-          child: prefix,
+  Material buildCardContent(BuildContext context) {
+    return Material(
+      color: context.theme.appBarTheme.backgroundColor,
+      elevation: 10,
+      borderRadius: BorderRadius.circular(10),
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+            horizontal: context.lowValue * 2, vertical: context.lowValue * 2),
+        child: Row(
+          children: [
+            Expanded(
+              flex: 1,
+              child: prefix,
+            ),
+            const Spacer(
+              flex: 3,
+            ),
+            Expanded(
+              flex: 25,
+              child: Text(
+                text,
+                style: context.textTheme.bodyText1,
+              ),
+            ),
+            suffix != null
+                ? Expanded(
+                    flex: 2,
+                    child: suffix!,
+                  )
+                : Container(),
+            suffix != null
+                ? const Spacer(
+                    flex: 2,
+                  )
+                : Container()
+          ],
         ),
-        const Spacer(
-          flex: 3,
-        ),
-        Expanded(
-          flex: 25,
-          child: Text(
-            text,
-            style: context.textTheme.bodyText1,
-          ),
-        ),
-        suffix != null
-            ? Expanded(
-                flex: 2,
-                child: suffix!,
-              )
-            : Container(),
-        suffix != null
-            ? const Spacer(
-                flex: 2,
-              )
-            : Container()
-      ],
+      ),
     );
   }
 }

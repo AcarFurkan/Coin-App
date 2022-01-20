@@ -10,9 +10,19 @@ class AppConstant {
     LANG_ASSET_PATH = 'assets/langs';
     SPLASH_GIF_PATH = 'assets/gif/splash35.gif';
     HELP_IMAGE_PATH = "assets/images/help.png";
+    LOGIN_IMAGE_PATH = "assets/svg/login2.svg";
+    IMAGE_404 = "assets/images/404.png";
+    WELCOME_PAGE = "assets/images/welcome_two.png";
+    BTC_ICON = "assets/icon/btcIcon.png";
+    PROFILE_IMAGE_PATH = "assets/images/profile_3d_eight.png";
   }
 
   late final String LANG_ASSET_PATH;
   late final String SPLASH_GIF_PATH;
   late final String HELP_IMAGE_PATH;
+  late final String LOGIN_IMAGE_PATH;
+  late final String IMAGE_404;
+  late final String WELCOME_PAGE;
+  late final String BTC_ICON;
+  late final String PROFILE_IMAGE_PATH;
 }

@@ -44,10 +44,6 @@ class ApplicationProvider {
     BlocProvider<ListPageGeneralCubit>(
       create: (BuildContext context) => ListPageGeneralCubit(context: context),
     ),
-    BlocProvider<SelectedPageGeneralCubit>(
-      create: (BuildContext context) =>
-          SelectedPageGeneralCubit(context: context),
-    ),
     BlocProvider<AudioCubit>(
       create: (BuildContext context) => AudioCubit(),
     ),
@@ -71,6 +67,10 @@ class ApplicationProvider {
     BlocProvider<HurriyetPageGeneralStateDartCubit>(
       create: (BuildContext context) =>
           HurriyetPageGeneralStateDartCubit(context: context),
+    ),
+    BlocProvider<SelectedPageGeneralCubit>(
+      create: (BuildContext context) =>
+          SelectedPageGeneralCubit(context: context),
     ),
     BlocProvider<CoinCubit>(
         create: (BuildContext context) => CoinCubit(context: context)),

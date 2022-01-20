@@ -1,3 +1,6 @@
+import 'package:coin_with_architecture/core/constant/app/app_constant.dart';
+import 'package:coin_with_architecture/core/extension/string_extension.dart';
+import 'package:coin_with_architecture/product/language/locale_keys.g.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/src/provider.dart';
@@ -59,7 +62,8 @@ class _HomeViewState extends State<HomeView> {
             context.theme.colorScheme.onError,
         buttonBackgroundColor:
             context.theme.bottomNavigationBarTheme.backgroundColor ??
-                context.theme.colorScheme.onError,
+                context.theme.colorScheme
+                    .onError, //darktheme icon bg beyaz icon black
         backgroundColor: Colors.transparent,
         animationDuration: context.lowDuration,
         onTap: _onItemTapped,
@@ -69,7 +73,8 @@ class _HomeViewState extends State<HomeView> {
 
   Future<bool> _onWillPop() async {
     return (await showBasicAlertDialog(context,
-            title: "Are you sure?", content: "Do you want to exit an App")) ??
+            title: LocaleKeys.exitAlertDiolog_title.locale,
+            content: LocaleKeys.exitAlertDiolog_content.locale)) ??
         false;
   }
 
@@ -81,7 +86,7 @@ class _HomeViewState extends State<HomeView> {
         SizedBox(
           height: context.height * .045,
           child: Image.asset(
-            "assets/icon/btcIcon.png",
+            AppConstant.instance.BTC_ICON,
             color: tabbarLabelColorGenerator(1),
           ),
         ),

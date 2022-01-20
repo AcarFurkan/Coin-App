@@ -26,77 +26,45 @@ class UserServiceController {
     _firestoreService = FirestoreService.instance;
   }
 
-  Future<IResponseModel<MyUser>> getCurrentUser() async {
-    IResponseModel<MyUser> response =
+  Future<IResponseModel<MyUser?>> getCurrentUser() async {
+    IResponseModel<MyUser?> response =
         await _firebaseAuthService.getCurrentUser();
     if (response.data != null) {
-      print("111111111111");
-      IResponseModel responseModel = await _firestoreService
+      return await _firestoreService
           .readUserInformations(response.data!.email ?? "");
-      MyUser? userFromService = responseModel.data;
-      MyUser? user = responseModel.data;
-      //print("-------------------------");
-      //print(user!.backUpType);
-      //print(user.isBackUpActive);
-
-      //print(user.updatedAt);
-      //print("-------------------------");
-
-      //print(response.data!.backUpType);
-      //print(response.data!.isBackUpActive);
-      //print(response.data!.updatedAt);
-      if (user != null) {
-        response.data!.backUpType = user.backUpType!;
-        response.data!.isBackUpActive = user.isBackUpActive!;
-        response.data!.updatedAt = user.updatedAt!;
-      }
-
-      /**
-      * TODO : BURDA NASIL OLURDA  response.data = user; ÇALIŞMAZZZ
-      */
-
-    } else {}
-
-    return response;
-  }
-
-  final CoinCacheManager _cacheManager = locator<CoinCacheManager>();
-  List<MainCurrencyModel>? _fetchAllAddedCoinsFromDatabase() {
-    return _cacheManager.getValues();
-  }
-
-  Future<IResponseModel<MyUser>> createUserWithEmailandPassword(
-      String email, String password, String name) async {
-    IResponseModel<MyUser> response = await _firebaseAuthService
-        .createUserWithEmailandPassword(email, password, name);
-    if (response.error != null) {
-      return response;
-    } else if (response.data != null) {
-      List<MainCurrencyModel>? coins = _fetchAllAddedCoinsFromDatabase();
-      if (coins != null) {
-        response.data!.backUpType = BackUpTypes.never.name;
-        response.data!.isBackUpActive = false;
-        response.data!.name = name;
-      }
-      return response;
     }
     return response;
   }
 
-  Future<IResponseModel<MyUser>> signInWithEmailandPassword(
+  Future<IResponseModel<MyUser?>> createUserWithEmailandPassword(
+      String email, String password, String name) async {
+    IResponseModel<MyUser?> response = await _firebaseAuthService
+        .createUserWithEmailandPassword(email, password, name);
+    if (response.error != null) {
+      return response;
+    } else if (response.data != null) {
+      response.data!.backUpType = BackUpTypes.never.name;
+      response.data!.isBackUpActive = false;
+      response.data!.name = name;
+      return await _firestoreService.saveUserInformations(response.data!);
+    }
+    return response;
+  }
+
+  Future<IResponseModel<MyUser?>> signInWithEmailandPassword(
       String email, String password) async {
-    IResponseModel<MyUser> response =
+    IResponseModel<MyUser?> response =
         await _firebaseAuthService.signInWithEmailandPassword(email, password);
 
     if (response.error != null) {
       return response;
     } else if (response.data != null) {
-      IResponseModel responseModel = await _firestoreService
+      IResponseModel<MyUser?> responseModel = await _firestoreService
           .readUserInformations(response.data!.email ?? "");
       MyUser? userFromService = responseModel.data;
       if (userFromService != null) {
-        await _firestoreService.saveUserInformations(userFromService);
-        response.data = userFromService;
+        response =
+            await _firestoreService.saveUserInformations(userFromService);
       }
       return response;
     }
@@ -113,19 +81,16 @@ class UserServiceController {
       IResponseModel<MyUser?> responseModel = await _firestoreService
           .readUserInformations(response.data!.email ?? "");
       MyUser? userFromService = responseModel.data;
-
       if (userFromService == null) {
         response.data!.backUpType = BackUpTypes.never.name;
         response.data!.isBackUpActive = false;
         response.data!.name = response.data!.email!.split("@")[0];
-        IResponseModel<MyUser?> responseModel =
-            await _firestoreService.saveUserInformations(response.data!);
-        userFromService = responseModel.data;
-        return response;
+        return await _firestoreService.saveUserInformations(
+          response.data!,
+        );
       } else {
-        response = responseModel;
+        return responseModel;
       }
-      return response;
     }
     return response;
   }
@@ -134,33 +99,24 @@ class UserServiceController {
     return await _firebaseAuthService.signOut();
   }
 
-  Future<MyUser?> updateUser(MyUser user) async {
-    await _firestoreService.updateUserInformations(user);
-    IResponseModel responseModel =
-        await _firestoreService.readUserInformations(user.email!);
-    MyUser? myUser = responseModel.data;
-    if (myUser != null) {
-      return myUser;
-    }
+  Future<IResponseModel<MyUser?>> updateUser(MyUser user) async {
+    return await _firestoreService.updateUserInformations(user);
   }
 
-  Future<MyUser?> updateUserCurrenciesInformation(
+  Future<IResponseModel<MyUser?>> updateUserCurrenciesInformation(
       MyUser user, // burda user dönmeyi düşünebilirsin
-
       {List<MainCurrencyModel>? listCurrency}) async {
-    try {
-      await _firestoreService.updateUserCurrenciesInformation(user,
-          listCurrencyFromDb: listCurrency);
-    } catch (e) {
-      print("user serwvice controller updateuser hata" + e.toString());
-    }
+    return await _firestoreService.updateUserCurrenciesInformation(user,
+        listCurrencyFromDb: listCurrency);
   }
 
-  Future<List<MainCurrencyModel>?> fetchCoinInfoByEmail(String email) async {
-    IResponseModel<List<MainCurrencyModel>?> responseModel =
-        await _firestoreService.fetchCurrenciesByEmail(email);
+  Future<IResponseModel<List<MainCurrencyModel>?>> fetchCoinInfoByEmail(
+      String email) async {
+    return await _firestoreService.fetchCurrenciesByEmail(email);
+  }
 
-    List<MainCurrencyModel>? currenciesList = responseModel.data;
-    return currenciesList;
+  final CoinCacheManager _cacheManager = locator<CoinCacheManager>();
+  List<MainCurrencyModel>? _fetchAllAddedCoinsFromDatabase() {
+    return _cacheManager.getValues();
   }
 }

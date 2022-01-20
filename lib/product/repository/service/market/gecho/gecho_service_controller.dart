@@ -135,14 +135,18 @@ class GechoServiceController {
     ResponseModel<List<MainCurrencyModel>> responseUSD =
         await getFromCurrencyConverter(CoinCurrency.USD.name);
     ResponseModel<List<MainCurrencyModel>> responseNEW =
-        await getFromCurrencyConverter(CoinCurrency.USD.name,
-            idList: ["ninja-squad", "talecraft", "colony", "bitcoin"]);
+        await getFromCurrencyConverter(CoinCurrency.USD.name, idList: [
+      "ninja-squad",
+      "talecraft",
+      "colony",
+      "bitcoin",
+      "magic",
+      "galatasaray-fan-token"
+    ]);
     if (responseUSD.error != null) {
       responseUSD = responseUSD;
     } else if (responseUSD.data != null) {
       if (responseNEW.data != null && responseNEW.data!.isNotEmpty) {
-        print(responseNEW.data!.length);
-        print("***************************************");
         responseUSD.data?.addAll(responseNEW.data!);
       }
       _lastGechoUsdCoins = responseUSD;

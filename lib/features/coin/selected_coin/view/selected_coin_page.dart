@@ -1,3 +1,4 @@
+import 'package:coin_with_architecture/core/constant/app/app_constant.dart';
 import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
 
 import '../../../../core/extension/context_extension.dart';
@@ -40,7 +41,7 @@ class SelectedCoinPage extends StatelessWidget {
   AppBar appBar(BuildContext context) {
     return AppBar(
       leading: buildSettingsIcon(context),
-      title: const LocaleText(text: LocaleKeys.appBarTitle),
+      title: const LocaleText(text: LocaleKeys.selectedPage_appBarTitle),
       titleSpacing: 0,
       actions: [
         buildStopMusicIcon(context),
