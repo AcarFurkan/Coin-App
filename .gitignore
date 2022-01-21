@@ -45,3 +45,4 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 lib/incile.dart
+lib/firebase_options.dart
