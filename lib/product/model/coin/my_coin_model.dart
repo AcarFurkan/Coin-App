@@ -1,70 +1,72 @@
 import 'package:coin_with_architecture/features/settings/subpage/audio_settings/model/audio_model.dart';
 import 'package:hive/hive.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'my_coin_model.g.dart';
 
 // para birimi ve alarm
+@JsonSerializable()
 @HiveType(typeId: 1)
 class MainCurrencyModel {
   @HiveField(0)
-  String name;
+  String name; //**** */
   @HiveField(1)
-  String? lastPrice;
+  String? lastPrice; //**** */
+  @JsonKey(ignore: true)
   @HiveField(2)
   late bool isFavorite;
+  @JsonKey(ignore: true)
   @HiveField(3)
   double min;
+  @JsonKey(ignore: true)
   @HiveField(4)
   double max;
   @HiveField(5)
-  late bool isAlarmActive;
+  late bool isAlarmActive; //**** */
   @HiveField(6)
+  @JsonKey(ignore: true)
   String? counterCurrencyCode;
   @HiveField(7)
-  String id;
+  String id; //**** */
+  @JsonKey(ignore: true)
   @HiveField(8)
   late bool isMinAlarmActive;
+  @JsonKey(ignore: true)
   @HiveField(9)
   late bool isMaxAlarmActive;
+  @JsonKey(ignore: true)
   @HiveField(10)
   late String? priceControl;
+  @JsonKey(ignore: true)
   @HiveField(11)
   late String? changeOf24H;
+  @JsonKey(ignore: true)
   @HiveField(12)
   late String? percentageControl;
+  @JsonKey(ignore: true)
   @HiveField(13)
   late String? lowOf24h;
+  @JsonKey(ignore: true)
   @HiveField(14)
   late String? highOf24h;
+  @JsonKey(ignore: true)
   @HiveField(15)
   AudioModel? minAlarmAudio;
+  @JsonKey(ignore: true)
   @HiveField(16)
   AudioModel? maxAlarmAudio;
+  @JsonKey(ignore: true)
   @HiveField(17)
   bool? isMinLoop;
+  @JsonKey(ignore: true)
   @HiveField(18)
   bool? isMaxLoop;
   @HiveField(19)
-  String? lastUpdate;
-  Map<String, dynamic> toMap() {
-    return {
-      'isAlarmActive': isAlarmActive,
-      'currencyName': name,
-      'isFavorite': isFavorite,
-      'id': id,
-      'lastPrice': lastPrice
-    };
-  }
+  String? lastUpdate; //**** */
+  Map<String, dynamic> toMap() => _$MainCurrencyModelToJson(this);
 
   factory MainCurrencyModel.fromJson(Map<String, dynamic> json) =>
-      MainCurrencyModel(
-        id: json["id"] == null ? null : json["id"],
-        name: json["currencyName"] == null ? null : json["currencyName"],
-        isAlarmActive:
-            json["isAlarmActive"] == null ? null : json["isAlarmActive"],
-        isFavorite: json["isFavorite"] == null ? null : json["isFavorite"],
-        lastPrice: json["lastPrice"] == null ? null : json["lastPrice"],
-      );
+      _$MainCurrencyModelFromJson(json);
 
   MainCurrencyModel({
     required this.name,

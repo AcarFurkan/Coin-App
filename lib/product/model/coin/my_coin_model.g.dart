@@ -96,3 +96,25 @@ class MainCurrencyModelAdapter extends TypeAdapter<MainCurrencyModel> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+MainCurrencyModel _$MainCurrencyModelFromJson(Map<String, dynamic> json) =>
+    MainCurrencyModel(
+      name: json['name'] as String,
+      lastPrice: json['lastPrice'] as String?,
+      id: json['id'] as String,
+      isAlarmActive: json['isAlarmActive'] as bool? ?? false,
+      lastUpdate: json['lastUpdate'] as String?,
+    );
+
+Map<String, dynamic> _$MainCurrencyModelToJson(MainCurrencyModel instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'lastPrice': instance.lastPrice,
+      'isAlarmActive': instance.isAlarmActive,
+      'id': instance.id,
+      'lastUpdate': instance.lastUpdate,
+    };

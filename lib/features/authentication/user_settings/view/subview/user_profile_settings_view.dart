@@ -53,7 +53,7 @@ extension UserProfileSettingsViewExtension on UserSettings {
           child: Row(
             children: [
               const Spacer(flex: 2),
-              const Expanded(flex: 1, child: const Icon(Icons.backup_outlined)),
+              const Expanded(flex: 1, child: Icon(Icons.backup_outlined)),
               const Spacer(),
               Expanded(
                   flex: 7,
@@ -122,8 +122,7 @@ extension UserProfileSettingsViewExtension on UserSettings {
     await showDialog(
       context: context,
       builder: (context) => CupertinoAlertDialog(
-        title:
-            Text('${LocaleKeys.userSettings_backUpAlertDialog.locale}'), //🗃️
+        title: Text(LocaleKeys.userSettings_backUpAlertDialog.locale), //🗃️
         content: buildShowDialogContent(context),
       ),
     );
@@ -135,9 +134,7 @@ extension UserProfileSettingsViewExtension on UserSettings {
       width: context.width * 0.35,
       color: Colors.transparent,
       child: BlocConsumer<UserCubit, UserState>(
-        listener: (context, state) {
-          // TODO: implement listener
-        },
+        listener: (context, state) {},
         builder: (context, state) {
           return buildShowAlertDialogMaterialCard();
         },
