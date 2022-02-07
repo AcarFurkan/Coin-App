@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:coin_with_architecture/core/enums/price_control.dart';
-import 'package:coin_with_architecture/core/extension/context_extension.dart';
-import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
+import '../../../core/enums/price_control.dart';
+import '../../../core/extension/context_extension.dart';
+import '../../model/coin/my_coin_model.dart';
 import '../../../core/enums/currency_enum.dart';
 import '../../../features/coin/selected_coin/viewmodel/cubit/coin_cubit.dart';
 import 'package:flutter/material.dart';

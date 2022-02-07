@@ -1,4 +1,4 @@
-import 'package:coin_with_architecture/features/settings/subpage/audio_settings/model/audio_model.dart';
+import '../../../features/settings/subpage/audio_settings/model/audio_model.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -8,6 +8,7 @@ part 'my_coin_model.g.dart';
 @JsonSerializable()
 @HiveType(typeId: 1)
 class MainCurrencyModel {
+  @JsonKey(name: "currencyName")
   @HiveField(0)
   String name; //**** */
   @HiveField(1)
@@ -61,8 +62,14 @@ class MainCurrencyModel {
   @JsonKey(ignore: true)
   @HiveField(18)
   bool? isMaxLoop;
+  @JsonKey(ignore: true)
   @HiveField(19)
   String? lastUpdate; //**** */
+  @HiveField(20)
+  String? addedPrice;
+  @JsonKey(ignore: true)
+  @HiveField(21)
+  String? changeOfPercentageSincesAddedTime;
   Map<String, dynamic> toMap() => _$MainCurrencyModelToJson(this);
 
   factory MainCurrencyModel.fromJson(Map<String, dynamic> json) =>
@@ -87,6 +94,8 @@ class MainCurrencyModel {
     this.highOf24h,
     this.lowOf24h,
     this.changeOf24H,
+    this.addedPrice,
+    this.changeOfPercentageSincesAddedTime,
     this.min = 0,
     this.max = 0,
   });

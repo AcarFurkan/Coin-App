@@ -181,7 +181,7 @@ class UserCubit extends Cubit<UserState> {
     var result = await _userServiceController.signInWithGoogle();
     if (result.error != null) {
       user = result.data;
-      emit(UserError(message: "Cancelled"));
+      emit(UserError(message: result.error?.message ?? "Cancelled"));
       emit(UserNull());
     } else if (result.data != null) {
       user = result.data;

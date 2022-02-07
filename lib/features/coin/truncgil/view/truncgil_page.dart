@@ -1,5 +1,7 @@
-import 'package:coin_with_architecture/core/constant/app/app_constant.dart';
-import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+import '../../../../core/constant/app/app_constant.dart';
+import '../../selected_coin/viewmodel/cubit/coin_cubit.dart';
+import '../../../../product/model/coin/my_coin_model.dart';
 
 import '../../../../core/extension/context_extension.dart';
 import '../../../../product/widget/component/text_form_field_with_animation.dart';
@@ -12,15 +14,16 @@ import '../../../../product/language/locale_keys.g.dart';
 import '../../../../product/widget/component/coin_current_info_card.dart';
 import '../viewmodel/cubit/truncgil_cubit.dart';
 import '../viewmodel/page_viewmodel.dart/cubit/truncgil_page_general_cubit.dart';
+part './subview/sort_popup_extension.dart';
 
 class TruncgilPage extends StatelessWidget {
   TruncgilPage({Key? key}) : super(key: key);
   final List<MainCurrencyModel> searchresult = [];
+  final GlobalKey _menuKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //extendBody: true,
       appBar: _appBar(context),
       body: _blocConsumer(),
     );
@@ -89,6 +92,22 @@ class TruncgilPage extends StatelessWidget {
     coinListToShow = coinListToShowTransactions(coinListToShow, state, context);
     return Column(
       children: [
+        Padding(
+          padding: context.paddingLowHorizontal,
+          child: SizedBox(
+            height: context.lowValue * 4,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(flex: 4, child: Text("  Sembol")),
+                const Spacer(flex: 4),
+                Expanded(flex: 5, child: Text(" LastPrice")),
+                const Spacer(),
+                Expanded(flex: 8, child: buildOrderByPopupMenu(context)),
+              ],
+            ),
+          ),
+        ),
         buildTextFormFieldWithAnimation(
           context,
           controller: context
@@ -139,6 +158,9 @@ class TruncgilPage extends StatelessWidget {
       BuildContext context) {
     coinListToShow = state.truncgilCoinsList;
     coinListToShow = searchTransaction(context, coinListToShow);
+    coinListToShow = context.read<TruncgilCubit>().orderList(
+        context.read<TruncgilPageGeneralCubit>().getorderByDropDownValue,
+        coinListToShow);
     return coinListToShow;
   }
 

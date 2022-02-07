@@ -1,6 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:coin_with_architecture/core/constant/app/app_constant.dart';
-import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
+import '../../../../core/constant/app/app_constant.dart';
+import '../../selected_coin/viewmodel/cubit/coin_cubit.dart';
+import '../../selected_coin/viewmodel/general/cubit/selected_page_general_cubit.dart';
+import '../../../../product/connectivity_manager/connectivity_notifer.dart';
+import '../../../../product/model/coin/my_coin_model.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import '../../../../core/extension/context_extension.dart';
 import '../../../../product/widget/component/text_form_field_with_animation.dart';
 import '../../../authentication/viewmodel/cubit/user_cubit.dart';
@@ -14,20 +18,19 @@ import '../../../../product/language/locale_keys.g.dart';
 import '../../../../product/widget/component/coin_current_info_card.dart';
 import '../viewmodel/cubit/coin_list_cubit.dart';
 import '../viewmodel/page_viewmodel/cubit/list_page_general_cubit.dart';
+part 'subview/sort_popup_extension.dart';
 
 class CoinListPage extends StatelessWidget {
   CoinListPage({Key? key}) : super(key: key);
+//  final GlobalKey _menuKey = GlobalKey();
 
   final List<MainCurrencyModel> searchresult = [];
 
   @override
   Widget build(BuildContext context) {
+    print("111111111111111111");
     return DefaultTabController(
-      length: context.read<UserCubit>().user?.level == 2
-          ? CoinCurrencyLevel2
-              .values.length /* 
-          TODO: LEVEL TWO OLAYINI DÜŞÜN */
-          : CoinCurrency.values.length,
+      length: CoinCurrency.values.length,
       child: Scaffold(
         //extendBody: true,
         appBar: _appBar(context),
@@ -39,16 +42,11 @@ class CoinListPage extends StatelessWidget {
   AppBar _appBar(BuildContext context) {
     return AppBar(
       centerTitle: true,
-      leading: IconButton(
-          onPressed: () {
-            Navigator.pushNamed(context, "/settingsGeneral");
-          },
-          icon: const Icon(Icons.settings)),
+      //  leading: IconButton(
+      //      onPressed: () => Navigator.pushNamed(context, "/settingsGeneral"),
+      //      icon: const Icon(Icons.settings)),
       titleSpacing: 0,
       actions: buildAppBarActions(context),
-
-      //pinned: true,
-      //floating: true,
       bottom: buildTabBar(context),
       title: const LocaleText(text: LocaleKeys.coinListPage_appBarTitle),
     );
@@ -56,7 +54,9 @@ class CoinListPage extends StatelessWidget {
 
   List<Widget> buildAppBarActions(BuildContext context) {
     return [
-      //IconButton(onPressed: () {}, icon: const Icon(Icons.add)),
+      //IconButton(
+      //    onPressed: () => Navigator.pushNamed(context, "/searchPage"),
+      //    icon: const Icon(Icons.add)),
       IconButton(
           onPressed: () {
             context.read<ListPageGeneralCubit>().changeIsSearch();
@@ -85,41 +85,63 @@ class CoinListPage extends StatelessWidget {
   }
 
   List<Widget> tabBarViewGenerator(BuildContext context) {
-    if (context.read<UserCubit>().user?.level == 2) {
-      return CoinCurrencyLevel2.values
-          .map(
-            (e) => Center(child: _blocConsumer(e.name)),
-          )
-          .toList();
-    } else {
-      return CoinCurrency.values
-          .map(
-            (e) => Center(child: _blocConsumer(e.name)),
-          )
-          .toList();
-    }
+    return CoinCurrency.values
+        .map(
+          (e) => Center(child: _blocBuilder(e.name)),
+        )
+        .toList();
   }
 
   List<Tab> _tabGenerator(BuildContext context) {
-    if (context.read<UserCubit>().user?.level == 2) {
-      return CoinCurrencyLevel2.values
-          .map((e) => Tab(
-                child: AutoSizeText(
-                  e.name,
-                  maxLines: 1,
-                ),
-              ))
-          .toList();
-    } else {
-      return CoinCurrency.values
-          .map((e) => Tab(
-                child: AutoSizeText(
-                  e.name,
-                  maxLines: 1,
-                ),
-              ))
-          .toList();
-    }
+    return CoinCurrency.values
+        .map((e) => Tab(
+              child: AutoSizeText(
+                e.name,
+                maxLines: 1,
+              ),
+            ))
+        .toList();
+  }
+
+  //_trial(String currencyName, BuildContext context) {
+  //  List<MainCurrencyModel> list = context.watch<CoinListCubit>().tryCoins;
+  //  return BlocBuilder<CoinListCubit, CoinListState>(
+  //    buildWhen: (previous, current) => previous != current,
+  //    builder: (context, state) {
+  //      if (state is CoinListInitial) {
+  //        context.read<CoinListCubit>().fetchAllCoins();
+  //        return _initialStateBody;
+  //      } else if (state is CoinListLoading) {
+  //        return _loadingStateBody;
+  //      } else if (state is CoinListCompleted) {
+  //        print("5555555555555555");
+
+  //        return completedStateBody(state, currencyName, context);
+  //      } else {
+  //        return Center(child: Image.asset(AppConstant.instance.IMAGE_404));
+  //      }
+  //    },
+  //  );
+  //}
+
+  BlocBuilder<CoinListCubit, CoinListState> _blocBuilder(String currencyName) {
+    return BlocBuilder<CoinListCubit, CoinListState>(
+      buildWhen: (previous, current) => previous != current,
+      builder: (context, state) {
+        if (state is CoinListInitial) {
+          context.read<CoinListCubit>().fetchAllCoins();
+          return _initialStateBody;
+        } else if (state is CoinListLoading) {
+          return _loadingStateBody;
+        } else if (state is CoinListCompleted) {
+          print("5555555555555555");
+
+          return completedStateBody(state, currencyName, context);
+        } else {
+          return Center(child: Image.asset(AppConstant.instance.IMAGE_404));
+        }
+      },
+    );
   }
 
   BlocConsumer<CoinListCubit, CoinListState> _blocConsumer(
@@ -139,11 +161,32 @@ class CoinListPage extends StatelessWidget {
       },
       listener: (context, state) {
         if (state is CoinListError) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(state.message)));
+          if (context.read<ConnectivityNotifier>().connectionStatus ==
+              ConnectivityResult.none) {
+            context.read<ConnectivityNotifier>().showConnectionErrorSnackBar();
+          } else {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(state.message)));
+          }
         }
       },
     );
+  }
+
+  GlobalKey menuKeyTransactions(String currency, BuildContext context) {
+    if (currency == CoinCurrency.USD.name) {
+      return context.read<ListPageGeneralCubit>().menuKeyUSD;
+    } else if (currency == CoinCurrency.ETH.name) {
+      return context.read<ListPageGeneralCubit>().menuKeyETH;
+    } else if (currency == CoinCurrency.TRY.name) {
+      return context.read<ListPageGeneralCubit>().menuKeyTRY;
+    } else if (currency == CoinCurrency.BTC.name) {
+      return context.read<ListPageGeneralCubit>().menuKeyBTC;
+    } else if (currency == CoinCurrency.NEW.name) {
+      return context.read<ListPageGeneralCubit>().menuKeyNEW;
+    } else {
+      return context.read<ListPageGeneralCubit>().menuKeyUSD;
+    }
   }
 
   Center get _initialStateBody =>
@@ -156,9 +199,26 @@ class CoinListPage extends StatelessWidget {
 
     coinListToShow = coinListToShowTransactions(
         currencyName, coinListToShow, state, context);
-
     return Column(
       children: [
+        Padding(
+          padding: context.paddingLowHorizontal,
+          child: SizedBox(
+            height: context.lowValue * 4,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Expanded(flex: 5, child: Text("  Sembol")),
+                const Spacer(flex: 2),
+                const Expanded(flex: 5, child: Text(" LastPrice")),
+                Expanded(
+                    flex: 6,
+                    child: buildOrderByPopupMenu(
+                        context, menuKeyTransactions(currencyName, context))),
+              ],
+            ),
+          ),
+        ),
         buildTextFormFieldWithAnimation(
           context,
           controller:
@@ -208,6 +268,7 @@ class CoinListPage extends StatelessWidget {
       List<MainCurrencyModel> coinListToShow,
       CoinListCompleted state,
       BuildContext context) {
+    print(currencyName);
     if (currencyName == CoinCurrency.TRY.name) {
       coinListToShow = state.tryCoinsList;
     } else if (currencyName == CoinCurrency.BTC.name) {
@@ -221,6 +282,10 @@ class CoinListPage extends StatelessWidget {
     }
 
     coinListToShow = searchTransaction(context, coinListToShow);
+
+    coinListToShow = context.read<CoinListCubit>().orderList(
+        context.read<ListPageGeneralCubit>().getorderByDropDownValue,
+        coinListToShow);
     return coinListToShow;
   }
 

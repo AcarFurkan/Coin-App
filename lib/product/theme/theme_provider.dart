@@ -1,7 +1,7 @@
-import 'package:coin_with_architecture/core/enums/app_theme_enums.dart';
-import 'package:coin_with_architecture/core/enums/locale_keys_enum.dart';
-import 'package:coin_with_architecture/locator.dart';
-import 'package:coin_with_architecture/product/repository/cache/app_cache_manager.dart';
+import '../../core/enums/app_theme_enums.dart';
+import '../../core/enums/locale_keys_enum.dart';
+import '../../locator.dart';
+import '../repository/cache/app_cache_manager.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/init/theme/app_theme.dart';

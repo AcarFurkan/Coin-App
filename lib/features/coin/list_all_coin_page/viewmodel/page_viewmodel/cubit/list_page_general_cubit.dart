@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import '../../../../selected_coin/viewmodel/cubit/coin_cubit.dart';
 import 'package:flutter/material.dart';
 
 part 'list_page_general_state.dart';
@@ -13,6 +14,19 @@ class ListPageGeneralCubit extends Cubit<ListPageGeneralState> {
   bool isSearhOpen = false;
   late FocusNode myFocusNode;
   BuildContext context;
+  SortTypes _orderByDropdownValue = SortTypes.HIGH_TO_LOW_FOR_LAST_PRICE;
+  final GlobalKey menuKeyUSD = GlobalKey();
+  final GlobalKey menuKeyTRY = GlobalKey();
+  final GlobalKey menuKeyETH = GlobalKey();
+  final GlobalKey menuKeyBTC = GlobalKey();
+  final GlobalKey menuKeyNEW = GlobalKey();
+
+  setorderByDropDownValue(SortTypes type) {
+    _orderByDropdownValue = type;
+    emit(ListPageGeneralInitial());
+  }
+
+  SortTypes get getorderByDropDownValue => _orderByDropdownValue;
 
   TextEditingController? _textEditingController;
 

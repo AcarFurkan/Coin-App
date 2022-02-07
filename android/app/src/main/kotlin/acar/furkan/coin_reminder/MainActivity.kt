@@ -1,4 +1,4 @@
-package com.example.coin_with_architecture
+package acar.furkan.coin_reminder
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,4 +1,4 @@
-import 'package:coin_with_architecture/features/home/viewmodel/home_viewmodel.dart';
+import '../../home/viewmodel/home_viewmodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -33,14 +33,13 @@ class _SettingsPageState extends State<SettingsPage> {
 
   AppBar buildAppBar() {
     return AppBar(
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back_ios_new_sharp),
-        onPressed: () {
-          context.read<HomeViewModel>().animateToPage = 0;
-
-          Navigator.pop(context);
-        },
-      ),
+      // leading: IconButton(
+      //   icon: const Icon(Icons.arrow_back_ios_new_sharp),
+      //   onPressed: () {
+      //     context.read<HomeViewModel>().animateToPage = 0;
+      //     Navigator.pop(context);
+      //   },
+      // ),
       centerTitle: true,
       elevation: 0,
       title: Text(

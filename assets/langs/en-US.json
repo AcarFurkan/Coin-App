@@ -36,9 +36,36 @@
         "appTheme":"Dark mode",
         "changeLanguage":"Change Language",
         "help":"Help"
-    },"alarmPage":{
+    },
+    "alarmPage":{
         "appBarTitle":"Choose Alarm"
     },
+    "searchPage":{
+        "appBarTitle":"Search New Coins" 
+    },
+    "addCoinPage":{
+        "appBarTitle":"Add New Coin",
+        "name":"Name",
+        "lastPrice":"Last Price",
+        "lastUpdate":"Last Update",
+        "addCoinButtonText":"Add Coin Your New List"
+
+    },
+    "priceDropDownButton":{
+        "lastPrice":"Last Price",
+        "addedPrice":"Added Price"
+    },
+    "prercentageDropDownButton":{
+        "changeOf24":"Change Of 24H",
+        "profitLoss":"Profit/Loss"
+    },
+    "sortDropDownButton":{
+        "priceHighToLow":"Change Of 24H",
+        "priceLowToHigh":"Profit/Loss"
+    },
+    
+
+    
     "loginRegisterPage":{
         "tab1":"Login",
         "tab2":"Register",

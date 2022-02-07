@@ -1,5 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
+import '../../model/coin/my_coin_model.dart';
 import 'package:flutter/material.dart';
 import 'package:persian_tools/src/core/commas/commas.dart';
 
@@ -34,14 +34,9 @@ class _ListCardItemState extends State<ListCardItem> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             buildFavoriteButton(),
-            Expanded(
-                flex: (context.lowValue * 0.7).toInt(),
-                child: buildCurrencyName()),
-            Expanded(
-                flex: context.lowValue.toInt() * 2,
-                child: buildCurrencyPrice()),
-            Expanded(
-                flex: context.lowValue.toInt(), child: buildPercentageBox()),
+            Expanded(flex: 4, child: buildCurrencyName()),
+            Expanded(flex: 7, child: buildCurrencyPrice()),
+            Expanded(flex: 5, child: buildPercentageBox()),
           ],
         ),
       ),
@@ -72,27 +67,42 @@ class _ListCardItemState extends State<ListCardItem> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            AutoSizeText(
-              widget.coin.name.toUpperCase(),
-              minFontSize: 5,
-            ),
-            SizedBox(
-              width: context.width / 150,
-            ),
-            widget.coin.isAlarmActive == true
-                ? Icon(
-                    Icons.alarm,
-                    size: context.width / 25,
-                  )
-                : Container(),
-          ],
+        SizedBox(
+          width: MediaQuery.of(context).size.width / 5,
+          child: Row(
+            children: [
+              widget.coin.isAlarmActive == true
+                  ? Icon(
+                      Icons.alarm,
+                      size: context.width / 25,
+                    )
+                  : Container(),
+              widget.coin.isAlarmActive == true
+                  ? SizedBox(
+                      width: context.width / 150,
+                    )
+                  : Container(),
+              SizedBox(
+                width: widget.coin.isAlarmActive == true
+                    ? MediaQuery.of(context).size.width / 7
+                    : MediaQuery.of(context).size.width / 5.5,
+                child: AutoSizeText(
+                  widget.coin.name.toUpperCase(),
+                  minFontSize: 5,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                  presetFontSizes: const [14, 12, 10, 8],
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+              ),
+            ],
+          ),
         ),
         widget.coin.lastUpdate != null
-            ? Text(
+            ? AutoSizeText(
                 widget.coin.lastUpdate!,
-                style: context.textTheme.overline,
+                maxLines: 1,
+                presetFontSizes: const [10, 8, 6],
               )
             : Container()
       ],
@@ -147,7 +157,23 @@ class _ListCardItemState extends State<ListCardItem> {
     }
   }
 
+  void percentageControl() async {
+    String result = widget.coin.changeOf24H ?? "";
+
+    if (result == "") {
+      widget.coin.percentageControl = PriceLevelControl.INCREASING.name;
+    } else if (result == "0.0") {
+      //  L AM NOT SURE FOR THIS TRY IT
+      widget.coin.percentageControl = PriceLevelControl.CONSTANT.name;
+    } else if (result[0] == "-") {
+      widget.coin.percentageControl = PriceLevelControl.DESCREASING.name;
+    } else {
+      widget.coin.percentageControl = PriceLevelControl.INCREASING.name;
+    }
+  }
+
   Color getColorForPercentage() {
+    percentageControl();
     if (widget.coin.percentageControl == PriceLevelControl.INCREASING.name) {
       return context.theme.indicatorColor;
     } else if (widget.coin.percentageControl ==

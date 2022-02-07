@@ -35,6 +35,8 @@ class MainCurrencyModelAdapter extends TypeAdapter<MainCurrencyModel> {
       highOf24h: fields[14] as String?,
       lowOf24h: fields[13] as String?,
       changeOf24H: fields[11] as String?,
+      addedPrice: fields[20] as String?,
+      changeOfPercentageSincesAddedTime: fields[21] as String?,
       min: fields[3] as double,
       max: fields[4] as double,
     );
@@ -43,7 +45,7 @@ class MainCurrencyModelAdapter extends TypeAdapter<MainCurrencyModel> {
   @override
   void write(BinaryWriter writer, MainCurrencyModel obj) {
     writer
-      ..writeByte(20)
+      ..writeByte(22)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
@@ -83,7 +85,11 @@ class MainCurrencyModelAdapter extends TypeAdapter<MainCurrencyModel> {
       ..writeByte(18)
       ..write(obj.isMaxLoop)
       ..writeByte(19)
-      ..write(obj.lastUpdate);
+      ..write(obj.lastUpdate)
+      ..writeByte(20)
+      ..write(obj.addedPrice)
+      ..writeByte(21)
+      ..write(obj.changeOfPercentageSincesAddedTime);
   }
 
   @override
@@ -103,18 +109,18 @@ class MainCurrencyModelAdapter extends TypeAdapter<MainCurrencyModel> {
 
 MainCurrencyModel _$MainCurrencyModelFromJson(Map<String, dynamic> json) =>
     MainCurrencyModel(
-      name: json['name'] as String,
+      name: json['currencyName'] as String,
       lastPrice: json['lastPrice'] as String?,
       id: json['id'] as String,
       isAlarmActive: json['isAlarmActive'] as bool? ?? false,
-      lastUpdate: json['lastUpdate'] as String?,
+      addedPrice: json['addedPrice'] as String?,
     );
 
 Map<String, dynamic> _$MainCurrencyModelToJson(MainCurrencyModel instance) =>
     <String, dynamic>{
-      'name': instance.name,
+      'currencyName': instance.name,
       'lastPrice': instance.lastPrice,
       'isAlarmActive': instance.isAlarmActive,
       'id': instance.id,
-      'lastUpdate': instance.lastUpdate,
+      'addedPrice': instance.addedPrice,
     };

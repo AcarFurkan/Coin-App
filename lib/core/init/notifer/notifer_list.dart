@@ -1,3 +1,7 @@
+import '../../../features/coin/add_coin_page/viewmodel/cubit/add_coin_cubit.dart';
+import '../../../features/coin/search_coin_page/viewmodel/cubit/search_page_cubit.dart';
+import '../../../product/connectivity_manager/connectivity_notifer.dart';
+
 import '../../../features/coin/bitexen/viewmodel/cubit/bitexen_cubit.dart';
 import '../../../features/coin/bitexen/viewmodel/page_viewmodel/cubit/bitexen_page_general_cubit.dart';
 import '../../../features/coin/coin_detail_page/viewmodel/cubit/cubit/coin_detail_cubit.dart';
@@ -39,7 +43,7 @@ class ApplicationProvider {
       create: (BuildContext context) => CoinListCubit(),
     ),
     BlocProvider<CoinDetailCubit>(
-      create: (BuildContext context) => CoinDetailCubit(),
+      create: (BuildContext context) => CoinDetailCubit(context),
     ),
     BlocProvider<ListPageGeneralCubit>(
       create: (BuildContext context) => ListPageGeneralCubit(context: context),
@@ -74,5 +78,11 @@ class ApplicationProvider {
     ),
     BlocProvider<CoinCubit>(
         create: (BuildContext context) => CoinCubit(context: context)),
+    BlocProvider<AddCoinCubit>(
+        create: (BuildContext context) => AddCoinCubit()),
+    BlocProvider<SearchPageCubit>(
+        create: (BuildContext context) => SearchPageCubit()),
+    ChangeNotifierProvider<ConnectivityNotifier>(
+        create: (BuildContext context) => ConnectivityNotifier()),
   ];
 }

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
+import '../../../../model/coin/my_coin_model.dart';
 
 import '../../../../../core/enums/price_control.dart';
 import '../../../../../core/model/response_model/response_model.dart';
@@ -30,7 +30,6 @@ class HurriyetServiceController {
 
     if (response.data != null) {
       _lastHurriyetStocks = response.data!;
-      percentageControl(_lastHurriyetStocks);
     }
 
     timer = Timer.periodic(Duration(seconds: timerSecond), (timer) async {
@@ -38,7 +37,6 @@ class HurriyetServiceController {
           .convertHurriyetStockListToMyMainCurrencyList();
       if (response.data != null) {
         _lastHurriyetStocks = response.data!;
-        percentageControl(_lastHurriyetStocks);
       }
       if (_previousHurriyetStocks.isEmpty != true) {
         lastPriceControl(_previousHurriyetStocks, _lastHurriyetStocks);
@@ -53,20 +51,6 @@ class HurriyetServiceController {
     previousList.clear();
     for (var item in lastList) {
       previousList.add(item);
-    }
-  }
-
-  void percentageControl(List<MainCurrencyModel> coin) async {
-    for (var item in coin) {
-      String result = item.changeOf24H ?? "";
-      if (result[0] == "-") {
-        item.percentageControl = PriceLevelControl.DESCREASING.name;
-      } else if (result == "0.0") {
-        //  L AM NOT SURE FOR THIS TRY IT
-        item.percentageControl = PriceLevelControl.CONSTANT.name;
-      } else {
-        item.percentageControl = PriceLevelControl.INCREASING.name;
-      }
     }
   }
 

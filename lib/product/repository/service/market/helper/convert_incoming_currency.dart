@@ -1,4 +1,4 @@
-import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
+import '../../../../model/coin/my_coin_model.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../core/enums/price_control.dart';
@@ -121,20 +121,6 @@ class CurrencyConverter {
   }
 
   Future<ResponseModel<List<MainCurrencyModel>>>
-      convertGechoCoinListToMyCoinList() async {
-    var response = await GechoService.instance.getAllCoins();
-    List<Gecho>? gechoCoinList = response.data;
-    List<MainCurrencyModel>? myCoin;
-    if (gechoCoinList != null) {
-      myCoin = gechoCoinList
-          .map((e) => mainCurrencyGeneratorFromGechoModel(e, "USD"))
-          .toList();
-    }
-    return ResponseModel<List<MainCurrencyModel>>(
-        data: myCoin, error: response.error);
-  }
-
-  Future<ResponseModel<List<MainCurrencyModel>>>
       convertGechoCoinListByCurrencyToMyCoinList(String name,
           {List<String>? idList}) async {
     var response =
@@ -148,6 +134,23 @@ class CurrencyConverter {
     }
     return ResponseModel<List<MainCurrencyModel>>(
         data: myCoin, error: response.error);
+  }
+
+  Future<ResponseModel<MainCurrencyModel>>
+      convertGechoCoinListByCurrencyToMyCoinId(
+    String id,
+  ) async {
+    var response = await GechoService.instance.getCoinsById(id);
+    List<Gecho>? gechoCoinList = response.data;
+    List<MainCurrencyModel>? myCoin;
+    if (gechoCoinList != null) {
+      myCoin = gechoCoinList
+          .map((e) => mainCurrencyGeneratorFromGechoModel(e, "USD"))
+          .toList();
+    }
+    return ResponseModel<MainCurrencyModel>(
+        data: (myCoin != null && myCoin.isNotEmpty) ? myCoin[0] : null,
+        error: response.error);
   }
 
   MainCurrencyModel mainCurrencyGeneratorFromBitexenModel(Bitexen coin) {
@@ -194,8 +197,9 @@ class CurrencyConverter {
         changeOf24H: (coin.priceChangePercentage24H ?? 0).toString(),
         lowOf24h: (coin.low24H ?? 0).toString(),
         highOf24h: (coin.high24H ?? 0).toString(),
-        lastUpdate: dateConvert(coin.lastUpdated!
-            .toLocal())); //DateFormat.jms().format(coin.lastUpdated!)
+        lastUpdate: dateConvert(coin.lastUpdated ??
+            DateTime(2022, 1, 1)
+                .toLocal())); //DateFormat.jms().format(coin.lastUpdated!)
   }
 
   MainCurrencyModel mainCurrencyGeneratorFromTrungilModel(Truncgil e) {

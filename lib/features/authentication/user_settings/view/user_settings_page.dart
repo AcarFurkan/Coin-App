@@ -1,5 +1,5 @@
-import 'package:coin_with_architecture/core/constant/app/app_constant.dart';
-import 'package:coin_with_architecture/product/language/locale_keys.g.dart';
+import '../../../../core/constant/app/app_constant.dart';
+import '../../../../product/language/locale_keys.g.dart';
 
 import '../../../../core/extension/context_extension.dart';
 import '../../../../core/extension/string_extension.dart';
@@ -91,7 +91,9 @@ class UserSettings extends StatelessWidget {
     return TextButton(
       onPressed: () {
         context.read<UserCubit>().overwriteDataToDb();
-        Navigator.popUntil(context, (ModalRoute.withName("/home")));
+        //  Navigator.popUntil(context, (ModalRoute.withName("/home")));
+        Navigator.pushNamedAndRemoveUntil(
+            context, "/home", (ModalRoute.withName("/home")));
       },
       child: Text(LocaleKeys.foundAlertDiolog_yes.locale,
           style: context.textTheme.bodyText1),

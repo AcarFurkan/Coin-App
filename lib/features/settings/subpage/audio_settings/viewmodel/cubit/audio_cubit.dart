@@ -1,36 +1,19 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:bloc/bloc.dart';
-import 'package:coin_with_architecture/core/extension/context_extension.dart';
-import 'package:coin_with_architecture/core/extension/string_extension.dart';
-import 'package:coin_with_architecture/product/language/locale_keys.g.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:just_audio/just_audio.dart';
-import 'package:path_provider/path_provider.dart';
 
-import '../../model/audio_model.dart';
 import '../../../../../../core/extension/context_extension.dart';
+import '../../../../../../core/extension/string_extension.dart';
+import '../../../../../../product/alarm_manager/alarm_manager.dart';
+import '../../../../../../product/language/locale_keys.g.dart';
+import '../../model/audio_model.dart';
 
 part 'audio_state.dart';
 
 class AudioCubit extends Cubit<AudioState> {
   AudioCubit() : super(AudioInitial()) {
     groupValue = audioPaths[0].path;
-  }
-
-  List<String> bb = [];
-
-  Future<List<String>> getPath() async {
-    Directory tempDir = await getTemporaryDirectory();
-    String tempPath = tempDir.path;
-
-    Directory appDocDir = await getApplicationDocumentsDirectory();
-    String appDocPath = appDocDir.path;
-
-    bb.add(tempPath);
-    bb.add(appDocPath);
-    return bb;
   }
 
   late String groupValue;
@@ -41,6 +24,7 @@ class AudioCubit extends Cubit<AudioState> {
   }
 
   List<AudioModel> audioPaths = [
+    AudioModel("vibration", "assets/audio/vibration.mp3"),
     AudioModel(LocaleKeys.alarmNames_sweetAlarm.locale,
         "assets/audio/sweet_alarm.mp3"),
     AudioModel(
@@ -63,7 +47,15 @@ class AudioCubit extends Cubit<AudioState> {
         "assets/audio/audio_four.mp3"),
   ];
 
-  Future<void> playAudio(
+  Future<void> playAudio(int index, BuildContext context, String title) async {
+    AudioManager.instance.play(audioPaths[index],
+        time: context.ultraHighDuration.inSeconds, title: title);
+  }
+}
+
+
+/**
+ * Future<void> playAudio(
       int index, AudioPlayer player, BuildContext context) async {
     try {
       // await player.setAsset('assets/audio/ozcan2.mp3');
@@ -97,4 +89,4 @@ class AudioCubit extends Cubit<AudioState> {
       print(e);
     }
   }
-}
+ */

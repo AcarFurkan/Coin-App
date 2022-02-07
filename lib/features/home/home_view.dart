@@ -1,6 +1,11 @@
-import 'package:coin_with_architecture/core/constant/app/app_constant.dart';
-import 'package:coin_with_architecture/core/extension/string_extension.dart';
-import 'package:coin_with_architecture/product/language/locale_keys.g.dart';
+import 'dart:async';
+
+import '../../core/constant/app/app_constant.dart';
+import '../../core/extension/string_extension.dart';
+import '../coin/search_coin_page/view/search_page.dart';
+import '../settings/view/settings_page.dart';
+import '../../product/connectivity_manager/connectivity_notifer.dart';
+import '../../product/language/locale_keys.g.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/src/provider.dart';
@@ -9,13 +14,11 @@ import '../../core/extension/context_extension.dart';
 import '../../product/untility/basic_alert_dialog.dart';
 import '../coin/bitexen/view/bitexen_page.dart';
 import '../coin/bitexen/viewmodel/page_viewmodel/cubit/bitexen_page_general_cubit.dart';
-import '../coin/hurriyet/view/hurriyet_page.dart';
 import '../coin/hurriyet/viewmodel/page_viewmodel/cubit/hurriyet_page_general_state_dart_cubit.dart';
 import '../coin/list_all_coin_page/view/coin_list_page.dart';
 import '../coin/list_all_coin_page/viewmodel/page_viewmodel/cubit/list_page_general_cubit.dart';
 import '../coin/selected_coin/view/selected_coin_page.dart';
 import '../coin/selected_coin/viewmodel/general/cubit/selected_page_general_cubit.dart';
-import '../coin/truncgil/view/truncgil_page.dart';
 import '../coin/truncgil/viewmodel/page_viewmodel.dart/cubit/truncgil_page_general_cubit.dart';
 import 'viewmodel/home_viewmodel.dart';
 
@@ -27,12 +30,42 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  final GlobalKey curvedKey = GlobalKey();
+  final PageStorageKey pageStorageKey =
+      const PageStorageKey<String>("pageview");
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      //context.read<HomeViewModel>().animateToPage =
+      //    context.read<HomeViewModel>().selectedIndex;
+      context.read<ConnectivityNotifier>().setContext(context);
+      context.read<ConnectivityNotifier>().init();
+    });
+    //if(){}
+  }
+
+  @override
+  void dispose() {
+    try {
+      //TODO: L DİDNT SOLVE THAT PROBLEM I TRIED IT IN CONNECTİVİTY NOTIFER BUT L COUDNT L CATCH  IT.
+      context.read<ConnectivityNotifier>().dispose();
+    } catch (e) {
+      print(e);
+    }
+    super.dispose();
+  }
+
   List<Widget> listPage = [
     SelectedCoinPage(),
     CoinListPage(),
     BitexenPage(),
-    TruncgilPage(),
-    HurriyetPage(),
+    //TruncgilPage(),
+    SearchPage(),
+    SettingsPage(),
+    //HurriyetPage(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -45,19 +78,33 @@ class _HomeViewState extends State<HomeView> {
       ),
     );
   }
-
-  PageView buildScaffoldBody(BuildContext context) {
-    return PageView(
-      key: widget.key,
+  /**
+   * (
+      key: PageStorageKey<String>("pageview"),
       controller: context.read<HomeViewModel>().pageController,
       onPageChanged: (index) =>
           context.read<HomeViewModel>().selectedIndex = index,
       children: listPage,
     );
+   */
+
+  PageView buildScaffoldBody(BuildContext context) {
+    return PageView.builder(
+        physics: const BouncingScrollPhysics(),
+        key: pageStorageKey,
+        itemCount: listPage.length,
+        restorationId: "pageview",
+        onPageChanged: (index) =>
+            context.read<HomeViewModel>().selectedIndex = index,
+        controller: context.read<HomeViewModel>().pageController,
+        itemBuilder: (context, index) {
+          return listPage[index];
+        });
   }
 
   CurvedNavigationBar buildCurvedNavigationBar(BuildContext context) {
     return CurvedNavigationBar(
+        key: curvedKey,
         color: context.theme.bottomNavigationBarTheme.backgroundColor ??
             context.theme.colorScheme.onError,
         buttonBackgroundColor:
@@ -97,11 +144,14 @@ class _HomeViewState extends State<HomeView> {
           ),
         ),
         Icon(
-          Icons.attach_money,
+          // Icons.attach_money,
+          Icons.add,
           color: tabbarLabelColorGenerator(3),
         ),
         Icon(
-          Icons.money,
+          //Icons.money,
+          Icons.settings,
+
           color: tabbarLabelColorGenerator(4),
         ),
       ];

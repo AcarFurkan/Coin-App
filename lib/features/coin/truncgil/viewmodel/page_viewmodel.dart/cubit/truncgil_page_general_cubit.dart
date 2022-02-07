@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../selected_coin/viewmodel/cubit/coin_cubit.dart';
+
 part 'truncgil_page_general_state.dart';
 
 class TruncgilPageGeneralCubit extends Cubit<TruncgilPageGeneralState> {
@@ -15,7 +17,14 @@ class TruncgilPageGeneralCubit extends Cubit<TruncgilPageGeneralState> {
   BuildContext context;
 
   TextEditingController? searchTextEditingController;
+  SortTypes _orderByDropdownValue = SortTypes.HIGH_TO_LOW_FOR_LAST_PRICE;
 
+  setorderByDropDownValue(SortTypes type) {
+    _orderByDropdownValue = type;
+    emit(TruncgilPageGeneralInitial());
+  }
+
+  SortTypes get getorderByDropDownValue => _orderByDropdownValue;
   void closeKeyBoardAndUnFocus() {
     if (isSearhOpen) {
       isSearhOpen = !isSearhOpen;

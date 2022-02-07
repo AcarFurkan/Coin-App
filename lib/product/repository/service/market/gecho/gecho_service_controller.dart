@@ -1,12 +1,14 @@
 import 'dart:async';
 
-import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
+import '../../../../model/coin/my_coin_model.dart';
+import '../../../cache/added_coin_list_externally_cache_manager.dart';
 
 import '../../../../../core/model/response_model/IResponse_model.dart';
 
 import '../../../../../core/enums/currency_enum.dart';
 import '../../../../../core/enums/price_control.dart';
 import '../../../../../core/model/response_model/response_model.dart';
+import '../../../../../locator.dart';
 import '../helper/convert_incoming_currency.dart';
 
 class GechoServiceController {
@@ -17,6 +19,9 @@ class GechoServiceController {
     _instance ??= GechoServiceController._init();
     return _instance!;
   }
+
+  final AddedCoinListExternally _listCoinIdCacheManager =
+      locator<AddedCoinListExternally>();
 
   GechoServiceController._init() {
     _previousGechoUsdCoins = ResponseModel(data: []);
@@ -36,6 +41,7 @@ class GechoServiceController {
   late Timer timerForETH;
   late Timer timerForTRY;
   late Timer timerForNEW;
+  List<String> coinsToBeAdded = [];
 
   late IResponseModel<List<MainCurrencyModel>> _previousGechoUsdCoins;
   late IResponseModel<List<MainCurrencyModel>> _lastGechoUsdCoins;
@@ -71,20 +77,40 @@ class GechoServiceController {
     await fetchGechoTryCoinListEveryTwoSecond();
     // await Future.delayed(Duration(milliseconds: 100));
     await fetchGechoEthCoinListEveryTwoSecond();
-    /* await fetchNewGechoUsdCoinListEveryTwoSecond();*/
+    await fetchNewGechoUsdCoinListEveryTwoSecond();
+  }
+
+  Future<void> fetchNewGechoUsdCoinListEveryTwoSecond() async {
+    await fetchNewGechoUsdCoinListTransactionForUsd();
+    timerForUSD = Timer.periodic(Duration(seconds: timerSecond), (timer) async {
+      await fetchNewGechoUsdCoinListTransactionForUsd();
+      if (_previousNewGechousdCoins.data != null &&
+          _lastNewGechoUsdCoins.data != null) {
+        if (_previousNewGechousdCoins.data!.isNotEmpty &&
+            _lastNewGechoUsdCoins.data!.isNotEmpty) {
+          lastPriceControl(_previousNewGechousdCoins.data!,
+              _lastNewGechoUsdCoins.data!); // TODO: FİX NULL CHECK
+        }
+        transferLastListToPreviousList(
+            _previousNewGechousdCoins.data!, _lastNewGechoUsdCoins.data!);
+      }
+    });
   }
 
   Future<void> fetchGechoUsdCoinListEveryTwoSecond() async {
     await fetchDataTransactionForUsd();
     timerForUSD = Timer.periodic(Duration(seconds: timerSecond), (timer) async {
       await fetchDataTransactionForUsd();
-      if (_previousGechoUsdCoins.data!.isNotEmpty &&
-          _lastGechoUsdCoins.data!.isNotEmpty) {
-        lastPriceControl(
+      if (_previousGechoUsdCoins.data != null &&
+          _lastGechoUsdCoins.data != null) {
+        if (_previousGechoUsdCoins.data!.isNotEmpty &&
+            _lastGechoUsdCoins.data!.isNotEmpty) {
+          lastPriceControl(
+              _previousGechoUsdCoins.data!, _lastGechoUsdCoins.data!);
+        }
+        transferLastListToPreviousList(
             _previousGechoUsdCoins.data!, _lastGechoUsdCoins.data!);
       }
-      transferLastListToPreviousList(
-          _previousGechoUsdCoins.data!, _lastGechoUsdCoins.data!);
     });
   }
 
@@ -92,14 +118,16 @@ class GechoServiceController {
     await fetchDataTransactionForBtc();
     timerForBTC = Timer.periodic(Duration(seconds: timerSecond), (timer) async {
       await fetchDataTransactionForBtc();
-      if (_previousGechoBtcCoins.data!.isNotEmpty &&
-          _lastGechoBtcCoins.data!.isNotEmpty) {
-        lastPriceControl(
+      if (_previousGechoBtcCoins.data != null &&
+          _lastGechoBtcCoins.data != null) {
+        if (_previousGechoBtcCoins.data!.isNotEmpty &&
+            _lastGechoBtcCoins.data!.isNotEmpty) {
+          lastPriceControl(
+              _previousGechoBtcCoins.data!, _lastGechoBtcCoins.data!);
+        }
+        transferLastListToPreviousList(
             _previousGechoBtcCoins.data!, _lastGechoBtcCoins.data!);
       }
-
-      transferLastListToPreviousList(
-          _previousGechoBtcCoins.data!, _lastGechoBtcCoins.data!);
     });
   }
 
@@ -107,13 +135,16 @@ class GechoServiceController {
     await fetchDataTransactionForTry();
     timerForTRY = Timer.periodic(Duration(seconds: timerSecond), (timer) async {
       await fetchDataTransactionForTry();
-      if (_previousGechoTryCoins.data!.isNotEmpty &&
-          _lastGechoTryCoins.data!.isNotEmpty) {
-        lastPriceControl(
+      if (_previousGechoTryCoins.data != null &&
+          _lastGechoTryCoins.data != null) {
+        if (_previousGechoTryCoins.data!.isNotEmpty &&
+            _lastGechoTryCoins.data!.isNotEmpty) {
+          lastPriceControl(
+              _previousGechoTryCoins.data!, _lastGechoTryCoins.data!);
+        }
+        transferLastListToPreviousList(
             _previousGechoTryCoins.data!, _lastGechoTryCoins.data!);
       }
-      transferLastListToPreviousList(
-          _previousGechoTryCoins.data!, _lastGechoTryCoins.data!);
     });
   }
 
@@ -121,47 +152,80 @@ class GechoServiceController {
     await fetchDataTransactionForEth();
     timerForETH = Timer.periodic(Duration(seconds: timerSecond), (timer) async {
       await fetchDataTransactionForEth();
-      if (_previousGechoEthCoins.data!.isNotEmpty &&
-          _lastGechoEthCoins.data!.isNotEmpty) {
-        lastPriceControl(
+      if (_previousGechoEthCoins.data != null &&
+          _lastGechoEthCoins.data != null) {
+        if (_previousGechoEthCoins.data!.isNotEmpty &&
+            _lastGechoEthCoins.data!.isNotEmpty) {
+          lastPriceControl(
+              _previousGechoEthCoins.data!, _lastGechoEthCoins.data!);
+        }
+        transferLastListToPreviousList(
             _previousGechoEthCoins.data!, _lastGechoEthCoins.data!);
       }
-      transferLastListToPreviousList(
-          _previousGechoEthCoins.data!, _lastGechoEthCoins.data!);
     });
   }
 
   Future<void> fetchDataTransactionForUsd() async {
     ResponseModel<List<MainCurrencyModel>> responseUSD =
         await getFromCurrencyConverter(CoinCurrency.USD.name);
-    ResponseModel<List<MainCurrencyModel>> responseNEW =
-        await getFromCurrencyConverter(CoinCurrency.USD.name, idList: [
-      "ninja-squad",
-      "talecraft",
-      "colony",
-      "bitcoin",
-      "magic",
-      "galatasaray-fan-token"
-    ]);
+
     if (responseUSD.error != null) {
-      responseUSD = responseUSD;
+      responseUSD = ResponseModel<List<MainCurrencyModel>>(
+          data: _lastGechoUsdCoins.data, error: responseUSD.error);
     } else if (responseUSD.data != null) {
-      if (responseNEW.data != null && responseNEW.data!.isNotEmpty) {
-        responseUSD.data?.addAll(responseNEW.data!);
-      }
       _lastGechoUsdCoins = responseUSD;
-      percentageControl(_lastGechoUsdCoins.data!);
+    } else {
+      responseUSD =
+          ResponseModel<List<MainCurrencyModel>>(data: _lastGechoUsdCoins.data);
     }
+  }
+
+  Future<void> fetchNewGechoUsdCoinListTransactionForUsd() async {
+    coinsToBeAdded = _listCoinIdCacheManager.getAllItems() ?? [];
+    if (coinsToBeAdded.isNotEmpty) {
+      //bunu diğerlerine yaparsan ve isnot empty olayının elsenii yazmasan 404 olayını çözebilirsin
+      ResponseModel<List<MainCurrencyModel>> responseNEW =
+          await getFromCurrencyConverter(CoinCurrency.USD.name,
+              idList: coinsToBeAdded);
+      if (responseNEW.error != null) {
+        responseNEW = ResponseModel<List<MainCurrencyModel>>(
+            data: _lastNewGechoUsdCoins.data, error: responseNEW.error);
+      } else if (responseNEW.data != null) {
+        _lastNewGechoUsdCoins = responseNEW;
+      } else {
+        _lastNewGechoUsdCoins = ResponseModel<List<MainCurrencyModel>>(
+            data: _lastNewGechoUsdCoins.data);
+      }
+    } else {
+      _lastNewGechoUsdCoins.data?.clear();
+    }
+  }
+
+  Future<ResponseModel<MainCurrencyModel>> fetchDataById(String id) async {
+    ResponseModel<MainCurrencyModel> responseUSD = await CurrencyConverter
+        .instance
+        .convertGechoCoinListByCurrencyToMyCoinId(id);
+    if (responseUSD.error != null) {
+      responseUSD = ResponseModel<MainCurrencyModel>(
+          data: responseUSD.data, error: responseUSD.error);
+    } else if (responseUSD.data != null) {
+      responseUSD = responseUSD;
+    }
+    return responseUSD;
   }
 
   Future<void> fetchDataTransactionForTry() async {
     ResponseModel<List<MainCurrencyModel>> responseTRY =
         await getFromCurrencyConverter(CoinCurrency.TRY.name);
     if (responseTRY.error != null) {
-      responseTRY = responseTRY;
+      responseTRY = ResponseModel<List<MainCurrencyModel>>(
+          data: _lastGechoTryCoins.data, error: responseTRY.error);
     } else if (responseTRY.data != null) {
       _lastGechoTryCoins = responseTRY;
-      percentageControl(_lastGechoTryCoins.data!);
+    } else {
+      responseTRY = ResponseModel<List<MainCurrencyModel>>(
+        data: _lastGechoTryCoins.data,
+      );
     }
   }
 
@@ -170,24 +234,30 @@ class GechoServiceController {
         await getFromCurrencyConverter(CoinCurrency.BTC.name);
 
     if (responseBTC.error != null) {
-      responseBTC = responseBTC;
+      responseBTC = ResponseModel<List<MainCurrencyModel>>(
+          data: _lastGechoBtcCoins.data, error: responseBTC.error);
     } else if (responseBTC.data != null) {
       _lastGechoBtcCoins = responseBTC;
-      percentageControl(_lastGechoBtcCoins.data!);
+    } else {
+      responseBTC =
+          ResponseModel<List<MainCurrencyModel>>(data: _lastGechoBtcCoins.data);
     }
   }
 
   Future<void> fetchDataTransactionForEth() async {
     ResponseModel<List<MainCurrencyModel>> responseETH =
-        await getFromCurrencyConverter(CoinCurrency.TRY.name);
+        await getFromCurrencyConverter(CoinCurrency.ETH.name);
     if (responseETH.error != null) {
-      responseETH = responseETH;
+      responseETH = ResponseModel<List<MainCurrencyModel>>(
+          data: _lastGechoEthCoins.data, error: responseETH.error);
     } else if (responseETH.data != null) {
       _lastGechoEthCoins = responseETH;
-      percentageControl(_lastGechoEthCoins.data!);
+    } else {
+      _lastGechoEthCoins =
+          ResponseModel<List<MainCurrencyModel>>(data: _lastGechoEthCoins.data);
     }
   }
-  /* Future<void> fetchNewGechoUsdCoinListEveryTwoSecond() async {
+  /*Future<void> fetchNewGechoUsdCoinListEveryTwoSecond() async {
     ResponseModel<List<MainCurrencyModel>> responseNEW =
         await getFromCurrencyConverter(CoinCurrency.USD.name,
             idList: ["ninja-squad", "talecraft", "colony", "bitcoin"]);
@@ -225,20 +295,6 @@ class GechoServiceController {
         .instance
         .convertGechoCoinListByCurrencyToMyCoinList(currency, idList: idList);
     return response;
-  }
-
-  void percentageControl(List<MainCurrencyModel> coin) async {
-    for (var item in coin) {
-      String result = item.changeOf24H ?? "";
-      if (result[0] == "-") {
-        item.percentageControl = PriceLevelControl.DESCREASING.name;
-      } else if (result == "0.0") {
-        //  L AM NOT SURE FOR THIS TRY IT
-        item.percentageControl = PriceLevelControl.CONSTANT.name;
-      } else {
-        item.percentageControl = PriceLevelControl.INCREASING.name;
-      }
-    }
   }
 
   void lastPriceControl(

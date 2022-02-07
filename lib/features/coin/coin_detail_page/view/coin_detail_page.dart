@@ -1,14 +1,12 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
-import 'package:coin_with_architecture/product/widget/chart/chart_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:persian_tools/persian_tools.dart';
 
 import '../../../../core/extension/context_extension.dart';
 import '../../../../core/extension/string_extension.dart';
 import '../../../../product/language/locale_keys.g.dart';
-import '../../../settings/subpage/audio_settings/model/audio_model.dart';
+import '../../../../product/model/coin/my_coin_model.dart';
+import '../../../home/viewmodel/home_viewmodel.dart';
 import '../../../settings/subpage/audio_settings/view/audio_page.dart';
 import '../viewmodel/cubit/cubit/coin_detail_cubit.dart';
 
@@ -28,17 +26,11 @@ class _CoinDetailPageState extends State<CoinDetailPage> {
     super.initState();
     context.read<CoinDetailCubit>().getCoinByNameFromDb(widget.coin.id);
     context.read<CoinDetailCubit>().setInComingCoin(widget.coin);
-
-    if (context.read<CoinDetailCubit>().myCoin != null) {
-      context.read<CoinDetailCubit>().minTextEditingController.text =
-          context.read<CoinDetailCubit>().myCoin!.min.toString();
-      context.read<CoinDetailCubit>().maxTextEditingController.text =
-          context.read<CoinDetailCubit>().myCoin!.max.toString();
-    }
   }
 
   @override
   Widget build(BuildContext context) {
+    print(NavigatorObserver);
     return _blocConsumer;
   }
 

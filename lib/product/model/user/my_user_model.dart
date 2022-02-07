@@ -29,13 +29,4 @@ class MyUser implements BaseModel {
 
   @override
   Map<String, Object?> toJson() => _$MyUserToJson(this);
-  //NEDEN BU ŞEKİLDE OLUYOR BAK
-  /*  MyUser.fromMap(Map<String, dynamic> map)
-      : userID = map['userID'],
-        email = map['email'],
-        userName = map['userName'],
-        profilURL = map['profilURL'],
-        createdAt = (map['createdAt'] as Timestamp).toDate(),
-        updatedAt = (map['updatedAt'] as Timestamp).toDate(),
-        seviye = map['seviye'];*/
 }

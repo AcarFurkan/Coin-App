@@ -15,6 +15,9 @@ class AppConstant {
     WELCOME_PAGE = "assets/images/welcome_two.png";
     BTC_ICON = "assets/icon/btcIcon.png";
     PROFILE_IMAGE_PATH = "assets/images/profile_3d_eight.png";
+    SEARCH_IMAGE_PATH = "assets/svg/search.svg";
+    SVG_404_PATH = "assets/svg/404_svg.svg";
+    ADD_IMAGE_PATH = "assets/svg/add.svg";
   }
 
   late final String LANG_ASSET_PATH;
@@ -25,4 +28,7 @@ class AppConstant {
   late final String WELCOME_PAGE;
   late final String BTC_ICON;
   late final String PROFILE_IMAGE_PATH;
+  late final String SEARCH_IMAGE_PATH;
+  late final String SVG_404_PATH;
+  late final String ADD_IMAGE_PATH;
 }

@@ -1,4 +1,4 @@
-import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
+import '../../../model/coin/my_coin_model.dart';
 
 import '../../../../core/enums/back_up_enum.dart';
 import '../../../../core/model/response_model/IResponse_model.dart';

@@ -1,10 +1,10 @@
-import 'package:coin_with_architecture/core/extension/context_extension.dart';
-import 'package:coin_with_architecture/product/widget/component/language_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../core/extension/context_extension.dart';
 import '../../../../../core/extension/string_extension.dart';
 import '../../../../../product/language/locale_keys.g.dart';
+import '../../../../../product/widget/component/language_list_tile.dart';
 import '../../../model/language_model.dart';
 import '../viewmodel/language_page_viewmodel.dart';
 

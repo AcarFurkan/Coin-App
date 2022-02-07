@@ -20,6 +20,7 @@ abstract class ThemeManager {
         colorScheme: theme.colors.colorScheme,
         appBarTheme: AppBarTheme(color: theme.colors.colors.appBarBlack),
         //bottomAppBarColor: theme.colors.colors.darkColorForTrial,
+
         bottomNavigationBarTheme: BottomNavigationBarThemeData(
             backgroundColor: theme.colors.colors.darkColorForTrial,
             selectedItemColor: theme.colors.colors.white,

@@ -1,15 +1,15 @@
 import 'package:bloc/bloc.dart';
-import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../../locator.dart';
+import '../../../../../../product/model/coin/my_coin_model.dart';
 import '../../../../../../product/repository/cache/coin_cache_manager.dart';
 import '../../../../../settings/subpage/audio_settings/model/audio_model.dart';
 
 part 'coin_detail_state.dart';
 
 class CoinDetailCubit extends Cubit<CoinDetailState> {
-  CoinDetailCubit() : super(CoinDetailInitial()) {
+  CoinDetailCubit(BuildContext context) : super(CoinDetailInitial()) {
     isFavorite = false;
     isAlarm = false;
     isMinAlarmActive = false;
@@ -18,11 +18,13 @@ class CoinDetailCubit extends Cubit<CoinDetailState> {
     isMaxLoop = false;
     minTextEditingController = TextEditingController();
     maxTextEditingController = TextEditingController();
-
+    addPriceEditingController = TextEditingController();
+    context = context;
     initilizeCacheManger();
   }
   late final TextEditingController minTextEditingController;
   late final TextEditingController maxTextEditingController;
+  late final TextEditingController addPriceEditingController;
   AudioModel? _minSelectedAudio;
   AudioModel? _maxSelectedAudio;
 
@@ -33,6 +35,7 @@ class CoinDetailCubit extends Cubit<CoinDetailState> {
   late bool isMinAlarmActive;
   late bool isMaxAlarmActive;
   late MainCurrencyModel inComingCoin;
+  late BuildContext context;
 
   final CoinCacheManager _cacheManager = locator<CoinCacheManager>();
   MainCurrencyModel? myCoin;
@@ -107,7 +110,16 @@ class CoinDetailCubit extends Cubit<CoinDetailState> {
     var result = getFromDb(name);
 
     myCoin = result;
+
     if (result != null) {
+      minTextEditingController.text = myCoin!.min.toString();
+      maxTextEditingController.text = myCoin!.max.toString();
+
+      if (myCoin!.addedPrice == null) {
+        addPriceEditingController.text = myCoin!.lastPrice.toString();
+      } else {
+        addPriceEditingController.text = myCoin!.addedPrice.toString();
+      }
       emit(CoinDetailInitial());
 
       isFavorite = result.isFavorite;
@@ -132,12 +144,12 @@ class CoinDetailCubit extends Cubit<CoinDetailState> {
         (isFavorite == false || isFavorite == true)) {
       if (minSelectedAudio == null && isMinAlarmActive) {
         //             BUNLARI BURADAN AYIRMAK İÇİN ADD TO BE Yİ FAVORİ VE SET ALLARM OLARAK AYIRMALASIN HEM DAHA DOĞRU HEMDE BURDA İŞ SINIFLARINI ALIRSIN  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        audioModel = AudioModel("audio1", "assets/audio/audio_one.mp3");
+        audioModel = AudioModel("audio1", "assets/audio/sweet_alarm.mp3");
         minSelectedAudio = audioModel;
       }
       if (maxSelectedAudio == null && isMaxAlarmActive) {
         maxSelectedAudio =
-            audioModel ?? AudioModel("audio1", "assets/audio/audio_one.mp3");
+            audioModel ?? AudioModel("audio1", "assets/audio/sweet_alarm.mp3");
       }
       incomingCoin.isFavorite = true;
       incomingCoin.isAlarmActive = isAlarm;
@@ -192,6 +204,7 @@ class CoinDetailCubit extends Cubit<CoinDetailState> {
           counterCurrencyCode: incomingCoin.counterCurrencyCode,
           min: incomingCoin.min,
           max: incomingCoin.max,
+          addedPrice: inComingCoin.addedPrice,
           minAlarmAudio: minSelectedAudio,
           maxAlarmAudio: maxSelectedAudio,
           isMinLoop: incomingCoin.isMinLoop,

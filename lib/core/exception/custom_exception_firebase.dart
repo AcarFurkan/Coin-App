@@ -1,5 +1,5 @@
-import 'package:coin_with_architecture/core/extension/string_extension.dart';
-import 'package:coin_with_architecture/product/language/locale_keys.g.dart';
+import '../extension/string_extension.dart';
+import '../../product/language/locale_keys.g.dart';
 
 class FirebaseCustomExceptions {
   static String convertFirebaseMessage(String exceptionCode) {

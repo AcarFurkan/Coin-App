@@ -57,4 +57,5 @@ extension DurationExtension on BuildContext {
   Duration get normalDuration => const Duration(seconds: 1);
   Duration get midDuration => const Duration(seconds: 2);
   Duration get highDuration => const Duration(seconds: 3);
+  Duration get ultraHighDuration => const Duration(seconds: 4);
 }

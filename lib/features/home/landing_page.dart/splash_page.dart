@@ -1,5 +1,5 @@
-import 'package:coin_with_architecture/core/constant/app/app_constant.dart';
-import 'package:coin_with_architecture/core/extension/context_extension.dart';
+import '../../../core/constant/app/app_constant.dart';
+import '../../../core/extension/context_extension.dart';
 import 'package:flutter/material.dart';
 
 class Splash extends StatelessWidget {

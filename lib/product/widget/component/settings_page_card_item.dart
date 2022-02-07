@@ -1,4 +1,4 @@
-import 'package:coin_with_architecture/core/extension/context_extension.dart';
+import '../../../core/extension/context_extension.dart';
 import 'package:flutter/material.dart';
 
 class SettingsCardItem extends StatelessWidget {

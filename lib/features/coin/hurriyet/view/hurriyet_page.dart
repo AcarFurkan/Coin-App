@@ -1,6 +1,10 @@
-import 'package:coin_with_architecture/core/constant/app/app_constant.dart';
-import 'package:coin_with_architecture/product/language/locale_keys.g.dart';
-import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+import '../../../../core/constant/app/app_constant.dart';
+import '../../selected_coin/viewmodel/cubit/coin_cubit.dart';
+import '../../../../product/connectivity_manager/connectivity_notifer.dart';
+import '../../../../product/language/locale_keys.g.dart';
+import '../../../../product/model/coin/my_coin_model.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 import '../../../../core/extension/context_extension.dart';
 import '../../../../product/widget/component/text_form_field_with_animation.dart';
@@ -13,9 +17,11 @@ import '../../../../core/widget/text/locale_text.dart';
 import '../../../../product/widget/component/coin_current_info_card.dart';
 import '../viewmodel/cubit/hurriyet_cubit.dart';
 import '../viewmodel/page_viewmodel/cubit/hurriyet_page_general_state_dart_cubit.dart';
+part './subview/sort_popup_extension.dart';
 
 class HurriyetPage extends StatelessWidget {
   HurriyetPage({Key? key}) : super(key: key);
+  final GlobalKey _menuKey = GlobalKey();
 
   final List<MainCurrencyModel> searchresult = [];
 
@@ -76,8 +82,13 @@ class HurriyetPage extends StatelessWidget {
       },
       listener: (context, state) {
         if (state is HurriyetError) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(state.message)));
+          if (context.read<ConnectivityNotifier>().connectionStatus ==
+              ConnectivityResult.none) {
+            context.read<ConnectivityNotifier>().showConnectionErrorSnackBar();
+          } else {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(state.message)));
+          }
         }
       },
     );
@@ -94,6 +105,21 @@ class HurriyetPage extends StatelessWidget {
 
     return Column(
       children: [
+        Padding(
+          padding: context.paddingLowHorizontal,
+          child: SizedBox(
+            height: context.lowValue * 4,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(flex: 5, child: Text("  Sembol")),
+                Spacer(flex: 2),
+                Expanded(flex: 5, child: Text(" LastPrice")),
+                Expanded(flex: 6, child: buildOrderByPopupMenu(context)),
+              ],
+            ),
+          ),
+        ),
         buildTextFormFieldWithAnimation(
           context,
           controller: context
@@ -150,6 +176,11 @@ class HurriyetPage extends StatelessWidget {
       BuildContext context) {
     coinListToShow = state.hurriyetCoinsList;
     coinListToShow = searchTransaction(context, coinListToShow);
+    coinListToShow = context.read<HurriyetCubit>().orderList(
+        context
+            .read<HurriyetPageGeneralStateDartCubit>()
+            .getorderByDropDownValue,
+        coinListToShow);
     return coinListToShow;
   }
 

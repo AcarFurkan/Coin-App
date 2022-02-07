@@ -7,14 +7,12 @@ import 'core/init/notifer/notifer_list.dart';
 import 'features/home/landing_page.dart/landing_page.dart';
 import 'features/home/landing_page.dart/splash_page.dart';
 import 'product/language/language_manager.dart';
-import 'product/language/locale_keys.g.dart';
 import 'product/theme/theme_provider.dart';
 import 'product/untility/navigation/route_generator.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
-
   runApp(MultiProvider(
     providers: ApplicationProvider.instance.providers,
     child: EasyLocalization(
@@ -45,7 +43,7 @@ class FutureBuilderForSplash extends StatelessWidget {
             supportedLocales: context.supportedLocales,
             locale: context.locale,
             theme: context.watch<ThemeProvider>().theme,
-            title: LocaleKeys.changeLanguagePage_korean,
+            title: "LocaleKeys.mainApp.tr()", // TODO FİX İT
             onGenerateRoute: RouteGenerator.routeGenerator,
             home:
                 FutureBuilderForIsFirstOpen(), //BUNU NİYE YAZMAMIZ LAZIM ONU ANLAMADIM

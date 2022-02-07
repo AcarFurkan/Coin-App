@@ -1,4 +1,6 @@
-import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
+import '../../../features/coin/add_coin_page/view/add_coin_page.dart';
+import '../../../features/coin/search_coin_page/view/search_page.dart';
+import '../../model/coin/my_coin_model.dart';
 
 import '../../../features/authentication/user_settings/view/user_settings_page.dart';
 import '../../../features/home/landing_page.dart/landing_page.dart';
@@ -45,6 +47,10 @@ class RouteGenerator {
 
       case '/settingsGeneral':
         return _routeOlustur(const SettingsPage(), settings);
+      case '/searchPage':
+        return _routeOlustur(const SearchPage(), settings);
+      case '/addCoinPage':
+        return _routeOlustur(const AddCoinPage(), settings);
 
       case '/detailPage':
         var arg = settings.arguments as MainCurrencyModel;

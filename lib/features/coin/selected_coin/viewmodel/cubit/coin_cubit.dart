@@ -1,9 +1,18 @@
+// ignore_for_file: constant_identifier_names
+
 import 'dart:async';
-import 'dart:io';
 
 import 'package:bloc/bloc.dart';
+import 'package:coin_with_architecture/core/enums/locale_keys_enum.dart';
+import 'package:coin_with_architecture/core/extension/context_extension.dart';
+import 'package:coin_with_architecture/product/alarm_manager/alarm_manager.dart';
+import 'package:coin_with_architecture/product/language/locale_keys.g.dart';
+import 'package:coin_with_architecture/product/repository/cache/app_cache_manager.dart';
+import 'package:coin_with_architecture/product/repository/cache/coin_id_list_cache_manager.dart';
+import 'package:coin_with_architecture/product/repository/service/market/gecho/gecho_service.dart';
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
+import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:provider/src/provider.dart';
 
 import '../../../../../core/enums/back_up_enum.dart';
@@ -25,6 +34,15 @@ import '../../../../settings/subpage/audio_settings/model/audio_model.dart';
 part 'coin_state.dart';
 
 enum levelControl { INCREASING, DESCREASING, CONSTANT }
+enum SortTypes {
+  NO_SORT,
+  HIGH_TO_LOW_FOR_LAST_PRICE,
+  LOW_TO_HIGH_FOR_LAST_PRICE,
+  HIGH_TO_LOW_FOR_PERCENTAGE,
+  LOW_TO_HIGH_FOR_PERCENTAGE,
+  HIGH_TO_LOW_FOR_ADDED_PRICE,
+  LOW_TO_HIGH_FOR_ADDED_PRICE,
+}
 
 class CoinCubit extends Cubit<CoinState> {
   CoinCubit({required this.context}) : super(CoinInitial());
@@ -32,9 +50,12 @@ class CoinCubit extends Cubit<CoinState> {
   final CoinCacheManager _cacheManager = locator<CoinCacheManager>();
   List<String>? _itemsToBeDelete;
   List<String>? get itemsToBeDelete => _itemsToBeDelete;
-  AudioPlayer? player;
+  // AudioPlayer? player;
   final UserServiceController _userServiceController =
       UserServiceController.instance;
+  final CoinIdListCacheManager _coinIdListCacheManager =
+      locator<CoinIdListCacheManager>();
+  final AppCacheManager _appCacheManager = locator<AppCacheManager>();
 
   Timer? timer;
   Color textColor = Colors.black;
@@ -60,22 +81,94 @@ class CoinCubit extends Cubit<CoinState> {
     if (coinListFromDataBase == null) {
       return [];
     }
-
+    allCoinIdListBackUpCheck();
     await backUpCheck(myUser, coinListFromDataBase); // YOU CAN DELETE THESE
 
     if (currencyServiceResponse.error != null) {
       emit(CoinError("general error"));
-    } else if (currencyServiceResponse.data != null) {
+    }
+    if (currencyServiceResponse.data != null) {
       dataFullTransactions(coinListFromDataBase, currencyServiceResponse.data!);
     }
+
+    calculatePercentageDifferencesSinceAddedTime(coinListFromDataBase);
 
     return coinListFromDataBase;
   }
 
-  void dataFullTransactions(
-    List<MainCurrencyModel> coinListFromDataBase,
-    List<MainCurrencyModel> coinListFromService,
-  ) {
+  calculatePercentageDifferencesSinceAddedTime(List<MainCurrencyModel> list) {
+    for (var item in list) {
+      double addedPrice = double.parse(item.addedPrice ?? "0");
+      double lastPrice = double.parse(item.lastPrice ?? "0");
+      double difference = lastPrice - addedPrice;
+      if (item.id == "binancecoingechoUSD") {
+        print(((difference / addedPrice) * 100));
+      }
+      item.changeOfPercentageSincesAddedTime =
+          ((difference / addedPrice) * 100).toString();
+    }
+  }
+
+  orderList(SortTypes type, List<MainCurrencyModel> list) {
+    switch (type) {
+      case SortTypes.NO_SORT:
+        return list;
+      case SortTypes.HIGH_TO_LOW_FOR_LAST_PRICE:
+        // _orderByHighToLowForLastPrice(list);
+        return _orderByHighToLowForLastPrice(list);
+      case SortTypes.LOW_TO_HIGH_FOR_LAST_PRICE:
+        return _orderByLowToHighForLastPrice(list);
+      case SortTypes.HIGH_TO_LOW_FOR_ADDED_PRICE:
+        return _orderByHighToLowForAddedPrice(list);
+      case SortTypes.LOW_TO_HIGH_FOR_ADDED_PRICE:
+        return _orderByLowToHighForAddedPrice(list);
+      case SortTypes.HIGH_TO_LOW_FOR_PERCENTAGE:
+        return _orderByHighToLowForPercentage(list);
+      case SortTypes.LOW_TO_HIGH_FOR_PERCENTAGE:
+        return _orderByLowToHighForPercentage(list);
+      default:
+        break;
+    }
+  }
+
+  _orderByHighToLowForAddedPrice(List<MainCurrencyModel> list) {
+    list.sort((a, b) => double.parse(a.addedPrice ?? "0")
+        .compareTo(double.parse(b.addedPrice ?? "0")));
+    return list.reversed.toList();
+  }
+
+  _orderByLowToHighForAddedPrice(List<MainCurrencyModel> list) {
+    list.sort((a, b) => double.parse(a.addedPrice ?? "0")
+        .compareTo(double.parse(b.addedPrice ?? "0")));
+    return list;
+  }
+
+  _orderByHighToLowForLastPrice(List<MainCurrencyModel> list) {
+    list.sort((a, b) => double.parse(a.lastPrice ?? "0")
+        .compareTo(double.parse(b.lastPrice ?? "0")));
+    return list.reversed.toList();
+  }
+
+  _orderByLowToHighForLastPrice(List<MainCurrencyModel> list) {
+    list.sort((a, b) => double.parse(a.lastPrice ?? "0")
+        .compareTo(double.parse(b.lastPrice ?? "0")));
+    return list;
+  }
+
+  _orderByHighToLowForPercentage(List<MainCurrencyModel> list) {
+    list.sort((a, b) => double.parse(a.changeOf24H ?? "0")
+        .compareTo(double.parse(b.changeOf24H ?? "0")));
+    return list.reversed.toList();
+  }
+
+  _orderByLowToHighForPercentage(List<MainCurrencyModel> list) {
+    list.sort((a, b) => double.parse(a.changeOf24H ?? "0")
+        .compareTo(double.parse(b.changeOf24H ?? "0")));
+    return list;
+  }
+
+  void dataFullTransactions(List<MainCurrencyModel> coinListFromDataBase,
+      List<MainCurrencyModel> coinListFromService) {
     for (var i = 0; i < coinListFromService.length; i++) {
       for (var itemFromDataBase in coinListFromDataBase) {
         if (coinListFromService[i].id == itemFromDataBase.id) {
@@ -92,26 +185,39 @@ class CoinCubit extends Cubit<CoinState> {
     if (lastPrice < itemFromDataBase.min && itemFromDataBase.isMinAlarmActive) {
       playMusic(
           itemFromDataBase.minAlarmAudio ??
-              AudioModel("audio1", "assets/audio/audio_one.mp3"),
-          itemFromDataBase.isMinLoop!);
+              AudioModel(
+                "audio1",
+                "assets/audio/sweet_alarm.mp3",
+              ),
+          itemFromDataBase.isMinLoop!,
+          title: LocaleKeys.alarmAlertDialog_min.tr());
       itemFromDataBase.isMinAlarmActive = false;
+      if (itemFromDataBase.isMaxAlarmActive == false) {
+        itemFromDataBase.isAlarmActive = false;
+      }
       addToDb(itemFromDataBase);
       emit(CoinAlarm(
           itemFromDataBase: itemFromDataBase,
-          message: " fiyat minimum fiyatın altına indi."));
-    }
-    if (lastPrice > itemFromDataBase.max &&
+          message:
+              "${itemFromDataBase.name.toUpperCase()} ${LocaleKeys.alarmAlertDialog_min.tr()}"));
+    } else if (lastPrice > itemFromDataBase.max &&
         itemFromDataBase.isMaxAlarmActive &&
         itemFromDataBase.max != 0) {
       playMusic(
           itemFromDataBase.maxAlarmAudio ??
-              AudioModel("audio1", "assets/audio/audio_one.mp3"),
-          itemFromDataBase.isMaxLoop!);
+              AudioModel("audio1", "assets/audio/sweet_alarm.mp3"),
+          itemFromDataBase.isMaxLoop!,
+          title:
+              "${itemFromDataBase.name.toUpperCase()} ${LocaleKeys.alarmAlertDialog_max.tr()}");
       itemFromDataBase.isMaxAlarmActive = false;
+      if (itemFromDataBase.isMinAlarmActive == false) {
+        itemFromDataBase.isAlarmActive = false;
+      }
       addToDb(itemFromDataBase);
       emit(CoinAlarm(
           itemFromDataBase: itemFromDataBase,
-          message: " fiyat maximum fiyatın üzerine çıkt."));
+          message:
+              "${itemFromDataBase.name.toUpperCase()} ${LocaleKeys.alarmAlertDialog_max.tr()}"));
     }
   }
 
@@ -125,6 +231,41 @@ class CoinCubit extends Cubit<CoinState> {
     itemFromDataBase.lastPrice = currentSeviceItem.lastPrice ?? "0";
     itemFromDataBase.highOf24h = currentSeviceItem.highOf24h ?? "0";
     itemFromDataBase.lowOf24h = currentSeviceItem.lowOf24h ?? "0";
+  }
+
+  void allCoinIdListBackUpCheck() {
+    //_appCacheManager.putItem(PreferencesKeys.ID_LIST_LAST_UPDATE.name,
+    //    DateTime(2020, 1, 1).toString());
+    String? date =
+        _appCacheManager.getItem(PreferencesKeys.ID_LIST_LAST_UPDATE.name);
+    if (date != null) {
+      DateTime lastUpdate = DateTime.parse(date);
+      DateTime now = DateTime.now();
+      //print((now.millisecondsSinceEpoch - lastUpdate.millisecondsSinceEpoch) ~/
+      //    (1000 * 60));
+      int difference =
+          (now.millisecondsSinceEpoch - lastUpdate.millisecondsSinceEpoch) ~/
+              (1000 * 60 * 60 * 24);
+      if ((difference) >= 1) {
+        print("DAİLY YEDEKLEMEYE GİRİLDİ");
+        _appCacheManager.putItem(PreferencesKeys.ID_LIST_LAST_UPDATE.name,
+            DateTime.now().toString());
+        updateCoinIdList();
+      }
+    } else {
+      print("NULL A GİRDİK");
+      updateCoinIdList();
+      _appCacheManager.putItem(
+          PreferencesKeys.ID_LIST_LAST_UPDATE.name, DateTime.now().toString());
+    }
+  }
+
+  Future<void> updateCoinIdList() async {
+    //TODO: HATA YÖNETİMİ FİLAN HAK GETİRE
+    Map mapFromService = await GechoService.instance.getAllCoinsIdList();
+    print(mapFromService.length);
+    _coinIdListCacheManager.clearAll();
+    _coinIdListCacheManager.addItems(mapFromService);
   }
 
   Future<void> backUpCheck(
@@ -268,21 +409,39 @@ class CoinCubit extends Cubit<CoinState> {
     var resposneEthGecho = fetchEthCoinsFromGechoService();
     var resposneBitexen = fetchAllCoinsFromBitexen();
     var resposneTruncgil = fetchTruncgilService();
+    var responseNewUsdGecho = fetchUsdNewCoinsFromGechoService();
 
     if (resposneTryGecho.error != null ||
         resposneUsdGecho.error != null ||
         resposneBtcGecho.error != null ||
         resposneEthGecho.error != null ||
         resposneBitexen.error != null ||
-        resposneTruncgil.error != null) {
+        resposneTruncgil.error != null ||
+        responseNewUsdGecho.error != null) {
       allResponse.error = BaseError(message: "error");
     }
-    allResponse.data?.addAll(resposneTryGecho.data!);
-    allResponse.data?.addAll(resposneUsdGecho.data!);
-    allResponse.data?.addAll(resposneBtcGecho.data!);
-    allResponse.data?.addAll(resposneEthGecho.data!);
-    allResponse.data?.addAll(resposneBitexen.data!);
-    allResponse.data?.addAll(resposneTruncgil.data!);
+    if (resposneTryGecho.data != null) {
+      allResponse.data?.addAll(resposneTryGecho.data!);
+    }
+    if (resposneUsdGecho.data != null) {
+      allResponse.data?.addAll(resposneUsdGecho.data!);
+    }
+    if (resposneBtcGecho.data != null) {
+      allResponse.data?.addAll(resposneBtcGecho.data!);
+    }
+    if (resposneEthGecho.data != null) {
+      allResponse.data?.addAll(resposneEthGecho.data!);
+    }
+    if (resposneBitexen.data != null) {
+      allResponse.data?.addAll(resposneBitexen.data!);
+    }
+    if (resposneTruncgil.data != null) {
+      allResponse.data?.addAll(resposneTruncgil.data!);
+    }
+    if (responseNewUsdGecho.data != null) {
+      allResponse.data?.addAll(responseNewUsdGecho.data!);
+    }
+
     return allResponse;
   }
 
@@ -318,103 +477,47 @@ class CoinCubit extends Cubit<CoinState> {
     return GechoServiceController.instance.getNewGechoUsdCoinList;
   }
 
-  stopMusic() async {
-    await player!.pause();
-    await player!.seek(Duration.zero);
+  void stopAudio() {
+    AudioManager.instance.stop();
+    //    AudioManager.instance.stop();
   }
 
-  Future<void> playMusic(AudioModel audioModel, bool isLoop) async {
-    player ??= AudioPlayer();
+  Future<void> playMusic(AudioModel audioModel, bool isLoop,
+      {required String title}) async {
+    //TODO: CHANGE TRY CACHE METHOD YOU MANAGE IT FROM AUDIOMANAGER
 
-    try {
-      // await player.setAsset('assets/audio/ozcan2.mp3');
-      if (Platform.isWindows) {
-        await player!.setAsset((audioModel.path));
-        // player!.play();
-        player!.seek(Duration(seconds: 20));
-      } else {
-        await player!.setAsset(audioModel.path);
-        await player!
-            .setClip(start: Duration(seconds: 0), end: Duration(seconds: 10));
+    if (audioModel.name == "vibration") {
+      final Iterable<Duration> pauses = [
+        const Duration(milliseconds: 500),
+        const Duration(milliseconds: 1000),
+        const Duration(milliseconds: 500),
+        const Duration(milliseconds: 1000),
+        const Duration(milliseconds: 500),
+        const Duration(milliseconds: 1000),
+        const Duration(milliseconds: 500),
+        const Duration(milliseconds: 1000),
+        const Duration(milliseconds: 500),
+      ];
+      Vibrate.vibrateWithPauses(pauses);
+      AudioManager.instance.play(
+        audioModel,
+        isLoop: isLoop,
+        title: title,
+        time: context.ultraHighDuration.inSeconds * 2,
+      );
+    } else {
+      try {
+        if (isLoop) {
+          AudioManager.instance.play(audioModel, isLoop: isLoop, title: title);
+        } else {
+          AudioManager.instance.play(audioModel,
+              isLoop: isLoop,
+              time: context.ultraHighDuration.inSeconds * 2,
+              title: title);
+        }
+      } catch (e) {
+        print(e);
       }
-
-      if (!isLoop) {
-        player!.play();
-      } else {
-        player!.setLoopMode(LoopMode.one);
-
-        player!.play();
-      }
-    } on PlayerException catch (e) {
-    } on PlayerInterruptedException catch (e) {
-    } catch (e) {}
+    }
   }
-
-  Future<void> demo() async {
-    /* player!.streams.medias.listen((List<Media> medias) {});
-    player.streams.isPlaying.listen((bool isPlaying) {});
-    player.streams.isBuffering.listen((bool isBuffering) {});
-    player.streams.isCompleted.listen((bool isCompleted) {});
-    player.streams.position.listen((Duration position) {});
-    player.streams.duration.listen((Duration duration) {});
-    player.streams.index.listen((int index) {});
-    player.open([
-      Media(
-          uri: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'),
-    ]);*/
-  }
-/*
-  void demo() {
-  var player = Player(id: 0);
-  player.streams.medias.listen((List<Media> medias) {});
-  player.streams.isPlaying.listen((bool isPlaying) {});
-  player.streams.isBuffering.listen((bool isBuffering) {});
-  player.streams.isCompleted.listen((bool isCompleted) {});
-  player.streams.position.listen((Duration position) {});
-  player.streams.duration.listen((Duration duration) {});
-  player.streams.index.listen((int index) {});
-  player.open([
-    Media(uri: 'https://www.example.com/media/music.mp3'),
-    Media(uri: 'file://C:/documents/video.mp4'),
-  ]);
-  player.play();
-  player.seek(Duration(seconds: 20));
-  player.nativeControls.update(
-    album: 'Fine Line',
-    albumArtist: 'Harry Styles',
-    trackCount: 12,
-    artist: 'Harry Styles',
-    title: 'Lights Up',
-    trackNumber: 1,
-    thumbnail: File('album_art.png'),
-  );
-}*/
-
-  /*Future<void> playMusic2(AudioModel audioModel, String title) async {
-    AudioManager.instance
-        .start(
-            audioModel.path,
-            // "network format resource"
-            // "local resource (file://${file.path})"
-            title,
-            desc: audioModel.name,
-            // cover: "network cover image resource"
-            cover: "assets/laimg.jpeg")
-        .then((err) {
-      //print(err);
-    });
-  }*/
-
-  /*AudioManager.instance
-        .start(
-            "assets/alperen.mp3",
-            // "network format resource"
-            // "local resource (file://${file.path})"
-            "SAATTTTTTTTT",
-            desc: "SAAAAAAATTTT",
-            // cover: "network cover image resource"
-            cover: "assets/laimg.jpeg")
-        .then((err) {
-      //print(err);
-    });*/
 }

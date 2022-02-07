@@ -1,5 +1,9 @@
-import 'package:coin_with_architecture/core/constant/app/app_constant.dart';
-import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+import '../../../../core/constant/app/app_constant.dart';
+import '../../selected_coin/viewmodel/cubit/coin_cubit.dart';
+import '../../../../product/connectivity_manager/connectivity_notifer.dart';
+import '../../../../product/model/coin/my_coin_model.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 import '../../../../core/extension/context_extension.dart';
 import '../../../../product/widget/component/text_form_field_with_animation.dart';
@@ -12,11 +16,13 @@ import '../../../../product/language/locale_keys.g.dart';
 import '../../../../product/widget/component/coin_current_info_card.dart';
 import '../viewmodel/cubit/bitexen_cubit.dart';
 import '../viewmodel/page_viewmodel/cubit/bitexen_page_general_cubit.dart';
+part './subview/sort_popup_extension.dart';
 
 class BitexenPage extends StatelessWidget {
   BitexenPage({Key? key}) : super(key: key);
 
   final List<MainCurrencyModel> searchresult = [];
+  final GlobalKey _menuKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -30,11 +36,11 @@ class BitexenPage extends StatelessWidget {
   AppBar _appBar(BuildContext context) {
     return AppBar(
       centerTitle: true,
-      leading: IconButton(
-          onPressed: () {
-            Navigator.pushNamed(context, "/settingsGeneral");
-          },
-          icon: const Icon(Icons.settings)),
+      //leading: IconButton(
+      //    onPressed: () {
+      //      Navigator.pushNamed(context, "/settingsGeneral");
+      //    },
+      //    icon: const Icon(Icons.settings)),
       titleSpacing: 0,
       actions: [
         buildAppBarActions(context),
@@ -74,8 +80,13 @@ class BitexenPage extends StatelessWidget {
       },
       listener: (context, state) {
         if (state is BitexenError) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(state.message)));
+          if (context.read<ConnectivityNotifier>().connectionStatus ==
+              ConnectivityResult.none) {
+            context.read<ConnectivityNotifier>().showConnectionErrorSnackBar();
+          } else {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(state.message)));
+          }
         }
       },
     );
@@ -92,6 +103,22 @@ class BitexenPage extends StatelessWidget {
 
     return Column(
       children: [
+        Padding(
+          padding: context.paddingLowHorizontal,
+          child: SizedBox(
+            height: context.lowValue * 4,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(flex: 4, child: Text("  Sembol")),
+                const Spacer(flex: 5),
+                Expanded(flex: 5, child: Text(" LastPrice")),
+                const Spacer(),
+                Expanded(flex: 7, child: buildOrderByPopupMenu(context)),
+              ],
+            ),
+          ),
+        ),
         buildTextFormFieldWithAnimation(
           context,
           controller: context
@@ -145,6 +172,9 @@ class BitexenPage extends StatelessWidget {
       BuildContext context) {
     coinListToShow = state.bitexenCoinsList;
     coinListToShow = searchTransaction(context, coinListToShow);
+    coinListToShow = context.read<BitexenCubit>().orderList(
+        context.read<BitexenPageGeneralCubit>().getorderByDropDownValue,
+        coinListToShow);
     return coinListToShow;
   }
 

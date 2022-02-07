@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
+import '../../../../model/coin/my_coin_model.dart';
 
 import '../../../../../core/model/response_model/IResponse_model.dart';
 import '../../../../../core/enums/price_control.dart';
@@ -28,15 +28,19 @@ class TruncgilServiceController {
       _lastTruncgilList;
 
   Future<void> fetchTruncgilListEveryTwoSecond() async {
-    fetchDataTrasaction();
+    await fetchDataTrasaction();
     timer = Timer.periodic(Duration(seconds: timerSecond), (timer) async {
-      fetchDataTrasaction();
-      if (_previousTruncgilList.data!.isNotEmpty &&
-          _lastTruncgilList.data!.isNotEmpty) {
-        lastPriceControl(_previousTruncgilList.data!, _lastTruncgilList.data!);
+      await fetchDataTrasaction();
+      if (_previousTruncgilList.data != null &&
+          _lastTruncgilList.data != null) {
+        if (_previousTruncgilList.data!.isNotEmpty &&
+            _lastTruncgilList.data!.isNotEmpty) {
+          lastPriceControl(
+              _previousTruncgilList.data!, _lastTruncgilList.data!);
+        }
+        transferLastListToPreviousList(
+            _previousTruncgilList.data!, _lastTruncgilList.data!);
       }
-      transferLastListToPreviousList(
-          _previousTruncgilList.data!, _lastTruncgilList.data!);
     });
   }
 
@@ -44,12 +48,14 @@ class TruncgilServiceController {
     ResponseModel<List<MainCurrencyModel>> response = await CurrencyConverter
         .instance
         .convertTruncgilListToMyMainCurrencyList();
-
     if (response.error != null) {
-      _lastTruncgilList = response;
+      _lastTruncgilList = ResponseModel<List<MainCurrencyModel>>(
+          data: _lastTruncgilList.data, error: response.error);
     } else if (response.data != null) {
       _lastTruncgilList = response;
-      percentageControl(_lastTruncgilList.data!);
+    } else {
+      _lastTruncgilList =
+          ResponseModel<List<MainCurrencyModel>>(data: _lastTruncgilList.data);
     }
   }
 
@@ -58,20 +64,6 @@ class TruncgilServiceController {
     previousList.clear();
     for (var item in lastList) {
       previousList.add(item);
-    }
-  }
-
-  void percentageControl(List<MainCurrencyModel> coin) async {
-    for (var item in coin) {
-      String result = item.changeOf24H ?? "";
-      if (result[0] == "-") {
-        item.percentageControl = PriceLevelControl.DESCREASING.name;
-      } else if (result == "0.0") {
-        //  L AM NOT SURE FOR THIS TRY IT
-        item.percentageControl = PriceLevelControl.CONSTANT.name;
-      } else {
-        item.percentageControl = PriceLevelControl.INCREASING.name;
-      }
     }
   }
 

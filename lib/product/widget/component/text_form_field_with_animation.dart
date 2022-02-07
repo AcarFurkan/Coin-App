@@ -32,7 +32,7 @@ TextFormField _buildTextFormField(
     VoidCallback? onChanged,
     FocusNode focusNode) {
   return TextFormField(
-    cursorHeight: isSearchOpen ? context.height * 0.028 : 0,
+    // cursorHeight: isSearchOpen ? context.height * 0.028 : 0,
     controller: controller,
 
     cursorColor: Theme.of(context).colorScheme.onBackground,

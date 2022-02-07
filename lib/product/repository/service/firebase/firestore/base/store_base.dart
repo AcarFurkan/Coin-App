@@ -1,5 +1,5 @@
-import 'package:coin_with_architecture/core/model/response_model/IResponse_model.dart';
-import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
+import '../../../../../../core/model/response_model/IResponse_model.dart';
+import '../../../../../model/coin/my_coin_model.dart';
 
 import '../../../../../model/user/my_user_model.dart';
 

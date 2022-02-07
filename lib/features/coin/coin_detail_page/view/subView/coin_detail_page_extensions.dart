@@ -167,15 +167,18 @@ extension CoinDetailBlocConsumerView on _CoinDetailPageState {
       ((context.watch<CoinDetailCubit>().isMinAlarmActive == true ||
                   context.watch<CoinDetailCubit>().isMaxAlarmActive == true) &&
               context.watch<CoinDetailCubit>().isAlarm == true)
-          ? OutlinedButton(
-              onPressed: setAlarmOnpressed,
-              child: Text(
-                LocaleKeys.CoinDetailPage_buttonText.locale,
-              ))
+          ? Column(
+              children: [
+                inputRow("Price To Be Added",
+                    context.read<CoinDetailCubit>().addPriceEditingController),
+                OutlinedButton(
+                    onPressed: setAlarmOnpressed,
+                    child: Text(LocaleKeys.CoinDetailPage_buttonText.locale)),
+              ],
+            )
           : Container();
 
   VoidCallback? setAlarmOnpressed() {
-    AudioModel? audioModel;
     widget.coin.min =
         context.read<CoinDetailCubit>().minTextEditingController.text.trim() !=
                 ""
@@ -183,7 +186,9 @@ extension CoinDetailBlocConsumerView on _CoinDetailPageState {
                 .read<CoinDetailCubit>()
                 .minTextEditingController
                 .text
-                .trim())
+                .trim()
+                .replaceAll(",", ".")
+                .replaceAll("-", ""))
             : 0;
     widget.coin.max =
         context.read<CoinDetailCubit>().maxTextEditingController.text.trim() !=
@@ -192,14 +197,30 @@ extension CoinDetailBlocConsumerView on _CoinDetailPageState {
                 .read<CoinDetailCubit>()
                 .maxTextEditingController
                 .text
-                .trim())
+                .trim()
+                .replaceAll(",", ".")
+                .replaceAll("-", ""))
             : 0;
+    widget.coin.addedPrice =
+        context.read<CoinDetailCubit>().addPriceEditingController.text.trim() !=
+                ""
+            ? context
+                .read<CoinDetailCubit>()
+                .addPriceEditingController
+                .text
+                .trim()
+                .replaceAll(",", ".")
+                .replaceAll("-", "")
+            : widget.coin.lastPrice;
     context.read<CoinDetailCubit>().saveDeleteForAlarm(widget.coin);
 
     showSnackBar(LocaleKeys.CoinDetailPage_alarmSetScaffoldMessage.locale);
+    context.read<HomeViewModel>().selectedIndex = 0;
+    Navigator.pushNamedAndRemoveUntil(
+        context, "/home", (ModalRoute.withName("/home")));
   }
 
-  Padding inputRow(String buttonText, TextEditingController controller) {
+  Padding inputRow(String label, TextEditingController controller) {
     return Padding(
       padding: context.paddingLow,
       child: SizedBox(
@@ -208,7 +229,7 @@ extension CoinDetailBlocConsumerView on _CoinDetailPageState {
           keyboardType: TextInputType.number,
           textAlign: TextAlign.center,
           decoration: InputDecoration(
-              label: Text(buttonText),
+              label: Text(label),
               contentPadding: context.paddingLowHorizontal * 2),
         ),
       ),

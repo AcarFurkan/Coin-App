@@ -71,8 +71,8 @@
         "no":"Hayır"
     },
     "alarmAlertDialog":{
-        "min":" set fiyatının altına düştü.",
-        "max":" set fiyatını aştı.",
+        "min":"'nin fiyatı minimum fiyatın altına indi.",
+        "max":"'nin fiyatı  maximum fiyatın üzerine çıktı.",
         "stop":"Sustur"
     },
     "landingPage":{
@@ -106,9 +106,9 @@
         "setAlarmClose":"Alarm kurmak",
         "setAlarmOpen":"Alarm Ayarları",
         "minSwitchTileClose":"Bilgi ile alarm ayarla Price",
-        "minSwitchTileOpen": "Para biriminin anında fiyatı girilen fiyatın altına düşerse, bir alarm sesi çıkarır.",
+        "minSwitchTileOpen": "Girilen fiyatın altına inerse, alarm çalar.",
         "maxSwitchTileClose":"Maksimum fiyat ile alarm ayarla",
-        "maxSwitchTileOpen":  "Para biriminin anında fiyatı girilen fiyatı aşarsa, bir alarm sesi çıkarır.",
+        "maxSwitchTileOpen":  "Girilen fiyatın üstüne çıkarsa, alarm çalar.",
         "loopSwitchTileOpen":"Döngü açık",
         "loopSwitchTileClose":"Döngü kapalı",
         "minTextFormField":"minimum",

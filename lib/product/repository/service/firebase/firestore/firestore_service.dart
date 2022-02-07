@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:coin_with_architecture/core/model/error_model/base_error_model.dart';
-import 'package:coin_with_architecture/core/model/response_model/IResponse_model.dart';
-import 'package:coin_with_architecture/core/model/response_model/response_model.dart';
-import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
+import '../../../../../core/model/error_model/base_error_model.dart';
+import '../../../../../core/model/response_model/IResponse_model.dart';
+import '../../../../../core/model/response_model/response_model.dart';
+import '../../../../model/coin/my_coin_model.dart';
 
 import '../../../../model/user/my_user_model.dart';
 import 'base/store_base.dart';
@@ -57,11 +57,13 @@ class FirestoreService implements StoreBase {
           .get();
 
       if (collectionref.docs.isNotEmpty) {
-        listMainCurrency = collectionref.docs
-            .map((e) =>
-                MainCurrencyModel.fromJson((e.data() as Map<String, dynamic>)))
-            .toList();
+        listMainCurrency = collectionref.docs.map((e) {
+          var a =
+              MainCurrencyModel.fromJson((e.data() as Map<String, dynamic>));
+          return a;
+        }).toList();
       }
+
       return ResponseModel(data: listMainCurrency);
     } catch (e) {
       return ResponseModel(error: BaseError(message: e.toString()));
@@ -106,18 +108,14 @@ class FirestoreService implements StoreBase {
   Future<IResponseModel<MyUser?>> updateUserCurrenciesInformation(MyUser user,
       {List<MainCurrencyModel>? listCurrencyFromDb}) async {
     try {
-      DocumentSnapshot _user =
-          await _firestore.doc("users/${user.email}").get();
       var map = user.toJson();
       map["updatedAt"] = FieldValue.serverTimestamp();
-
       await _firestore.collection("users").doc(user.email).set(map);
+      IResponseModel<List<MainCurrencyModel>?> responseModel =
+          await fetchCurrenciesByEmail(user.email!);
+
+      List<MainCurrencyModel>? listFromService = responseModel.data;
       if (listCurrencyFromDb != null) {
-        IResponseModel<List<MainCurrencyModel>?> responseModel =
-            await fetchCurrenciesByEmail(user.email!);
-
-        List<MainCurrencyModel>? listFromService = responseModel.data;
-
         if (listFromService != null) {
           for (var item in listCurrencyFromDb) {
             await _firestore
@@ -148,11 +146,22 @@ class FirestoreService implements StoreBase {
                 .set(item.toMap());
           }
         }
+      } else {
+        if (listFromService != null) {
+          for (var item in listFromService) {
+            await _firestore
+                .collection("users")
+                .doc(user.email)
+                .collection("currency")
+                .doc(item.id)
+                .delete();
+          }
+        }
       }
-      IResponseModel<MyUser?> responseModel =
+      IResponseModel<MyUser?> responseModelReaded =
           await readUserInformations(user.email!); //Todo
 
-      return responseModel;
+      return responseModelReaded;
     } catch (e) {
       return ResponseModel(error: BaseError(message: e.toString()));
     }

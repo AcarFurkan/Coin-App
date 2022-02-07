@@ -1,8 +1,8 @@
-import 'package:coin_with_architecture/core/extension/string_extension.dart';
-import 'package:coin_with_architecture/product/language/locale_keys.g.dart';
+import '../../../../../core/extension/string_extension.dart';
+import '../../../../../product/alarm_manager/alarm_manager.dart';
+import '../../../../../product/language/locale_keys.g.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:just_audio/just_audio.dart';
 
 import '../viewmodel/cubit/audio_cubit.dart';
 
@@ -14,18 +14,16 @@ class AudioPage extends StatefulWidget {
 }
 
 class _AudioPageState extends State<AudioPage> {
-  late AudioPlayer player;
+  ///late AudioPlayer player;
   late int selectedIndex;
   @override
   void initState() {
-    selectedIndex = 0;
-    player = AudioPlayer();
     super.initState();
+    selectedIndex = 0;
   }
 
   @override
   void dispose() {
-    player.dispose();
     super.dispose();
   }
 
@@ -35,16 +33,22 @@ class _AudioPageState extends State<AudioPage> {
       appBar: AppBar(
         actions: [
           IconButton(
-              onPressed: () async {
-                await player.pause();
-                await player.seek(Duration.zero);
+              onPressed: () {
+                AudioManager.instance.stop();
+                //final _audioHandler = locator<AudioHandler>();
+                //_audioHandler.stop();
+                //_audioHandler.removeQueueItemAt(0);
               },
               icon: const Icon(Icons.music_off))
         ],
         title: Text(LocaleKeys.alarmPage_appBarTitle.locale),
         leading: IconButton(
-            onPressed: () => Navigator.pop(
-                context, context.read<AudioCubit>().audioPaths[selectedIndex]),
+            onPressed: () {
+              AudioManager.instance.stop();
+
+              Navigator.pop(context,
+                  context.read<AudioCubit>().audioPaths[selectedIndex]);
+            },
             icon: const Icon(Icons.arrow_back_ios)),
       ),
       body: BlocConsumer<AudioCubit, AudioState>(
@@ -77,7 +81,7 @@ class _AudioPageState extends State<AudioPage> {
       onChanged: (onChanged) async {
         selectedIndex = index;
         context.read<AudioCubit>().changeGroupValue(onChanged!);
-        await context.read<AudioCubit>().playAudio(index, player, context);
+        await context.read<AudioCubit>().playAudio(index, context, "Trial");
       },
     );
   }

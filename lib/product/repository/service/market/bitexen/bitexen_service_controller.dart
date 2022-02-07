@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:coin_with_architecture/product/model/coin/my_coin_model.dart';
+import '../../../../model/coin/my_coin_model.dart';
 
 import '../../../../../core/enums/price_control.dart';
 import '../../../../../core/model/response_model/IResponse_model.dart';
@@ -33,13 +33,12 @@ class BitexenServiceController {
     timer = Timer.periodic(Duration(seconds: timerSecond), (timer) async {
       await fetchDataTrarnsactions();
       if (_previousbitexenCoins.data != null &&
-          _lastbitexenCoins.data != null &&
-          _previousbitexenCoins.data!.isNotEmpty &&
-          _lastbitexenCoins.data!.isNotEmpty) {
-        lastPriceControl(_previousbitexenCoins.data!, _lastbitexenCoins.data!);
-      }
-      if (_previousbitexenCoins.data != null &&
           _lastbitexenCoins.data != null) {
+        if (_previousbitexenCoins.data!.isNotEmpty &&
+            _lastbitexenCoins.data!.isNotEmpty) {
+          lastPriceControl(
+              _previousbitexenCoins.data!, _lastbitexenCoins.data!);
+        }
         transferLastListToPreviousList(
             _previousbitexenCoins.data!, _lastbitexenCoins.data!);
       }
@@ -50,10 +49,14 @@ class BitexenServiceController {
     ResponseModel<List<MainCurrencyModel>> response =
         await CurrencyConverter.instance.convertBitexenListCoinToMyCoinList();
     if (response.error != null) {
-      _lastbitexenCoins = response;
+      _lastbitexenCoins = ResponseModel<List<MainCurrencyModel>>(
+          data: _lastbitexenCoins.data, error: response.error);
     } else if (response.data != null) {
       _lastbitexenCoins = response;
-      percentageControl(_lastbitexenCoins.data!);
+    } else {
+      //TODO:BUNU YAPMAMA GEREK VAR MI
+      _lastbitexenCoins =
+          ResponseModel<List<MainCurrencyModel>>(data: _lastbitexenCoins.data);
     }
   }
 
@@ -65,22 +68,10 @@ class BitexenServiceController {
     }
   }
 
-  void percentageControl(List<MainCurrencyModel> coin) async {
-    for (var item in coin) {
-      String result = item.changeOf24H ?? "";
-      if (result[0] == "-") {
-        item.percentageControl = PriceLevelControl.DESCREASING.name;
-      } else if (result == "0.0") {
-        //  L AM NOT SURE FOR THIS TRY IT
-        item.percentageControl = PriceLevelControl.CONSTANT.name;
-      } else {
-        item.percentageControl = PriceLevelControl.INCREASING.name;
-      }
-    }
-  }
-
   void lastPriceControl(
-      List<MainCurrencyModel> previousList, List<MainCurrencyModel> lastList) {
+      //TODO: BURDA EĞER İLK 100 COİN DEĞİŞİRSE PATLARSIN HABERİN OLA IDE GORE KONTROL YAP
+      List<MainCurrencyModel> previousList,
+      List<MainCurrencyModel> lastList) {
     if (lastList.length == previousList.length) {
       for (var i = 0; i < lastList.length; i++) {
         double lastPrice = double.parse(lastList[i].lastPrice ?? "0");

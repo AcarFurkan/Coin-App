@@ -5,9 +5,15 @@ extension SelectedCoinBlocConsumerView on SelectedCoinPage {
     return BlocConsumer<CoinCubit, CoinState>(
       listener: (context, state) {
         if (state is CoinError) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(state.message)));
+          if (context.read<ConnectivityNotifier>().connectionStatus ==
+              ConnectivityResult.none) {
+            context.read<ConnectivityNotifier>().showConnectionErrorSnackBar();
+          } else {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(state.message)));
+          }
         } else if (state is CoinAlarm) {
+          print(ModalRoute.of(context)?.settings.name);
           showAlertDialog(state.itemFromDataBase, state.message, context);
         }
       },
@@ -50,12 +56,12 @@ extension SelectedCoinBlocConsumerView on SelectedCoinPage {
         context: context,
         builder: (context) {
           return CupertinoAlertDialog(
-            title: Text(coin.name.toUpperCase() + message),
+            title: Text(message),
             actions: [
               CupertinoDialogAction(
                 child: const Text("Stop"),
                 onPressed: () async {
-                  context.read<CoinCubit>().stopMusic();
+                  context.read<CoinCubit>().stopAudio();
                   Navigator.pop(context);
                 },
               ),
