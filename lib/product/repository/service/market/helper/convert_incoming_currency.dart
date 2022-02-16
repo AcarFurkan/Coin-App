@@ -1,3 +1,5 @@
+import 'package:coin_with_architecture/product/repository/service/market/opensea/opensea_service.dart';
+
 import '../../../../model/coin/my_coin_model.dart';
 import 'package:intl/intl.dart';
 
@@ -13,6 +15,7 @@ import '../gecho/gecho_service.dart';
 import '../genelpara/genelpara_service.dart';
 import '../hurriyet/hurriyet_service.dart';
 import '../truncgil/truncgil_service.dart';
+import '../../../../response_models/opensea/opensea_response_model.dart';
 
 class CurrencyConverter {
   static CurrencyConverter? _instance;
@@ -49,6 +52,31 @@ class CurrencyConverter {
     }
     return ResponseModel<List<MainCurrencyModel>>(
         data: myCoin, error: response.error);
+  }
+
+  Future<ResponseModel<MainCurrencyModel>>
+      convertNftCollectionToMainCurrency() async {
+    var response = await OpenSeaService.instance.getCollection();
+
+    OpenSea? collection = response.data;
+    MainCurrencyModel? myCurrency;
+    if (collection != null) {
+      myCurrency = mainCurrencyGeneratorFromOpenSeaModel(collection);
+    }
+    return ResponseModel<MainCurrencyModel>(
+        data: myCurrency, error: response.error);
+  }
+
+  MainCurrencyModel mainCurrencyGeneratorFromOpenSeaModel(OpenSea collection) {
+    return MainCurrencyModel(
+      name: "ninja",
+      lastPrice: collection.floorPrice.toString(),
+      id: "ninja" + "opensea" + "ETH",
+      //changeOf24H: collection.change24H,
+      counterCurrencyCode: "ETH",
+      //lowOf24h: collection.low24H,
+      //highOf24h: collection.high24H,
+    ); //DateFormat.jms().format(date)/// DateFormat.jms().format(date)
   }
 
   Future<ResponseModel<List<MainCurrencyModel>>>

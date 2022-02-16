@@ -1,3 +1,4 @@
+import 'package:coin_with_architecture/product/language/locale_keys.g.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -43,7 +44,7 @@ class FutureBuilderForSplash extends StatelessWidget {
             supportedLocales: context.supportedLocales,
             locale: context.locale,
             theme: context.watch<ThemeProvider>().theme,
-            title: "LocaleKeys.mainApp.tr()", // TODO FİX İT
+            title: "Coin Reminder", // TODO FİX İT
             onGenerateRoute: RouteGenerator.routeGenerator,
             home:
                 FutureBuilderForIsFirstOpen(), //BUNU NİYE YAZMAMIZ LAZIM ONU ANLAMADIM

@@ -23,12 +23,18 @@ class BitexenCubit extends Cubit<BitexenState> {
   Future<void> fetchAllCoins() async {
     emit(BitexenLoading());
     dataTransaction();
-    timer = Timer.periodic(const Duration(milliseconds: 2000), (Timer t) async {
+    //while (true) {
+    //  await Future.delayed(Duration(seconds: 5));
+    //  coinListFromDb = getAllListFromDB() ?? [];
+    //  dataTransaction();
+    //}
+    timer = Timer.periodic(const Duration(milliseconds: 5000), (Timer t) async {
       coinListFromDb = getAllListFromDB() ?? [];
       dataTransaction();
     });
   }
 
+  int count = 0;
   void dataTransaction() {
     bitexenCoins.clear();
     var response = fetchBitexenCoinListFromService();
@@ -40,6 +46,7 @@ class BitexenCubit extends Cubit<BitexenState> {
         bitexenCoins.add(item);
         favoriteFeatureAndAlarmTransaction(coinListFromDb, bitexenCoins);
       }
+
       emit(BitexenCompleted(bitexenCoinsList: bitexenCoins));
     }
   }

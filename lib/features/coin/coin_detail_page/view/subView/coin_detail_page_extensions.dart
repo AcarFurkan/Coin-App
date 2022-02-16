@@ -216,8 +216,12 @@ extension CoinDetailBlocConsumerView on _CoinDetailPageState {
 
     showSnackBar(LocaleKeys.CoinDetailPage_alarmSetScaffoldMessage.locale);
     context.read<HomeViewModel>().selectedIndex = 0;
-    Navigator.pushNamedAndRemoveUntil(
-        context, "/home", (ModalRoute.withName("/home")));
+    context.read<HomeViewModel>().animateToPage = 0;
+    //Navigator.popUntil(context, (ModalRoute.withName("/home")));
+    Navigator.pop(context);
+
+    // Navigator.pushNamedAndRemoveUntil(
+    //     context, "/home", (ModalRoute.withName("/home")));
   }
 
   Padding inputRow(String label, TextEditingController controller) {

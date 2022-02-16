@@ -7,7 +7,6 @@ extension SortPopumExtension on SelectedCoinPage {
       child: buildSortCurrentWidget(context),
       onSelected: (value) {
         context.read<SelectedPageGeneralCubit>().setorderByDropDownValue(value);
-        print(value);
       },
       itemBuilder: (BuildContext context) => <PopupMenuEntry<SortTypes>>[
         const PopupMenuItem<SortTypes>(

@@ -49,16 +49,18 @@ class SearchPageCubit extends Cubit<SearchPageState> {
                 .add(GechoAllIdList.fromJson(Map.from(mapForSearch![item])));
           }
         }
-        //for (Map itemMap in mapForSearch!.values) {
-        //  for (var item in itemMap.values) {
-        //    if (item.contains(controller.text.toLowerCase().trim())) {
-        //      print(item);
-        //      listCoin.add(GechoAllIdList.fromJson(
-        //          Map.from(mapForSearch![itemMap["id"]])));
-        //      break;
-        //    }
-        //  }
-        //}
+
+        if (listCoin.isEmpty) {
+          print("aaaaaaaa");
+          for (Map itemMap in mapForSearch!.values) {
+            if (itemMap["symbol"]
+                .contains(controller.text.toLowerCase().trim())) {
+              listCoin.add(GechoAllIdList.fromJson(
+                  Map.from(mapForSearch![itemMap["id"]])));
+              break;
+            }
+          }
+        }
       }
       if (listCoin.isNotEmpty) {
         emit(SearchPageCompleted(foundIdList: listCoin));

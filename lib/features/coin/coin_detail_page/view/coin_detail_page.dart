@@ -30,7 +30,6 @@ class _CoinDetailPageState extends State<CoinDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    print(NavigatorObserver);
     return _blocConsumer;
   }
 

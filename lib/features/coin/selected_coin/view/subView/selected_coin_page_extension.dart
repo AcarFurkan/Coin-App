@@ -13,7 +13,6 @@ extension SelectedCoinBlocConsumerView on SelectedCoinPage {
                 .showSnackBar(SnackBar(content: Text(state.message)));
           }
         } else if (state is CoinAlarm) {
-          print(ModalRoute.of(context)?.settings.name);
           showAlertDialog(state.itemFromDataBase, state.message, context);
         }
       },

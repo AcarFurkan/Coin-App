@@ -1,6 +1,10 @@
 import 'dart:io';
 
+import 'package:coin_with_architecture/product/language/language_manager.dart';
+import 'package:coin_with_architecture/product/repository/service/market/opensea/opensea_service.dart';
+import 'package:coin_with_architecture/product/repository/service/market/opensea/opensea_service_controller.dart';
 import 'package:flutter/services.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../onboard/view/onboard_page.dart';
 import '../../../product/repository/cache/added_coin_list_externally_cache_manager.dart';
@@ -81,9 +85,10 @@ class Init {
 
     GechoServiceController.instance.fetchGechoAllCoinListEveryTwoSecond();
     BitexenServiceController.instance.fetchBitexenCoinListEveryTwoSecond();
-    TruncgilServiceController.instance.fetchTruncgilListEveryTwoSecond();
+    //TruncgilServiceController.instance.fetchTruncgilListEveryTwoSecond();
     //HurriyetServiceController.instance.fetchHurriyetStocksEveryTwoSecond();
-    GenelParaServiceController.instance.fetchGenelParaStocksEveryTwoSecond();
+    //GenelParaServiceController.instance.fetchGenelParaStocksEveryTwoSecond();
+    OpenSeaServiceController.instance.fetchOpenSeaCollectionEveryTwoSecond();
     await context.read<CoinCubit>().startCompare();
     await context.read<CoinListCubit>().fetchAllCoins();
     await context.read<BitexenCubit>().fetchAllCoins();
@@ -109,6 +114,22 @@ class FutureBuilderForIsFirstOpen extends StatelessWidget {
     //  context.read<ThemeProvider>().getThemeFromLocale();
   }
 
+  setLanguage(String defaultLocale, BuildContext context) {
+    if (defaultLocale == "tr_TR") {
+      context.setLocale(LanguageManager.instance.trLocal);
+    } else if (defaultLocale == "en_US") {
+      context.setLocale(LanguageManager.instance.enLocal);
+    } else if (defaultLocale == "en_GB") {
+      context.setLocale(LanguageManager.instance.gbLocal);
+    } else if (defaultLocale == "ko_KO") {
+      context.setLocale(LanguageManager.instance.krLocal);
+    } else if (defaultLocale == "ar_DZ") {
+      context.setLocale(LanguageManager.instance.arLocal);
+    } else {
+      context.setLocale(LanguageManager.instance.enLocal);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -121,6 +142,9 @@ class FutureBuilderForIsFirstOpen extends StatelessWidget {
           if (_cacheManager.getBoolValue(PreferencesKeys.IS_FIRST_APP.name) ==
               "false") {
             open();
+            final String defaultLocale = Platform.localeName;
+            print(defaultLocale);
+            setLanguage(defaultLocale, context);
             return const OnboardPage();
           } else {
             return const HomeView();

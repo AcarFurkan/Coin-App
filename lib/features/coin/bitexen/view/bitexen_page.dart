@@ -26,10 +26,11 @@ class BitexenPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(1);
     return Scaffold(
       //extendBody: true,
       appBar: _appBar(context),
-      body: _blocConsumer(),
+      body: _blocBuilder(),
     );
   }
 
@@ -64,7 +65,30 @@ class BitexenPage extends StatelessWidget {
         icon: const Icon(Icons.search));
   }
 
-  BlocConsumer<BitexenCubit, BitexenState> _blocConsumer() {
+  BlocBuilder<BitexenCubit, BitexenState> _blocBuilder() {
+    int temp = -2;
+    print("bb");
+    return BlocBuilder<BitexenCubit, BitexenState>(
+      buildWhen: (previous, current) => false,
+      builder: (context, state) {
+        print(state);
+        if (state is BitexenInitial) {
+          print("1111111111111111111111111111111111111111");
+          // context.read<CoinListCubit>().fetchAllCoins();
+          return _initialStateBody();
+        } else if (state is BitexenLoading) {
+          return _loadingStateBody();
+        } else if (state is BitexenCompleted) {
+          print("aa");
+          return completedStateBody(state, context);
+        } else {
+          return Center(child: Image.asset(AppConstant.instance.IMAGE_404));
+        }
+      },
+    );
+  }
+
+  /* BlocConsumer<BitexenCubit, BitexenState> _blocConsumer() {
     return BlocConsumer<BitexenCubit, BitexenState>(
       builder: (context, state) {
         if (state is BitexenInitial) {
@@ -73,6 +97,7 @@ class BitexenPage extends StatelessWidget {
         } else if (state is BitexenLoading) {
           return _loadingStateBody();
         } else if (state is BitexenCompleted) {
+          print("aaaaaa");
           return completedStateBody(state, context);
         } else {
           return Center(child: Image.asset(AppConstant.instance.IMAGE_404));
@@ -91,7 +116,7 @@ class BitexenPage extends StatelessWidget {
       },
     );
   }
-
+*/
   Center _initialStateBody() =>
       const Center(child: CupertinoActivityIndicator());
   Center _loadingStateBody() =>

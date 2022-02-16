@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:coin_with_architecture/product/repository/service/market/opensea/opensea_service_controller.dart';
 import '../../../selected_coin/viewmodel/cubit/coin_cubit.dart';
 import '../../../../../product/model/coin/my_coin_model.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,7 @@ class CoinListCubit extends Cubit<CoinListState> {
   List<MainCurrencyModel> ethCoins = [];
   List<MainCurrencyModel> usdtCoins = [];
   List<MainCurrencyModel> newCoins = [];
+  int count = 0;
 
   List<MainCurrencyModel> coinListFromDb = [];
 
@@ -31,7 +33,6 @@ class CoinListCubit extends Cubit<CoinListState> {
     emit(CoinListLoading());
     fetchDataTransactions();
     timer = Timer.periodic(const Duration(milliseconds: 5000), (Timer t) async {
-      print("33333333333333333333333");
       coinListFromDb = getAllListFromDB() ?? [];
       fetchDataTransactions();
     });
@@ -86,18 +87,35 @@ class CoinListCubit extends Cubit<CoinListState> {
     var responseEth = fetchEthCoinsFromGechoService();
     var responseBtc = fetchBtcCoinsFromGechoService();
     var responseUsdNew = fetchUsdNewCoinsFromGechoService();
+    var responseNftCollection = fetchNftCollectionsFromOpenSea();
     responseToListTransAction(tryCoins, responseTry);
     responseToListTransAction(usdtCoins, responseUsd);
     responseToListTransAction(ethCoins, responseEth);
     responseToListTransAction(btcCoins, responseBtc);
-    responseToListTransAction(newCoins, responseUsdNew);
-    print("4444444444444444444444444444");
+    //print("3333333333333333333333");
+//
+    //print(responseNftCollection.data!.length);
+
+    if (responseNftCollection.data != null &&
+        responseUsdNew.data != null &&
+        responseNftCollection.data!.isNotEmpty) {
+      // print("1111111111111111111111");
+      responseUsdNew.data?.add(responseNftCollection.data![0]);
+      responseToListTransAction(newCoins, responseUsdNew);
+    } else {
+//print("222222222222222");
+
+      responseToListTransAction(newCoins, responseUsdNew);
+    }
+    // print(newCoins.length);
+    count++;
     emit(CoinListCompleted(
         tryCoinsList: tryCoins,
         btcCoinsList: btcCoins,
         ethCoinsList: ethCoins,
         usdtCoinsList: usdtCoins,
-        newUsdCoinsList: newCoins));
+        newUsdCoinsList: newCoins,
+        count: count));
   }
 
   void responseToListTransAction(List<MainCurrencyModel> list,
@@ -134,6 +152,10 @@ class CoinListCubit extends Cubit<CoinListState> {
 
   IResponseModel<List<MainCurrencyModel>> fetchUsdNewCoinsFromGechoService() {
     return GechoServiceController.instance.getNewGechoUsdCoinList;
+  }
+
+  IResponseModel<List<MainCurrencyModel>> fetchNftCollectionsFromOpenSea() {
+    return OpenSeaServiceController.instance.getCollections;
   }
 
   void favoriteFeatureAndAlarmTransaction(

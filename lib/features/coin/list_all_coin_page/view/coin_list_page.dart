@@ -28,7 +28,6 @@ class CoinListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("111111111111111111");
     return DefaultTabController(
       length: CoinCurrency.values.length,
       child: Scaffold(
@@ -85,6 +84,7 @@ class CoinListPage extends StatelessWidget {
   }
 
   List<Widget> tabBarViewGenerator(BuildContext context) {
+    //print(context.watch<CoinListCubit>().tryCoins);
     return CoinCurrency.values
         .map(
           (e) => Center(child: _blocBuilder(e.name)),
@@ -124,25 +124,43 @@ class CoinListPage extends StatelessWidget {
   //  );
   //}
 
+  /**
+   *   if (state is CoinListCompleted && previousState is CoinListCompleted) {
+          if (previousState.count != state.count) {
+            print(state.count);
+            temp = state.count;
+            return true;
+          }
+        }
+   */
+
   BlocBuilder<CoinListCubit, CoinListState> _blocBuilder(String currencyName) {
+    int temp = -2;
+    print("bb");
     return BlocBuilder<CoinListCubit, CoinListState>(
-      buildWhen: (previous, current) => previous != current,
+      buildWhen: (previousState, state) {
+        print("11111111");
+        return false;
+      },
       builder: (context, state) {
+        //  print(state);
         if (state is CoinListInitial) {
-          context.read<CoinListCubit>().fetchAllCoins();
+          // context.read<CoinListCubit>().fetchAllCoins();
           return _initialStateBody;
         } else if (state is CoinListLoading) {
           return _loadingStateBody;
         } else if (state is CoinListCompleted) {
-          print("5555555555555555");
-
+          print("aaaaaa");
           return completedStateBody(state, currencyName, context);
         } else {
-          return Center(child: Image.asset(AppConstant.instance.IMAGE_404));
+          return errorbody();
         }
       },
     );
   }
+
+  Center errorbody() =>
+      Center(child: Image.asset(AppConstant.instance.IMAGE_404));
 
   BlocConsumer<CoinListCubit, CoinListState> _blocConsumer(
       String currencyName) {
@@ -268,7 +286,6 @@ class CoinListPage extends StatelessWidget {
       List<MainCurrencyModel> coinListToShow,
       CoinListCompleted state,
       BuildContext context) {
-    print(currencyName);
     if (currencyName == CoinCurrency.TRY.name) {
       coinListToShow = state.tryCoinsList;
     } else if (currencyName == CoinCurrency.BTC.name) {
