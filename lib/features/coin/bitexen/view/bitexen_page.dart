@@ -26,11 +26,32 @@ class BitexenPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(1);
     return Scaffold(
       //extendBody: true,
       appBar: _appBar(context),
       body: _blocBuilder(),
+    );
+  }
+
+  BlocBuilder<BitexenCubit, BitexenState> _blocBuilder() {
+    print("bb");
+    return BlocBuilder<BitexenCubit, BitexenState>(
+      buildWhen: (previous, current) => false,
+      builder: (context, state) {
+        //  print(state);
+        if (state is BitexenInitial) {
+          print("1111111111111111111111111111111111111111");
+          // context.read<CoinListCubit>().fetchAllCoins();
+          return _initialStateBody();
+        } else if (state is BitexenLoading) {
+          return _loadingStateBody();
+        } else if (state is BitexenCompleted) {
+          print("aa");
+          return completedStateBody(state, context);
+        } else {
+          return Center(child: Image.asset(AppConstant.instance.IMAGE_404));
+        }
+      },
     );
   }
 
@@ -63,29 +84,6 @@ class BitexenPage extends StatelessWidget {
           }
         },
         icon: const Icon(Icons.search));
-  }
-
-  BlocBuilder<BitexenCubit, BitexenState> _blocBuilder() {
-    int temp = -2;
-    print("bb");
-    return BlocBuilder<BitexenCubit, BitexenState>(
-      buildWhen: (previous, current) => false,
-      builder: (context, state) {
-        print(state);
-        if (state is BitexenInitial) {
-          print("1111111111111111111111111111111111111111");
-          // context.read<CoinListCubit>().fetchAllCoins();
-          return _initialStateBody();
-        } else if (state is BitexenLoading) {
-          return _loadingStateBody();
-        } else if (state is BitexenCompleted) {
-          print("aa");
-          return completedStateBody(state, context);
-        } else {
-          return Center(child: Image.asset(AppConstant.instance.IMAGE_404));
-        }
-      },
-    );
   }
 
   /* BlocConsumer<BitexenCubit, BitexenState> _blocConsumer() {
